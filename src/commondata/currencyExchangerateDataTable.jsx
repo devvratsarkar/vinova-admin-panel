@@ -8,6 +8,7 @@ import Error from "../layouts/layoutcomponents/Error";
 import DataTable from '../components/common/DataTable'
 import toast from "react-hot-toast";
 import { useGetAllExchangeRatesQuery, useUpdateExchangeRateStatusMutation } from "../redux/features/exchangeRateAPIEndPoint";
+import { hasPermission } from "./permissions";
 
 export default function CurrrencyExchangeRateDataTable() {
 
@@ -22,8 +23,8 @@ export default function CurrrencyExchangeRateDataTable() {
     const role = localStorage.getItem("role")
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-    const showEdit = role === "SuperAdmin" || (role === "Staff" && permissions.Currency.includes("edit"))
-    const showAddTrash = role === "SuperAdmin" || (role === "Staff" && permissions.Currency.includes("trash"))
+    const showEdit = hasPermission(role, permissions, "Currency", "edit")
+    const showAddTrash = hasPermission(role, permissions, "Currency", "trash")
 
     const { data, isError, error, isLoading, isFetching, isSuccess, refetch } = useGetAllExchangeRatesQuery()
 

@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { normalizePermissions } from '../../commondata/permissions';
 
 const initialState = {
   isAuthenticated: false,
@@ -17,13 +18,14 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.token = action.payload.token;
       state.role = action.payload.role;
-      state.permissions = action.payload.permissions;
+      state.permissions = normalizePermissions(action.payload.permissions);
       const countryCode = action.payload.country_code || (action.payload.role === "SuperAdmin" ? "IR" : null);
       state.country = countryCode;
 
       localStorage.setItem('token', action.payload.token);
       localStorage.setItem('role', action.payload.role);
-      localStorage.setItem('permissions', action.payload.permissions);
+      if (state.permissions) localStorage.setItem('permissions', state.permissions);
+      else localStorage.removeItem('permissions');
       if (countryCode) localStorage.setItem('country', countryCode);
       else localStorage.removeItem('country');
     },
@@ -43,9 +45,15 @@ const authSlice = createSlice({
     },
     setCountryCode(state, action) {
       state.country = action.payload;
+    },
+    setPermissions(state, action) {
+      const next = normalizePermissions(action.payload);
+      if (!next || next === "{}" || next === state.permissions) return;
+      state.permissions = next;
+      localStorage.setItem('permissions', next);
     }
   },
 });
 
-export const { loginSuccess, logoutSuccess, loader, setCountryCode } = authSlice.actions;
+export const { loginSuccess, logoutSuccess, loader, setCountryCode, setPermissions } = authSlice.actions;
 export default authSlice.reducer;

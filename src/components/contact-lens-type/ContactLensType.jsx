@@ -3,6 +3,7 @@ import { Row, Col, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { ContactLensTypeDataTable } from "../../commondata/contactLensTypeDataTable";
 import PageHeader from "../../layouts/layoutcomponents/pageheader";
+import { allow } from "../../commondata/permissions";
 
 export default function ContactLensType() {
     return (
@@ -17,12 +18,14 @@ export default function ContactLensType() {
                     />
                 </Col>
                 <Col className="text-end d-flex justify-content-end gap-1">
+                    {allow("ContactLensType", "add") && (
                     <Link
                         to="/catalogue/contact-lens-type/add"
                         className="btn btn-success text-white me-3"
                     >
                         Add Contact Lens Type
                     </Link>
+                    )}
                 </Col>
             </Row>
             <Row>

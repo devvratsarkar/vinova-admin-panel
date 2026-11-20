@@ -4,6 +4,7 @@ import { MENUITEMS, OPTometristMENUITEMS } from "../../commondata/sidemenu";
 import { usePermissions } from "../../commondata/usePermissions";
 import { useGetOptometristUserProfileQuery } from "../../redux/features/optometristAPIEndPoint";
 import { paymentPageAllowed, paymentRequired } from "../../commondata/optometristPayment";
+import { hasPermission, isFullAccess } from "../../commondata/permissions";
 
 const cleanPath = (path) => String(path || "").trim();
 
@@ -27,17 +28,17 @@ const canShow = (item, { role, country, permissions }) => {
     return false;
   }
 
-  if (role === "SuperAdmin" && country) return true;
+  if (isFullAccess(role, country)) return true;
 
   if (item.type === "sub" && item.children) {
     return item.children.some((child) => canShow(child, { role, country, permissions }));
   }
 
   if (item.permission && item.model) {
-    return permissions[item.model]?.includes(item.permission);
+    return hasPermission(role, permissions, item.model, item.permission);
   }
 
-  return true;
+  return false;
 };
 
 const collectPages = (menu, access, paymentLocked) => {

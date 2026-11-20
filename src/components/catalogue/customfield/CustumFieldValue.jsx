@@ -9,6 +9,7 @@ import Error from "../../../layouts/layoutcomponents/Error";
 import { getCustomFieldValueTrashPage } from "../../../utils/routes";
 import { useGetAllCustomFieldValuesQuery } from "../../../redux/features/customFieldValueAPIEndPoint";
 import { ListFilters, ListTable, boundFilters, indexColumn, useListFilters } from "../../common/ListFilters";
+import { hasPermission } from "../../../commondata/permissions";
 
 function readCustomFieldValues(response) {
   const payload = response?.data;
@@ -30,8 +31,8 @@ export default function CustumFieldValue() {
 
   const role = localStorage.getItem("role");
   const permissions = JSON.parse(localStorage.getItem("permissions") || "{}");
-  const showAdd = role === "SuperAdmin" || (role === "Staff" && permissions.CustomFiledValue?.includes("add"));
-  const showTrash = role === "SuperAdmin" || (role === "Staff" && permissions.CustomFiledValue?.includes("view-trash"));
+  const showAdd = hasPermission(role, permissions, "CustomFieldValue", "add");
+  const showTrash = hasPermission(role, permissions, "CustomFieldValue", "view-trash");
 
   const columns = useMemo(() => [
     indexColumn(list.currentPage, list.pageSize, true),

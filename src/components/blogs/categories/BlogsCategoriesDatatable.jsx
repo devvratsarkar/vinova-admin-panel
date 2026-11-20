@@ -7,6 +7,7 @@ import Error from "../../../layouts/layoutcomponents/Error";
 import { useGetAllBlogsCategoryQuery } from "../../../redux/features/getApiSecond";
 import { openModal } from "../../../redux/slices/allModalSlice";
 import { ListFilters, ListTable, boundFilters, indexColumn, useListFilters } from "../../common/ListFilters";
+import { allow } from "../../../commondata/permissions";
 
 function readCategories(response) {
   const payload = response?.data;
@@ -79,14 +80,18 @@ export const BlogsCategoriesDatatable = () => {
             <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
               <Link to={`/all-blog-category/view-blog-category/${rowId}`} className="btn btn-icon btn-primary"><i className="fe fe-eye"></i></Link>
             </OverlayTrigger>
-            <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+            {allow("BlogCategory", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
               <Link to={`/all-blog-category/edit-blog-category/${rowId}`} className="btn btn-icon btn-warning"><i className="fe fe-edit"></i></Link>
             </OverlayTrigger>
-            <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+)}
+            {allow("BlogCategory", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
               <Button type="button" className="btn btn-icon btn-danger" onClick={() => dispatch(openModal({ componentName: "DeleteBlogCategory", data: row, softDelete: true }))}>
                 <i className="fe fe-trash"></i>
               </Button>
             </OverlayTrigger>
+)}
           </div>
         );
       },

@@ -7,6 +7,7 @@ import { openModal } from "../redux/slices/allModalSlice";
 import toast from "react-hot-toast";
 import { useGetBrandsQuery, useGetBrandsSelectQuery, useUpdateBrandStatusMutation } from "../redux/features/BrandAPIEndpoint";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, indexColumn, useListFilters } from "../components/common/ListFilters";
+import { allow } from "./permissions";
 
 const FILTER_KEYS = ["status"];
 
@@ -21,7 +22,7 @@ function BrandStatusSwitch({ row, onToggle }) {
   const [checked, setChecked] = useState(!!row?.status);
   useEffect(() => setChecked(!!row?.status), [row?.status]);
   return (
-    <StatusSwitch
+    <StatusSwitch disabled={!allow("Brand", "edit")} 
       checked={checked}
       onChange={() => {
         setChecked(!checked);
@@ -97,12 +98,16 @@ export const BrandDataTable = () => {
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link to={`/view-brand/${row?._id}`}><Button className="btn btn-icon btn-primary"><i className="fe fe-eye"></i></Button></Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+          {allow("Brand", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
             <Link to={`/edit-brand/${row?._id}`}><Button className="btn btn-icon btn-warning border-warning"><i className="fe fe-edit"></i></Button></Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+)}
+          {allow("Brand", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
             <Button type="button" className="btn btn-icon btn-danger" variant="" onClick={() => dispatch(openModal({ componentName: "DeleteBrand", data: row, softDelete: true }))}><i className="fe fe-trash text-white"></i></Button>
           </OverlayTrigger>
+)}
         </div>
       ),
     },

@@ -3,6 +3,7 @@ import { Nav, TabContainer, Tabs, Tab, Row, Card, Col, Button, Alert } from "rea
 import { Link } from "react-router-dom";
 import { LensColorDataTable } from "../../commondata/lensColorDataTable";
 import PageHeader from "../../layouts/layoutcomponents/pageheader";
+import { allow } from "../../commondata/permissions";
 
 
 
@@ -12,8 +13,8 @@ export default function LensColor() {
             <Row className="align-items-center">
                 <Col> <PageHeader titles="Lens Color" active="Lens Solor List" items={["Home"]} links={['/dashboard']} /> </Col>
                 <Col className="text-end d-flex justify-content-end gap-1">
-                    <Link to="/catalogue/lens-color/add" className="btn btn-success text-white me-3" >Add Lens Color</Link>
-                    <Link className="btn btn-danger text-white" to={`/catalogue/lens-color/deleted-items`}>Lens Color trash</Link>
+                    {allow("LensColor", "add") && <Link to="/catalogue/lens-color/add" className="btn btn-success text-white me-3" >Add Lens Color</Link>}
+                    {allow("LensColor", "view-trash") && <Link className="btn btn-danger text-white" to={`/catalogue/lens-color/deleted-items`}>Lens Color trash</Link>}
                 </Col>
             </Row>
             <Row>

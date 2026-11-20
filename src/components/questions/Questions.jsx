@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { LensColorDataTable } from "../../commondata/lensColorDataTable";
 import PageHeader from "../../layouts/layoutcomponents/pageheader";
 import { QuestionDataTable } from "../../commondata/questionDataTable";
+import { allow } from "../../commondata/permissions";
 
 
 
@@ -13,8 +14,8 @@ export default function Questions() {
             <Row className="align-items-center">
                 <Col> <PageHeader titles="Questions" active="Question List" items={["Home"]} links={['/dashboard']} /> </Col>
                 <Col className="text-end d-flex justify-content-end gap-1">
-                    <Link to="/question/add" className="btn btn-success text-white me-3" >Add Question</Link>
-                    <Link className="btn btn-danger text-white" to={`/questions/deleted-items`}>Questions trash</Link>
+                    {allow("Question", "add") && <Link to="/question/add" className="btn btn-success text-white me-3" >Add Question</Link>}
+                    {allow("Question", "view-trash") && <Link className="btn btn-danger text-white" to={`/questions/deleted-items`}>Questions trash</Link>}
                 </Col>
             </Row>
             <Row>

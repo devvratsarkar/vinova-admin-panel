@@ -4,6 +4,7 @@ import { MENUITEMS, OPTometristMENUITEMS } from "../../commondata/sidemenu";
 import { usePermissions } from "../../commondata/usePermissions";
 import { useGetOptometristUserProfileQuery } from "../../redux/features/optometristAPIEndPoint";
 import { paymentPageAllowed, paymentRequired } from "../../commondata/optometristPayment";
+import { hasPermission, isFullAccess } from "../../commondata/permissions";
 import "./sidebar.css";
 
 const cleanPath = (path) => String(path || "").trim();
@@ -110,17 +111,17 @@ const Sidebar = () => {
       return false;
     }
 
-    if (role === "SuperAdmin" && country) return true;
+    if (isFullAccess(role, country)) return true;
 
     if (menuItem.type === "sub" && menuItem.children) {
       return menuItem.children.some((child) => shouldShowMenuItem(child));
     }
 
     if (menuItem.permission && menuItem.model) {
-      return permissions[menuItem.model]?.includes(menuItem.permission);
+      return hasPermission(role, permissions, menuItem.model, menuItem.permission);
     }
 
-    return true;
+    return false;
   };
 
   if (loading) return null;

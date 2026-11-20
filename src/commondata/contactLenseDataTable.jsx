@@ -7,6 +7,7 @@ import { openModal } from "../redux/slices/allModalSlice";
 import { useGetAllContactLensDataQuery } from "../redux/features/framesAPIEndPoint";
 import { useGetBrandsSelectQuery } from "../redux/features/BrandAPIEndpoint";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, namedOptions, useListFilters } from "../components/common/ListFilters";
+import { allow } from "./permissions";
 
 function readContactLenses(response) {
   const payload = response?.data;
@@ -64,12 +65,16 @@ export const ContactLenseDataTable = () => {
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link to={`/catalogue/contact-lenses/view/${row?._id}`}><Button className="btn btn-icon btn-primary me-2"><i className="fe fe-eye"></i></Button></Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+          {allow("ContactLens", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
             <Link to={`/catalogue/contact-lenses/edit/${row?._id}`}><Button type="button" className="btn btn-icon btn-warning me-2" variant=""><i className="fe fe-edit"></i></Button></Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+)}
+          {allow("ContactLens", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
             <Button type="button" className="btn btn-icon btn-danger" variant="" onClick={() => dispatch(openModal({ componentName: "DeteteContactLens", data: row, softDelete: true }))}><i className="fe fe-trash text-white"></i></Button>
           </OverlayTrigger>
+)}
         </div>
       ),
     },

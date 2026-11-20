@@ -7,6 +7,7 @@ import Error from "../layouts/layoutcomponents/Error";
 import DataTable from '../components/common/DataTable'
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { hasPermission } from "./permissions";
 // import { useGetAllNotificationQuery } from "../redux/features/supportDeskEndPoint";
 
 
@@ -94,8 +95,8 @@ export const NotificationDataTable = () => {
   const role = localStorage.getItem("role")
   const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-  const showRestore = role === "SuperAdmin" || (role === "Staff" && permissions.Notification.includes("restore-trash"))
-  const showDelete = role === "SuperAdmin" || (role === "Staff" && permissions.Notification.includes("delete"))
+  const showRestore = hasPermission(role, permissions, "Notification", "restore-trash")
+  const showDelete = hasPermission(role, permissions, "Notification", "delete")
 
   // if (isError) {
   //   return <Error error_mes={error} />;

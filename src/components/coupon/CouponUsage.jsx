@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PageHeader from "../../../layouts/layoutcomponents/pageheader";
 import { Row, Col, Card } from "react-bootstrap";
+import { hasPermission } from "../../commondata/permissions";
 
 import { Link } from "react-router-dom";
 import { CouponData } from "../../../commondata/couponDatas";
@@ -11,8 +12,8 @@ export default function Couponusage() {
     const role = localStorage.getItem("role")
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-    const showAdd = role === "Admin" || (role === "Staff" && permissions.Coupons.includes("add"))
-    const showTrash = role === "Admin" || (role === "Staff" && permissions.Coupons.includes("view-trash"))
+    const showAdd = hasPermission(role, permissions, "Coupon", "add")
+    const showTrash = hasPermission(role, permissions, "Coupon", "view-trash")
     return (
         <>
             <Row className="align-items-center">

@@ -6,6 +6,7 @@ import { openModal } from "../../../redux/slices/allModalSlice";
 import { useGetAllZonesQuery } from "../../../redux/features/shippingZoneEndPoints";
 import Loader from "../../../layouts/layoutcomponents/loader";
 import Error from "../../../layouts/layoutcomponents/Error";
+import { hasPermission } from "../../../commondata/permissions";
 
 export default function ShippingZone() {
   const dispatch = useDispatch()
@@ -17,9 +18,9 @@ export default function ShippingZone() {
   const role = localStorage.getItem("role")
   const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-  // const showAddZone = role === "Admin" || (role === "Staff" && permissions.ShippingZone.includes("add"))
-  // const showEditZone = role === "Admin" || (role === "Staff" && permissions.ShippingZone.includes("edit"))
-  // const showDeleteZone = role === "Admin" || (role === "Staff" && permissions.ShippingZone.includes("delete"))
+  // const showAddZone = hasPermission(role, permissions, "ShippingZone", "add")
+  // const showEditZone = hasPermission(role, permissions, "ShippingZone", "edit")
+  // const showDeleteZone = hasPermission(role, permissions, "ShippingZone", "delete")
   return (
     <>
       <PageHeader titles="Shipping Zone" active="Shipping-Zone" items={["Home"]} links={["/dashboard"]} />
@@ -34,13 +35,13 @@ export default function ShippingZone() {
           </Col>
           <Col as={Col} xl={6} lg={6} md={6} sm={6} xs={12}>
             <div className="d-flex justify-content-end">
-              {/* {
-                showAddZone && ( */}
+               {
+                showAddZone && ( 
               <Button className="btn btn-success" variant="success" onClick={() => dispatch(openModal({ componentName: 'AddZone' }))} >
                 Add Zone
               </Button>
-              {/* )
-              } */}
+               )
+              } 
             </div>
           </Col>
         </Card.Header>
@@ -62,27 +63,27 @@ export default function ShippingZone() {
                     <Button type="button" className="btn btn-radius" variant="default" onClick={() => { dispatch(openModal({ componentName: 'AddRate', data: item })) }} >
                       <i className="fa fa-plus-square-o me-2"></i>Add Rate
                     </Button>
-                    {/* {
-                      showEditZone && ( */}
+                     {
+                      showEditZone && ( 
                     <Button type="button" className="btn btn-radius" variant="default" onClick={() => dispatch(openModal({ componentName: 'AddZone', data: item }))}>
                       <i className="fa fa-plus-square-o me-2"></i>Add Country
                     </Button>
-                    {/* )
+                     )
                     }
                     {
-                      showEditZone && ( */}
+                      showEditZone && ( 
                     <Button type="button" className="btn btn-radius" variant="default" onClick={() => dispatch(openModal({ componentName: 'EditZone', data: item }))}>
                       <i className="fa fa-pencil me-2"></i>Edit
                     </Button>
-                    {/* )
+                     )
                     }
                     {
-                      showDeleteZone && ( */}
+                      showDeleteZone && ( 
                     <Button type="button" className="btn btn-danger" variant="danger" onClick={() => dispatch(openModal({ componentName: 'DeleteZoneModal', data: { id: item?._doc?.id, url: 'delete-zone' } }))}>
                       <i className="fa fa-trash me-2"></i>Delete
                     </Button>
-                    {/* )
-                    } */}
+                     )
+                    } 
                   </Col>
                 </Row>
                 <Row className="my-3 pb-4">
@@ -95,20 +96,20 @@ export default function ShippingZone() {
                           <p className="fw-bold">{country?._doc?.avl_states} of {country?._doc?.total_states} states</p>
                         </Col>
                         <Col as={Col} xl={6} lg={6} md={6} sm={6} xs={12} className="text-end">
-                          {/* {
-                            showEditZone && ( */}
+                           {
+                            showEditZone && ( 
                           <>
                             <Button type="button" className="btn rounded-circle close_btn" variant="default" onClick={() => { dispatch(openModal({ componentName: 'DeleteZoneModal', data: { id: country?._doc?._id || item?._doc?._id, url: 'delete-shipping-country' } })) }}><i className="ion-close-round"></i></Button><br />
                           </>
-                          {/* )
+                           )
                           }
                           {
-                            showDeleteZone && ( */}
+                            showDeleteZone && ( 
                           <p className="color_icon mt-2 btn cursor-pointer px-0 m-0" onClick={() => { dispatch(openModal({ componentName: 'SelectStates', data: country })) }}>
                             <i className="fa fa-pencil me-2"></i>Edit
                           </p>
-                          {/* )
-                          } */}
+                           )
+                          } 
                         </Col>
                       </Row>
                     ))}
@@ -129,21 +130,21 @@ export default function ShippingZone() {
                         </Col>
                         <Col as={Col} xl={2} lg={3} md={3} sm={3} xs={12} className="text-end" >
                           <div>
-                            {/* {
-                              showEditZone && ( */}
+                             {
+                              showEditZone && ( 
                             <Button type="button" className="btn rounded-circle close_btn" variant="default" onClick={() => dispatch(openModal({ componentName: 'DeleteZoneModal', data: { id: rate?.id, url: 'delete-rate' } }))}>
                               <i className="ion-close-round"></i>
                             </Button>
-                            {/* )
-                            } */}
+                             )
+                            } 
                           </div>
-                          {/* {
-                            showDeleteZone && ( */}
+                           {
+                            showDeleteZone && ( 
                           <p className="color_icon mt-2 btn cursor-pointer px-0 m-0" onClick={() => dispatch(openModal({ componentName: 'EditRate', data: { rate, item } }))}>
                             <i className="fa fa-pencil me-2"></i>Edit
                           </p>
-                          {/* )
-                          } */}
+                           )
+                          } 
                         </Col>
                       </Row>
                     ))}

@@ -10,6 +10,7 @@ import Loader from "../../layouts/layoutcomponents/loader";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import toast from "react-hot-toast";
+import { hasPermission } from "../../commondata/permissions";
 
 export default function HtoOrderDetails() {
   const { id } = useParams();
@@ -20,7 +21,7 @@ export default function HtoOrderDetails() {
   const navigate = useNavigate();
   const role = localStorage.getItem("role");
   const permissions = JSON.parse(localStorage.getItem("permissions") || "{}");
-  const showOrderEdit = role === "SuperAdmin" || permissions.Order?.includes("edit");
+  const showOrderEdit = hasPermission(role, permissions, "HtoOrder", "edit");
 
   const initialValues = {
     status: singleOrder?.status || "",

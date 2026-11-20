@@ -9,6 +9,8 @@ import Loader from '../../layouts/layoutcomponents/loader'
 import Error from '../../layouts/layoutcomponents/Error'
 import DataTable from '../common/DataTable'
 import { openModal } from '../../redux/slices/allModalSlice'
+import toast from 'react-hot-toast'
+import { hasPermission } from "../../commondata/permissions";
 export default function DeletedCurrency() {
 
     const dispatch = useDispatch();
@@ -21,9 +23,9 @@ export default function DeletedCurrency() {
     const role = localStorage.getItem("role")
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-    const showEdit = role === "Admin" || (role === "Staff" && permissions.Currency.includes("edit"))
-    const showDeleteTrash = role === "Admin" || (role === "Staff" && permissions.Currency.includes("delete"))
-    const showRestoreTrash = role === "Admin" || (role === "Staff" && permissions.Currency.includes("restore"))
+    const showEdit = hasPermission(role, permissions, "Currency", "edit")
+    const showDeleteTrash = hasPermission(role, permissions, "Currency", "delete")
+    const showRestoreTrash = hasPermission(role, permissions, "Currency", "restore")
 
     const { data, isError, error, isLoading, isFetching, isSuccess, refetch } = useGetTrashedCurrencyQuery()
 
@@ -123,13 +125,13 @@ export default function DeletedCurrency() {
                 name: "Action",
                 cell: (row) => (
                     <div className="action_icon_wrapper">
-                        {/* {
-                            showRestoreTrash && ( */}
+                         {
+                            showRestoreTrash && ( 
                                 <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
                                     <Button type="button" className="btn btn-icon  btn-warning" variant="" onClick={() => { dispatch(openModal({ componentName: 'RestoreCurrency', data: row })) }}> <i className="fe fe-refresh-ccw text-white"></i></Button>
                                 </OverlayTrigger>
-                            {/* )
-                        } */}
+                             )
+                        } 
                         {
                             showDeleteTrash && (
                                 <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>

@@ -9,6 +9,7 @@ import PageHeader from "../../layouts/layoutcomponents/pageheader";
 import { openModal } from "../../redux/slices/allModalSlice";
 import toast from "react-hot-toast";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, useListFilters, visibleRows } from "../common/ListFilters";
+import { allow } from "../../commondata/permissions";
 
 const FILTER_KEYS = ["status"];
 
@@ -46,7 +47,7 @@ function SizeStatusSwitch({ row, productId, updateStatus, onSuccess }) {
     }
   };
 
-  return <StatusSwitch checked={checked} onChange={handleChange} />;
+  return <StatusSwitch disabled={!allow("InventoryWithVariant", "edit")}  checked={checked} onChange={handleChange} />;
 }
 
 export default function InventorySizes() {
@@ -107,7 +108,8 @@ export default function InventorySizes() {
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link to={`/inventor/view-invertory-with-varient/${row?.size}/${row?.product_details?._id}`}><Button type="button" className="btn btn-icon btn-primary" variant=""><i className="fe fe-eye"></i></Button></Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Edit variant (Frames Shape, Color, etc.)</Tooltip>}>
+          {allow("InventoryWithVariant", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit variant (Frames Shape, Color, etc.)</Tooltip>}>
             <Button
               type="button"
               className="btn btn-icon btn-warning"
@@ -120,6 +122,7 @@ export default function InventorySizes() {
               <i className="fe fe-edit"></i>
             </Button>
           </OverlayTrigger>
+)}
           {result.total === 1 && (
             <OverlayTrigger placement="top" overlay={<Tooltip>Copy</Tooltip>}>
               <Button onClick={() => handleCopyVariant(row?.size)} type="button" className="btn btn-icon btn-success" variant=""><i className="fe fe-copy text-light"></i></Button>

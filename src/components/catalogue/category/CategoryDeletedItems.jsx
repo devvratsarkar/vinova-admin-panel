@@ -8,6 +8,7 @@ import Error from "../../../layouts/layoutcomponents/Error";
 import PageHeader from "../../../layouts/layoutcomponents/pageheader";
 import { useGetAllDeletedCategoryQuery } from "../../../redux/features/CategoryAPIEndPoint";
 import moment from "moment";
+import { hasPermission } from "../../../commondata/permissions";
 
 
 export const CategoryDeletedItems = () => {
@@ -22,9 +23,9 @@ export const CategoryDeletedItems = () => {
     const role = localStorage.getItem('role')
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-    const showEdit = role === "Admin" || (role === "Staff" && permissions.Category.includes("edit"))
-    const showRestore = role === "Admin" || (role === "Staff" && permissions.Category.includes("srestore-trash"))
-    const showDelete = role === "Admin" || (role === "Staff" && permissions.Category.includes("delete"))
+    const showEdit = hasPermission(role, permissions, "Category", "edit")
+    const showRestore = hasPermission(role, permissions, "Category", "srestore-trash")
+    const showDelete = hasPermission(role, permissions, "Category", "delete")
 
     if (isLoading || isFetching) {
         return <Loader />;
@@ -74,8 +75,6 @@ export const CategoryDeletedItems = () => {
 
                     return (
                         <>
-                            {/* {
-                                showEdit ? ( */}
                             <label className="custom-switch">
                                 <input
                                     type="checkbox"
@@ -85,21 +84,10 @@ export const CategoryDeletedItems = () => {
                                         setChecked(!checked)
                                     }}
                                     checked={checked}
+                                    disabled={!showEdit}
                                 />
                                 <span className="custom-switch-indicator custum-green-btn"></span>
                             </label>
-                            {/* ) : (
-                                    <label className="custom-switch">
-                                        <input
-                                            type="checkbox"
-                                            className="custom-switch-input"
-                                            checked={checked}
-                                            disabled
-                                        />
-                                        <span className="custom-switch-indicator custum-green-btn"></span>
-                                    </label>
-                                )
-                            } */}
                         </>
                     )
                 },
@@ -113,20 +101,20 @@ export const CategoryDeletedItems = () => {
                 name: "Action",
                 cell: (row) => (
                     <div className="action_icon_wrapper">
-                        {/* {
-                            showRestore && ( */}
+                         {
+                            showRestore && ( 
                         <OverlayTrigger placement="top" overlay={<Tooltip>Restore</Tooltip>}>
                             <Button onClick={() => { dispatch(openModal({ componentName: 'CategoryRestore', data: row, })) }} className="btn btn-icon btn-warning" variant=""><i className="fa fa-refresh"></i></Button>
                         </OverlayTrigger>
-                        {/* )
+                         )
                         }
                         {
-                            showDelete && ( */}
+                            showDelete && ( 
                         <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
                             <Button className="btn btn-icon btn-danger" variant="" onClick={() => { dispatch(openModal({ componentName: 'DeleteCategory', data: row, softDelete: false, })) }} ><i className="fe fe-trash text-light"></i></Button>
                         </OverlayTrigger>
-                        {/* )
-                        } */}
+                         )
+                        } 
                     </div>
                 ),
             },

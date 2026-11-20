@@ -16,6 +16,7 @@ import Loader from "../layouts/layoutcomponents/loader";
 import moment from "moment";
 import toast from "react-hot-toast";
 import { useGetAllFaqQuery, useUpdateFaqStatusMutation } from "../redux/features/faqAPIEndPoint";
+import { allow } from "./permissions";
 
 export default function FaqsDatatable() {
   const dispatch = useDispatch();
@@ -84,6 +85,7 @@ export default function FaqsDatatable() {
                   setChecked(!checked)
                 }}
                 checked={checked}
+                disabled={!allow("Faqs", "edit")}
               />
               <span className="custom-switch-indicator custum-green-btn"></span>
             </label>
@@ -110,7 +112,8 @@ export default function FaqsDatatable() {
               </Link>
             </OverlayTrigger>
 
-            <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+            {allow("Faqs", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
               <Link
                 className="btn btn-icon btn-warning"
                 to={`/cms/faqs/edit/${row._id}`}
@@ -118,7 +121,9 @@ export default function FaqsDatatable() {
                 <i className="fe fe-edit"></i>
               </Link>
             </OverlayTrigger>
-            <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+)}
+            {allow("Faqs", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
               <Button
                 className="btn btn-icon btn-danger text-light"
                 variant=""
@@ -134,6 +139,7 @@ export default function FaqsDatatable() {
                 <i className="fe fe-trash"></i>
               </Button>
             </OverlayTrigger>
+)}
           </div>
         ),
         width: "200px",

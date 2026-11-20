@@ -9,6 +9,7 @@ import PageHeader from "../../layouts/layoutcomponents/pageheader";
 import Loader from "../../layouts/layoutcomponents/loader";
 import { openModal } from "../../redux/slices/allModalSlice";
 import useDebounce from "../../hooks/useDebounce";
+import { allow } from "../../commondata/permissions";
 
 
 
@@ -108,9 +109,11 @@ export default function DeletedLensColor() {
                             <Button type="button" className="btn btn-icon  btn-warning" variant="" onClick={() => { dispatch(openModal({ componentName: 'RestoreLensColor', data: row, softDelete: true })) }}><i className="fe fe-refresh-ccw text-white"></i></Button>
                         </OverlayTrigger>
 
-                        <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+                        {allow("LensColor", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
                             <Button type="button" className="btn btn-icon  btn-danger" variant="" onClick={() => { dispatch(openModal({ componentName: 'DeleteLensColor', data: row, softDelete: false })) }}><i className="fe fe-trash text-white"></i></Button>
                         </OverlayTrigger>
+)}
 
                     </div>
                 ),

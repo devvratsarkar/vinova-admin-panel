@@ -9,6 +9,7 @@ import moment from "moment";
 import useDebounce from "../../hooks/useDebounce";
 import MuiDataTable from "../common/MuiDataTable";
 import DateRangeFields from "../common/DateRangeFields";
+import { allow } from "../../commondata/permissions";
 
 const fieldStyle = { borderColor: '#e8edf3', borderRadius: 10, fontSize: 13, backgroundColor: '#fff' }
 
@@ -125,7 +126,8 @@ export default function Wishlist() {
               <i className="fe fe-eye"></i>
             </Button>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+          {allow("Wishlist", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
             <Button
               className="btn btn-icon btn-danger border-danger"
               onClick={() => dispatch(openModal({ componentName: "RemoveWishlist", data: { wishlistId: row?.id } }))}
@@ -133,6 +135,7 @@ export default function Wishlist() {
               <i className="fe fe-trash"></i>
             </Button>
           </OverlayTrigger>
+)}
         </div>
       ),
     },

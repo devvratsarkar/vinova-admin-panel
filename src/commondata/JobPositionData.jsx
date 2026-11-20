@@ -8,6 +8,7 @@ import DataTable from '../components/common/DataTable'
 import { openModal } from "../redux/slices/allModalSlice";
 import toast from "react-hot-toast";
 import { useChangeJobOpeningStatusMutation, useGetJobOpeningsQuery } from "../redux/features/jobOpeningAPIEndPoint";
+import { hasPermission } from "./permissions";
 
 
 export default function JobPositionDataTable() {
@@ -20,8 +21,8 @@ export default function JobPositionDataTable() {
     const role = localStorage.getItem("role")
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-    const showEdit = role === "SuperAdmin" || role === "Admin" || (role === "Staff" && permissions?.JobOpening?.includes("edit"))
-    const showDelete = role === "SuperAdmin" || role === "Admin" || (role === "Staff" && permissions?.JobOpening?.includes("soft-delete"))
+    const showEdit = hasPermission(role, permissions, "JobOpening", "edit")
+    const showDelete = hasPermission(role, permissions, "JobOpening", "soft-delete")
 
 
     const { data, isError, error, isLoading, isFetching, isSuccess, refetch } = useGetJobOpeningsQuery()

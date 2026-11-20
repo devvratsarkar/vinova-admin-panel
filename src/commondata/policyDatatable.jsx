@@ -18,6 +18,7 @@ import {
     useGetAllPoliciesQuery,
     useUpdatePolicyStatusMutation,
 } from "../redux/features/policyAPIEndPoint";
+import { allow } from "./permissions";
 
 const getPolicyId = (row) => row?.id ?? row?._id;
 
@@ -69,7 +70,7 @@ function PolicyStatusSwitch({ row, updateStatus, onSuccess }) {
                 className="custom-switch-input"
                 onChange={handleStatusChange}
                 checked={checked}
-            />
+             disabled={!allow("Policy", "edit")} />
             <span className="custom-switch-indicator custum-green-btn"></span>
         </label>
     );
@@ -177,13 +178,16 @@ export default function PolicyDatatable() {
                         </Link>
                     </OverlayTrigger>
 
-                    <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+                    {allow("Policy", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
                         <Link className="btn btn-icon btn-warning mx-1" to={`/edit-policy/${getPolicyId(row)}`}>
                             <i className="fe fe-edit"></i>
                         </Link>
                     </OverlayTrigger>
+)}
 
-                    <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+                    {allow("Policy", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
                         <Button
                             className="btn btn-icon btn-danger text-light mx-1"
                             variant=""
@@ -199,6 +203,7 @@ export default function PolicyDatatable() {
                             <i className="fe fe-trash"></i>
                         </Button>
                     </OverlayTrigger>
+)}
                 </div>
             ),
         },

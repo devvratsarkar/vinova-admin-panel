@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import PageHeader from "../../layouts/layoutcomponents/pageheader";
 import { useGetTrashedCouponsQuery, useUpdateCouponStatusMutation } from "../../redux/features/couponAPIEndPoint";
 import moment from "moment";
+import { hasPermission } from "../../commondata/permissions";
 
 
 export const CouponDeletedItems = () => {
@@ -24,9 +25,9 @@ export const CouponDeletedItems = () => {
     const role = localStorage.getItem("role")
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-    const showRestore = role === "Admin" || (role === "Staff" && permissions.Coupons.includes("restore-trash"))
-    const showEdit = role === "Admin" || (role === "Staff" && permissions.Coupons.includes("edit"))
-    const showDelete = role === "Admin" || (role === "Staff" && permissions.Coupons.includes("delete"))
+    const showRestore = hasPermission(role, permissions, "Coupon", "restore-trash")
+    const showEdit = hasPermission(role, permissions, "Coupon", "edit")
+    const showDelete = hasPermission(role, permissions, "Coupon", "delete")
 
 
     const handleStatusChange = async (id, status) => {
@@ -93,33 +94,19 @@ export const CouponDeletedItems = () => {
                     const [checked, setChecked] = useState(row?.status);
                     return (
                         <>
-                            {/* {
-                                showEdit ? ( */}
-                                    <label className="custom-switch">
-                                        <input
-                                            type="checkbox"
-                                            className="custom-switch-input"
-                                            onChange={() => {
-                                                handleStatusChange(row?._id, !checked)
-                                                setChecked(!checked)
-                                            }}
-                                            checked={checked}
-                                        />
-                                        <span className="custom-switch-indicator custum-green-btn"></span>
-                                    </label>
-                                {/* ) : (
-                                    <label className="custom-switch">
-                                        <input
-                                            type="checkbox"
-                                            className="custom-switch-input"
-                                            // onChange={handleStatusChange}
-                                            checked={checked}
-                                            disabled
-                                        />
-                                        <span className="custom-switch-indicator custum-green-btn"></span>
-                                    </label>
-                                )
-                            } */}
+                            <label className="custom-switch">
+                                <input
+                                    type="checkbox"
+                                    className="custom-switch-input"
+                                    onChange={() => {
+                                        handleStatusChange(row?._id, !checked)
+                                        setChecked(!checked)
+                                    }}
+                                    checked={checked}
+                                    disabled={!showEdit}
+                                />
+                                <span className="custom-switch-indicator custum-green-btn"></span>
+                            </label>
                         </>
                     )
                 },

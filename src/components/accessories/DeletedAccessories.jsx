@@ -8,6 +8,7 @@ import Error from "../../layouts/layoutcomponents/Error";
 import PageHeader from "../../layouts/layoutcomponents/pageheader";
 import { useGetAllDeletedAccessoriesDataQuery, } from "../../redux/features/framesAPIEndPoint";
 import moment from "moment";
+import { hasPermission } from "../../commondata/permissions";
 
 
 export const DeletedAccessories = () => {
@@ -21,9 +22,9 @@ export const DeletedAccessories = () => {
     const role = localStorage.getItem('role')
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-    const showEdit = role === "Admin" || (role === "Staff" && permissions.Frame.includes("edit"))
-    const showRestore = role === "Admin" || (role === "Staff" && permissions.Frame.includes("srestore-trash"))
-    const showDelete = role === "Admin" || (role === "Staff" && permissions.Frame.includes("delete"))
+    const showEdit = hasPermission(role, permissions, "Accessories", "edit")
+    const showRestore = hasPermission(role, permissions, "Accessories", "srestore-trash")
+    const showDelete = hasPermission(role, permissions, "Accessories", "delete")
 
 
     useEffect(() => {
@@ -101,20 +102,20 @@ export const DeletedAccessories = () => {
                 cell: (row) => (
                     <div className="action_icon_wrapper">
                         <div className="action_icon_wrapper">
-                            {/* {
-                                showRestore && ( */}
+                             {
+                                showRestore && ( 
                             <OverlayTrigger placement="top" overlay={<Tooltip>Restore</Tooltip>}>
                                 <Button type="button" className="btn btn-icon  btn-primary" variant="" onClick={() => { dispatch(openModal({ componentName: 'RestoreAccessories', data: row })) }}><i className="fe fe-refresh-ccw text-white"></i></Button>
                             </OverlayTrigger>
-                            {/* )
+                             )
                             }
                             {
-                                showEdit && ( */}
+                                showEdit && ( 
                             <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
                                 <Button type="button" className="btn btn-icon  btn-danger" variant="" onClick={() => { dispatch(openModal({ componentName: 'DeleteAccessroies', data: row, softDelete: false })) }}><i className="fe fe-trash text-white"></i></Button>
                             </OverlayTrigger>
-                            {/* )
-                            } */}
+                             )
+                            } 
                         </div>
                     </div>
                 ),

@@ -7,6 +7,7 @@ import Loader from "../../layouts/layoutcomponents/loader";
 import Error from "../../layouts/layoutcomponents/Error";
 import DataTable from '../common/DataTable'
 import { useGetDeletedBrandsQuery } from "../../redux/features/BrandAPIEndpoint";
+import { hasPermission } from "../../commondata/permissions";
 
 
 
@@ -21,8 +22,8 @@ export const BrandDeletedItem = () => {
     const role = localStorage.getItem("role")
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-    const showRestore = role === "Admin" || (role === "Staff" && permissions.Brand.includes("restore-trash"))
-    const showDelete = role === "Admin" || (role === "Staff" && permissions.Brand.includes("delete"))
+    const showRestore = hasPermission(role, permissions, "Brand", "restore-trash")
+    const showDelete = hasPermission(role, permissions, "Brand", "delete")
 
     if (isLoading || isFetching) {
         return <Loader />;
@@ -81,24 +82,24 @@ export const BrandDeletedItem = () => {
                 name: "Action",
                 cell: (row) => (
                     <div className="action_icon_wrapper">
-                        {/* {
-                            showRestore && ( */}
+                         {
+                            showRestore && ( 
                         <OverlayTrigger placement="top" overlay={<Tooltip>Restore</Tooltip>}>
                             <Button onClick={() => { dispatch(openModal({ componentName: 'BrandRestore', data: row, })) }} className="btn btn-icon btn-warning" variant="">
                                 <i className="fa fa-refresh"></i>
                             </Button>
                         </OverlayTrigger>
-                        {/* )
+                         )
                         }
                         {
-                            showDelete && ( */}
+                            showDelete && ( 
                         <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
                             <Button className="btn btn-icon btn-danger" variant="" onClick={() => { dispatch(openModal({ componentName: 'DeleteBrand', data: row, softDelete: false, })) }} >
                                 <i className="fe fe-trash text-light"></i>
                             </Button>
                         </OverlayTrigger>
-                        {/* )
-                        } */}
+                         )
+                        } 
                     </div>
                 ),
             },

@@ -3,13 +3,14 @@ import PageHeader from "../../layouts/layoutcomponents/pageheader";
 import { Nav, TabContainer, Tabs, Tab, Row, Card, Col, Button, } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import JobPositionDataTable from "../../commondata/JobPositionData";
+import { hasPermission } from "../../commondata/permissions";
 
 export default function JobPosition() {
     const role = localStorage.getItem("role")
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-    const showAdd = role === "SuperAdmin" || (role === "Staff" && permissions.JobOpening.includes("add"))
-    const showView = role === "SuperAdmin" || (role === "Staff" && permissions.JobOpening.includes("add"))
+    const showAdd = hasPermission(role, permissions, "JobOpening", "add")
+    const showView = hasPermission(role, permissions, "JobOpening", "add")
     return (
         <>
             <Row className="align-items-center">
@@ -23,7 +24,7 @@ export default function JobPosition() {
                         )
                     }
                     {
-                        showAdd && (
+                        hasPermission(role, permissions, "JobOpening", "view-trash") && (
                             <Link to='/cms/trash-job-positions' className="btn btn-danger text-white me-3" >Trash</Link>
                         )
                     }

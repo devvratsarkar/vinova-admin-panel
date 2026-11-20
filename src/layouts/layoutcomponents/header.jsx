@@ -11,7 +11,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/images/brand/logo.png";
 import HeaderMenuSearch from "./HeaderMenuSearch";
 import { useDispatch } from "react-redux";
-import { logoutSuccess, setCountryCode } from "../../redux/slices/authSlice";
+import { logoutSuccess, setCountryCode, setPermissions } from "../../redux/slices/authSlice";
 import toast from "react-hot-toast";
 import { openModal } from "../../redux/slices/allModalSlice";
 import { jwtDecode } from 'jwt-decode';
@@ -56,6 +56,11 @@ export default function Header() {
   const data = role === "Optometrist" ? optometristProfileData : userProfileData;
   const dispatch = useDispatch();
   const adminData = data?.data?.userData
+  const profilePermissions = data?.data?.userPermissions
+
+  useEffect(() => {
+    if (profilePermissions) dispatch(setPermissions(profilePermissions))
+  }, [profilePermissions, dispatch])
   const needsPayment = role === "Optometrist" && paymentRequired(data)
   const showRenew = role === "Optometrist" && !needsPayment && planRenewDue(adminData)
   const [renewOpen, setRenewOpen] = useState(false)

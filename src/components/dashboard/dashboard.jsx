@@ -1,5 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { useGetDashboardQuery } from '../../redux/features/dashboardEndPoint'
+import { setPermissions } from '../../redux/slices/authSlice'
 import Loader from '../../layouts/layoutcomponents/loader'
 import DashboardHeader from './DashboardHeader'
 import KpiRow from './KpiRow'
@@ -33,10 +35,16 @@ export default function Dashboard() {
   const dateError = period === 'custom' ? rangeError(fromDate, toDate, today) : ''
   const customReady = period !== 'custom' || (!dateError && fromDate && toDate)
   const queryArg = period === 'custom' ? { period, fromDate, toDate } : { period }
+  const dispatch = useDispatch()
   const { data: response, isLoading, isFetching } = useGetDashboardQuery(queryArg, {
     skip: !customReady,
   })
   const data = response?.data
+  const profilePermissions = data?.userPermissions || response?.userPermissions
+
+  useEffect(() => {
+    if (profilePermissions) dispatch(setPermissions(profilePermissions))
+  }, [profilePermissions, dispatch])
   const todayLabel = useMemo(
     () => new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
     [],

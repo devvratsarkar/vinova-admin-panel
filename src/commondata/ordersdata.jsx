@@ -10,6 +10,7 @@ import { useGetAllOrdersQuery } from "../redux/features/ordersAPIEndPoint";
 import useDebounce from "../hooks/useDebounce";
 import MuiDataTable from "../components/common/MuiDataTable";
 import DateRangeFields from "../components/common/DateRangeFields";
+import { hasPermission } from "./permissions";
 
 function capitalizeFirstLetter(word) {
   return word?.charAt(0).toUpperCase() + word?.slice(1).toLowerCase();
@@ -107,12 +108,10 @@ export const OrdersDataTable = () => {
     setCurrentPage(1);
   }, [debouncedSearch, status, payment, prescription, fromDate, toDate]);
 
-  const permissions = JSON.parse(localStorage.getItem("permissions"))
+  const permissions = JSON.parse(localStorage.getItem("permissions") || "{}")
   const role = localStorage.getItem("role")
-  const shouldShowExportButton = role === "Admin" ||
-    (role === "Staff" && permissions.order && permissions.Order.includes("export"));
-  const shouldShowSingleView = role === "Admin" ||
-    (role === "Staff" && permissions.Order.includes("view"));
+  const shouldShowExportButton = hasPermission(role, permissions, "Order", "export");
+  const shouldShowSingleView = hasPermission(role, permissions, "Order", "view");
 
   const handleExport = async () => {
     try {

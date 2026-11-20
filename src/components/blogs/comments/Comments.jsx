@@ -10,6 +10,7 @@ import { useGetAllBlogsCommentsQuery, useUpdateCommentStatusMutation } from '../
 import toast from 'react-hot-toast'
 import moment from 'moment'
 import Error from '../../../layouts/layoutcomponents/Error'
+import { allow } from "../../../commondata/permissions";
 
 export default function Comments() {
   const dispatch = useDispatch();
@@ -121,7 +122,8 @@ export default function Comments() {
                 <i className="fe fe-eye"></i>
               </Button>
             </OverlayTrigger>
-            <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+            {allow("BlogComment", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
               <Button
                 type="button"
                 className="btn btn-icon btn-danger text-light"
@@ -136,6 +138,7 @@ export default function Comments() {
                 <i className="fe fe-trash"></i>
               </Button>
             </OverlayTrigger>
+)}
           </div>
         ),
       },

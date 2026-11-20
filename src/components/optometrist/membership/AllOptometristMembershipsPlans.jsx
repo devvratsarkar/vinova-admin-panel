@@ -1,3 +1,4 @@
+import { allow } from "../../../commondata/permissions";
 import React from 'react'
 import { Button, Card, Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
@@ -59,16 +60,20 @@ export default function AllOptometristMembershipsPlans() {
                                                     <span className="badge" style={{ background: free ? '#e2e8f0' : '#dcfce7', color: free ? '#475569' : '#15803d' }}>{free ? 'Free' : 'Paid'}</span>
                                                 </div>
                                                 <div className="d-flex gap-1">
-                                                    <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+                                                    {allow("OptometristMembership", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
                                                         <Button variant="primary" size="sm" className="btn-icon" onClick={() => dispatch(openModal({ componentName: 'EditMembershipPlan', data: plan }))}>
                                                             <i className="fe fe-edit"></i>
                                                         </Button>
                                                     </OverlayTrigger>
-                                                    <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+)}
+                                                    {allow("OptometristMembership", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
                                                         <Button variant="danger" size="sm" className="btn-icon" onClick={() => dispatch(openModal({ componentName: 'DeleteMembershipPlan', data: plan }))}>
                                                             <i className="fe fe-trash"></i>
                                                         </Button>
                                                     </OverlayTrigger>
+)}
                                                 </div>
                                             </div>
                                             {plan.description && <p className="text-muted mb-3">{plan.description}</p>}

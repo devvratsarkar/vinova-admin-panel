@@ -9,6 +9,7 @@ import { useGetAllFiltersQuery, useUpdateLensTypeStatusMutation } from "../redux
 import { useGetAllLensQuery } from "../redux/features/LensAPIEndPoint";
 import { useGetLensColorQuery } from "../redux/features/lensColorAPIEndPoint";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, namedOptions, useListFilters } from "../components/common/ListFilters";
+import { allow } from "./permissions";
 
 function readCoatings(response) {
   const payload = response?.data;
@@ -70,7 +71,7 @@ export const FilterDataTable = () => {
       width: 110,
       sortable: false,
       filterable: false,
-      render: (row) => <StatusSwitch checked={row?.status} onChange={() => handleStatus(row?._id)} />,
+      render: (row) => <StatusSwitch disabled={!allow("LensType", "edit")}  checked={row?.status} onChange={() => handleStatus(row?._id)} />,
     },
     { id: "date", label: "Created At", minWidth: 180, flex: 0.7, render: (row) => formatDate(row?.createdAt) },
     {
@@ -85,12 +86,16 @@ export const FilterDataTable = () => {
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link to={`/catalogue/lens-type/view/${row?._id}`}><Button className="btn btn-icon btn-primary me-2"><i className="fe fe-eye"></i></Button></Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+          {allow("LensType", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
             <Link to={`/catalogue/lens-type/edit/${row?._id}`}><Button type="button" className="btn btn-icon btn-warning me-2" variant=""><i className="fe fe-edit"></i></Button></Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+)}
+          {allow("LensType", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
             <Button type="button" className="btn btn-icon btn-danger" variant="" onClick={() => dispatch(openModal({ componentName: "DeleteFilter", data: row, softDelete: true }))}><i className="fe fe-trash text-white"></i></Button>
           </OverlayTrigger>
+)}
         </div>
       ),
     },

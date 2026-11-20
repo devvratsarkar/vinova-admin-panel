@@ -3,6 +3,7 @@ import { Row, Card, Col, } from "react-bootstrap";
 import PageHeader from "../../layouts/layoutcomponents/pageheader";
 import { Link } from "react-router-dom";
 import { BlogsDataTable } from "./BlogsDataTable";
+import { allow } from "../../commondata/permissions";
 
 export default function AllPosts() {
   return (
@@ -12,8 +13,8 @@ export default function AllPosts() {
           <PageHeader titles="Blogs" active="Blog List" items={["Home"]} links={["/dashboard"]} />
         </Col>
         <Col className="text-end">
-          <Link to={`/add-new-post`} className="btn btn-success text-white me-3" > Add New Blogs </Link>
-          <Link to={`/all-posts/trash`} className="btn btn-danger">Blog Trashed</Link>
+          {(allow("BlogPost", "add") || allow("BlogPostAdd", "view")) && <Link to={`/add-new-post`} className="btn btn-success text-white me-3" > Add New Blogs </Link>}
+          {allow("BlogPost", "view-trash") && <Link to={`/all-posts/trash`} className="btn btn-danger">Blog Trashed</Link>}
         </Col>
       </Row>
       <Row>

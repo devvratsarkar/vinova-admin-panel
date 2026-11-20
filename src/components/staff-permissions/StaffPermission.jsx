@@ -72,6 +72,9 @@ function accessFromApi(userPermission = []) {
       const key = perm === 'add' ? 'create' : perm
       if (key in access[name]) access[name][key] = true
     })
+    if (ACTIONS.some((action) => action.key !== 'view' && access[name][action.key])) {
+      access[name].view = true
+    }
   })
   return access
 }
@@ -118,10 +121,17 @@ export default function StaffPermission() {
     }
   }, [role, selectedId])
 
+  const applyAction = (row, action, checked) => {
+    const next = { ...row, [action]: checked }
+    if (checked && action !== 'view') next.view = true
+    if (!checked && action === 'view') ACTIONS.forEach((item) => { next[item.key] = false })
+    return next
+  }
+
   const toggle = (moduleName, action, checked) => {
     setAccess((current) => ({
       ...current,
-      [moduleName]: { ...current[moduleName], [action]: checked },
+      [moduleName]: applyAction(current[moduleName], action, checked),
     }))
   }
 
@@ -129,7 +139,7 @@ export default function StaffPermission() {
     setAccess((current) => {
       const next = { ...current }
       Object.keys(next).forEach((name) => {
-        next[name] = { ...next[name], [action]: checked }
+        next[name] = applyAction(next[name], action, checked)
       })
       return next
     })

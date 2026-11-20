@@ -9,6 +9,7 @@ import { openModal } from "../../redux/slices/allModalSlice";
 import { USER_BASE_URL } from "../../utils/config";
 import { useEditBlogMutation } from "../../redux/features/postApiSecond";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, useListFilters } from "../common/ListFilters";
+import { allow } from "../../commondata/permissions";
 
 const FILTER_KEYS = ["status"];
 
@@ -55,7 +56,7 @@ function BlogStatusSwitch({ row, editBlog, onSuccess }) {
     }
   };
 
-  return <StatusSwitch checked={checked} onChange={handleChange} />;
+  return <StatusSwitch disabled={!allow("BlogPost", "edit")}  checked={checked} onChange={handleChange} />;
 }
 
 export const BlogsDataTable = () => {
@@ -122,14 +123,18 @@ export const BlogsDataTable = () => {
             <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
               <Link to={`/all-posts/view-post/${rowId}`} className="btn btn-icon btn-primary"><i className="fe fe-eye"></i></Link>
             </OverlayTrigger>
-            <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+            {allow("BlogPost", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
               <Link to={`/all-posts/edit-post/${rowId}`} className="btn btn-icon btn-warning"><i className="fe fe-edit"></i></Link>
             </OverlayTrigger>
-            <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+)}
+            {allow("BlogPost", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
               <Button type="button" className="btn btn-icon btn-danger" onClick={() => dispatch(openModal({ componentName: "DeletePost", data: row, softDelete: true }))}>
                 <i className="fe fe-trash"></i>
               </Button>
             </OverlayTrigger>
+)}
           </div>
         );
       },
@@ -152,7 +157,7 @@ export const BlogsDataTable = () => {
         />
         {selected.length > 0 && (
           <div className="d-flex justify-content-end mx-3 mb-3">
-            <Button variant="danger" className="text-light" onClick={deleteSelected}>Delete Selected ({selected.length})</Button>
+            {allow("BlogPost", "delete") && (<Button variant="danger" className="text-light" onClick={deleteSelected}>Delete Selected ({selected.length})</Button>)}
           </div>
         )}
         <ListTable

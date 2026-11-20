@@ -8,6 +8,7 @@ import { openModal } from "../redux/slices/allModalSlice";
 import toast from "react-hot-toast";
 import moment from "moment";
 import { useGetAllOptometristStoreDataQuery } from "../redux/features/optometristAPIEndPoint";
+import { hasPermission } from "./permissions";
 
 
 export const OptometristDataTable = () => {
@@ -42,8 +43,8 @@ export const OptometristDataTable = () => {
     const role = localStorage.getItem("role")
     const permission = JSON.parse(localStorage.getItem("permissions"))
 
-    const showEdit = role === "Admin" || (role === "Staff" && permission.Frame.includes("edit"))
-    const showTrash = role === "Admin" || (role === "Staff" && permission.Frame.includes("add-trash"))
+    const showEdit = hasPermission(role, permission, "Accessories", "edit")
+    const showTrash = hasPermission(role, permission, "Accessories", "add-trash")
 
     if (isLoading || isFetching) {
         return <Loader />;
@@ -89,8 +90,6 @@ export const OptometristDataTable = () => {
                     const [checked, setChecked] = useState(row?.status);
                     return (
                         <>
-                            {/* {
-                                showEdit ? ( */}
                             <label className="custom-switch">
                                 <input
                                     type="checkbox"
@@ -100,21 +99,10 @@ export const OptometristDataTable = () => {
                                         setChecked(!checked)
                                     }}
                                     checked={checked}
+                                    disabled={!showEdit}
                                 />
                                 <span className="custom-switch-indicator custum-green-btn"></span>
                             </label>
-                            {/* ) : (
-                                    <label className="custom-switch">
-                                        <input
-                                            type="checkbox"
-                                            className="custom-switch-input"
-                                            checked={checked}
-                                            disabled
-                                        />
-                                        <span className="custom-switch-indicator custum-green-btn"></span>
-                                    </label>
-                                )
-                            } */}
                         </>
                     )
                 },
@@ -131,20 +119,20 @@ export const OptometristDataTable = () => {
                         <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
                             <Link to={`/optometrist/store/view/${row?._id}`}><Button className="btn btn-icon btn-primary"><i className="fe fe-eye"></i></Button></Link>
                         </OverlayTrigger>
-                        {/* {
-                            showEdit && ( */}
+                         {
+                            showEdit && ( 
                         <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
                             <Link to={`/optometrist/store/edit/${row?._id}`}><Button type="button" className="btn btn-icon btn-warning" variant=""><i className="fe fe-edit"></i></Button></Link>
                         </OverlayTrigger>
-                        {/* )
+                         )
                         }
                         {
-                            showTrash && ( */}
+                            showTrash && ( 
                         <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
                             <Button type="button" className="btn btn-icon  btn-danger" variant="" onClick={() => { dispatch(openModal({ componentName: 'DeleteOptometristStore', data: row, softDelete: true })) }}><i className="fe fe-trash text-white"></i></Button>
                         </OverlayTrigger>
-                        {/* )
-                        } */}
+                         )
+                        } 
                     </div>
                 ),
             },

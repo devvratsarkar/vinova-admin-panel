@@ -1,5 +1,6 @@
 import React from "react";
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
+import { hasPermission } from "../../../commondata/permissions";
 Link;
 import PageHeader from "../../../layouts/layoutcomponents/pageheader";
 import { Link } from "react-router-dom";
@@ -9,8 +10,8 @@ function Notification() {
   const role = localStorage.getItem("role")
   const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-  const showAdd = role === "SuperAdmin" || (role === "Staff" && permissions.Notification.includes("add"))
-  const showTrash = role === "SuperAdmin" || (role === "Staff" && permissions.Notification.includes("view-trash"))
+  const showAdd = hasPermission(role, permissions, "Notification", "add")
+  const showTrash = hasPermission(role, permissions, "Notification", "view-trash")
   return (
     <>
       <Row className="align-items-center">

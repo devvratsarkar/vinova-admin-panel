@@ -9,6 +9,7 @@ import Error from "../../layouts/layoutcomponents/Error";
 import PageHeader from "../../layouts/layoutcomponents/pageheader";
 import { useGetAllInventoryTrashVariantsQuery } from "../../redux/features/inventory";
 import moment from "moment";
+import { hasPermission } from "../../commondata/permissions";
 
 export const InventoryWithVariantTrash = () => {
   const navigate = useNavigate()
@@ -21,8 +22,8 @@ export const InventoryWithVariantTrash = () => {
   // const role = localStorage.getItem("role")
   // const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-  // const showRestore = role === "Admin" || (role === "Staff" && permissions.InventoryWithVarient.includes("restore-trash"))
-  // const showDelete = role === "Admin" || (role === "Staff" && permissions.InventoryWithVarient.includes("delete"))
+  // const showRestore = hasPermission(role, permissions, "InventoryWithVarient", "restore-trash")
+  // const showDelete = hasPermission(role, permissions, "InventoryWithVarient", "delete")
 
   if (isError) {
     return <Error error_mes={error} />;
@@ -57,20 +58,20 @@ export const InventoryWithVariantTrash = () => {
       name: "Action",
       cell: (row) => (
         <div className="action_icon_wrapper">
-          {/* {
-            showRestore && ( */}
+           {
+            showRestore && ( 
           <OverlayTrigger placement="top" overlay={<Tooltip>Restore</Tooltip>}>
             <button onClick={() => { dispatch(openModal({ componentName: "RestoreInventoryWithVariant", data: row })) }} className="action_icon"><Button type="button" className="btn btn-icon btn-warning" variant=""><i className="fa fa-refresh"></i></Button></button>
           </OverlayTrigger>
-          {/* ) */}
-          {/* }
-          { */}
-          {/* showDelete && ( */}
+           ) 
+           }
+          { 
+           showDelete && ( 
           <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
             <Button className="btn btn-con btn-danger border-danger" onClick={() => { dispatch(openModal({ componentName: 'AddTrashVariant', data: row, softDelete: false })) }}> <i className="fe fe-trash"></i> </Button>
           </OverlayTrigger>
-          {/* )
-          } */}
+           )
+          } 
         </div>
       ),
     },

@@ -8,6 +8,7 @@ import Error from "../../layouts/layoutcomponents/Error";
 import PageHeader from "../../layouts/layoutcomponents/pageheader";
 import { useGetDeletedLensQuery } from "../../redux/features/LensAPIEndPoint";
 import moment from "moment";
+import { hasPermission } from "../../commondata/permissions";
 
 
 export default function DeletedLenses() {
@@ -21,9 +22,9 @@ export default function DeletedLenses() {
     const role = localStorage.getItem('role')
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-    const showEdit = role === "Admin" || (role === "Staff" && permissions.Lens.includes("edit"))
-    const showRestore = role === "Admin" || (role === "Staff" && permissions.Lens.includes("srestore-trash"))
-    const showDelete = role === "Admin" || (role === "Staff" && permissions.Lens.includes("delete"))
+    const showEdit = hasPermission(role, permissions, "Lens", "edit")
+    const showRestore = hasPermission(role, permissions, "Lens", "srestore-trash")
+    const showDelete = hasPermission(role, permissions, "Lens", "delete")
 
 
     useEffect(() => {
@@ -101,20 +102,20 @@ export default function DeletedLenses() {
                 name: "Action",
                 cell: (row) => (
                     <div className="action_icon_wrapper">
-                        {/* {
-                            showRestore && ( */}
+                         {
+                            showRestore && ( 
                         <OverlayTrigger placement="top" overlay={<Tooltip>Restore</Tooltip>}>
                             <Button type="button" className="btn btn-icon  btn-primary" variant="" onClick={() => { dispatch(openModal({ componentName: 'RestoreLens', data: row })) }}><i className="fe fe-refresh-ccw text-white"></i></Button>
                         </OverlayTrigger>
-                        {/* )
+                         )
                         }
                         {
-                            showEdit && ( */}
+                            showEdit && ( 
                         <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
                             <Button type="button" className="btn btn-icon  btn-danger" variant="" onClick={() => { dispatch(openModal({ componentName: 'DeleteLens', data: row, softDelete: false })) }}><i className="fe fe-trash text-white"></i></Button>
                         </OverlayTrigger>
-                        {/* )
-                        } */}
+                         )
+                        } 
                     </div>
                 ),
             },

@@ -8,6 +8,7 @@ import Error from "../../../layouts/layoutcomponents/Error";
 import PageHeader from "../../../layouts/layoutcomponents/pageheader";
 import { useGetAllBlogsTagsQuery } from "../../../redux/features/getApiSecond";
 import { ListFilters, ListTable, boundFilters, indexColumn, useListFilters } from "../../common/ListFilters";
+import { allow } from "../../../commondata/permissions";
 
 function readTags(response) {
   const payload = response?.data;
@@ -56,12 +57,16 @@ export default function BlogTags() {
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Button type="button" className="btn btn-icon btn-primary" variant="" onClick={() => dispatch(openModal({ componentName: "ViewBlogTag", data: row }))}><i className="fe fe-eye"></i></Button>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+          {allow("BlogTag", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
             <Button type="button" className="btn btn-icon btn-warning" variant="" onClick={() => dispatch(openModal({ componentName: "EditBlogTags", data: row }))}><i className="fe fe-edit"></i></Button>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+)}
+          {allow("BlogTag", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
             <Button type="button" className="btn btn-icon btn-danger" onClick={() => dispatch(openModal({ componentName: "BlogTagsDelete", data: row, softDelete: true }))}><i className="fe fe-trash"></i></Button>
           </OverlayTrigger>
+)}
         </div>
       ),
     },
@@ -74,8 +79,8 @@ export default function BlogTags() {
           <PageHeader titles="Blog Tags" active="Blog Tags List" items={["Home"]} links={["/dashboard"]} />
         </Col>
         <Col className="text-end">
-          <Button className="btn btn-success me-3" variant="" onClick={() => dispatch(openModal({ componentName: "AddBlogTags" }))}>Add New Blog Tag</Button>
-          <Link to="/all-blog-tags/trash" className="btn btn-danger">Trash</Link>
+          {allow("BlogTag", "add") && <Button className="btn btn-success me-3" variant="" onClick={() => dispatch(openModal({ componentName: "AddBlogTags" }))}>Add New Blog Tag</Button>}
+          {allow("BlogTag", "view-trash") && <Link to="/all-blog-tags/trash" className="btn btn-danger">Trash</Link>}
         </Col>
       </Row>
       <Row>

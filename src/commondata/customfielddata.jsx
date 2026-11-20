@@ -7,6 +7,7 @@ import { openModal } from "../redux/slices/allModalSlice";
 import { useGetAllCustomFieldsQuery } from "../redux/features/customFieldsAPIEndPoint";
 import { useGetAllCategorySelectQuery } from "../redux/features/CategoryAPIEndPoint";
 import { ListFilters, ListTable, boundFilters, indexColumn, namedOptions, useListFilters } from "../components/common/ListFilters";
+import { allow } from "./permissions";
 
 const FILTER_KEYS = ["attribute_type", "category"];
 const TYPES = [
@@ -53,12 +54,16 @@ export const CustomFieldDataTable = () => {
           <OverlayTrigger placement="top" overlay={<Tooltip>Add Custom Field Value</Tooltip>}>
             <Link to={`/catalogue/custom-field-value/${row?._id}`}><Button className="btn btn-icon btn-primary me-2"><i className="fe fe-plus-square"></i></Button></Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+          {allow("CustomField", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
             <Button className="btn btn-icon btn-warning border-warning me-2" onClick={() => dispatch(openModal({ componentName: "EditCustomField", data: row }))}><i className="fe fe-edit"></i></Button>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+)}
+          {allow("CustomField", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
             <Button className="btn btn-icon btn-danger border-danger" onClick={() => dispatch(openModal({ componentName: "DeleteField", data: row, softDelete: true }))}><i className="fe fe-trash"></i></Button>
           </OverlayTrigger>
+)}
         </div>
       ),
     },

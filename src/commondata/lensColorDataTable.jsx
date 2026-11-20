@@ -7,6 +7,7 @@ import { openModal } from "../redux/slices/allModalSlice";
 import toast from "react-hot-toast";
 import { useGetLensColorQuery, useUpdateLinseColorStatusMutation } from "../redux/features/lensColorAPIEndPoint";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, useListFilters } from "../components/common/ListFilters";
+import { allow } from "./permissions";
 
 const FILTER_KEYS = ["status"];
 
@@ -58,7 +59,7 @@ export const LensColorDataTable = () => {
       width: 120,
       sortable: false,
       filterable: false,
-      render: (row) => <StatusSwitch checked={row?.status} onChange={() => handleStatus(row?.id)} />,
+      render: (row) => <StatusSwitch disabled={!allow("LensColor", "edit")}  checked={row?.status} onChange={() => handleStatus(row?.id)} />,
     },
     {
       id: "action",
@@ -72,12 +73,16 @@ export const LensColorDataTable = () => {
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link to={`/catalogue/lens-color/view/${row?._id}`}><Button className="btn btn-icon btn-primary me-2"><i className="fe fe-eye"></i></Button></Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+          {allow("LensColor", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
             <Link to={`/catalogue/lens-color/edit/${row?._id}`}><Button type="button" className="btn btn-icon btn-warning me-2" variant=""><i className="fe fe-edit"></i></Button></Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+)}
+          {allow("LensColor", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
             <Button type="button" className="btn btn-icon btn-danger" variant="" onClick={() => dispatch(openModal({ componentName: "DeleteLensColor", data: row, softDelete: true }))}><i className="fe fe-trash text-white"></i></Button>
           </OverlayTrigger>
+)}
         </div>
       ),
     },

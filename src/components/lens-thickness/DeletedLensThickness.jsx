@@ -11,6 +11,7 @@ import moment from "moment";
 import { useGetAllDeletedFiltersQuery } from "../../redux/features/FiltersAPIEndPoint";
 import { useGetAllDeletedLensThicknessQuery } from "../../redux/features/lensThicknessAPIEndPoint";
 import useDebounce from "../../hooks/useDebounce";
+import { hasPermission } from "../../commondata/permissions";
 
 
 export default function DeletedLensThickness() {
@@ -27,9 +28,9 @@ export default function DeletedLensThickness() {
     const role = localStorage.getItem('role')
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-    const showEdit = role === "Admin" || (role === "Staff" && permissions.Lens.includes("edit"))
-    const showRestore = role === "Admin" || (role === "Staff" && permissions.Lens.includes("srestore-trash"))
-    const showDelete = role === "Admin" || (role === "Staff" && permissions.Lens.includes("delete"))
+    const showEdit = hasPermission(role, permissions, "LensSize", "edit")
+    const showRestore = hasPermission(role, permissions, "LensSize", "srestore-trash")
+    const showDelete = hasPermission(role, permissions, "LensSize", "delete")
 
 
     useEffect(() => {
@@ -97,20 +98,20 @@ export default function DeletedLensThickness() {
                 name: "Action",
                 cell: (row) => (
                     <div className="action_icon_wrapper">
-                        {/* {
-                            showRestore && ( */}
+                         {
+                            showRestore && ( 
                         <OverlayTrigger placement="top" overlay={<Tooltip>Restore</Tooltip>}>
                             <Button type="button" className="btn btn-icon  btn-primary" variant="" onClick={() => { dispatch(openModal({ componentName: 'RestoreLensThickness', data: row })) }}><i className="fe fe-refresh-ccw text-white"></i></Button>
                         </OverlayTrigger>
-                        {/* )
+                         )
                         }
                         {
-                            showDelete && ( */}
+                            showDelete && ( 
                         <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
                             <Button type="button" className="btn btn-icon  btn-danger" variant="" onClick={() => { dispatch(openModal({ componentName: 'DeleteLensThickness', data: row, softDelete: false })) }}><i className="fe fe-trash text-white"></i></Button>
                         </OverlayTrigger>
-                        {/* )
-                        } */}
+                         )
+                        } 
                     </div>
                 ),
             },

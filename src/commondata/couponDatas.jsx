@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import moment from "moment";
 import { useGetAllCouponsQuery, useUpdateCouponStatusMutation } from "../redux/features/couponAPIEndPoint";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, useListFilters } from "../components/common/ListFilters";
+import { allow } from "./permissions";
 
 const FILTER_KEYS = ["coupon_type", "status"];
 const TYPES = [
@@ -63,7 +64,7 @@ export const CouponData = () => {
       width: 110,
       sortable: false,
       filterable: false,
-      render: (row) => <StatusSwitch checked={row?.status} onChange={() => handleStatus(row?._id, !row?.status)} />,
+      render: (row) => <StatusSwitch disabled={!allow("Coupon", "edit")}  checked={row?.status} onChange={() => handleStatus(row?._id, !row?.status)} />,
     },
     {
       id: "action",
@@ -77,12 +78,16 @@ export const CouponData = () => {
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link to={`/view-coupon/${row?._id}`}><Button className="btn btn-icon btn-primary me-2"><i className="fe fe-eye"></i></Button></Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+          {allow("Coupon", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
             <Link to={`/edit-coupon/${row?._id}`}><Button className="btn btn-icon btn-warning me-2" variant=""><i className="fe fe-edit"></i></Button></Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+)}
+          {allow("Coupon", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
             <Button className="btn btn-icon btn-danger" variant="" onClick={() => dispatch(openModal({ componentName: "DeleteCoupon", data: row, softDelete: true }))}><i className="fe fe-trash text-white"></i></Button>
           </OverlayTrigger>
+)}
         </div>
       ),
     },

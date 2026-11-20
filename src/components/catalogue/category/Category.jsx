@@ -4,6 +4,7 @@ import { Nav, TabContainer, Tabs, Tab, Row, Card, Col, Button, } from "react-boo
 import { Link } from "react-router-dom";
 import { CategoryDataTable } from "../../../commondata/categorydata";
 import { getCategoryDeletedItemsPage } from "../../../utils/routes";
+import { allow } from "../../../commondata/permissions";
 
 export default function Category() {
   return (
@@ -11,8 +12,8 @@ export default function Category() {
       <Row className="align-items-center">
         <Col> <PageHeader titles="Category" active="Category List" items={["Home"]} links={['/dashboard']} /> </Col>
         <Col className="text-end d-flex justify-content-end gap-1">
-          <Link to="/catalogue/add-new-category" className="btn btn-success text-white me-3" >Add category</Link>
-          <Link className="btn btn-danger text-white" to={`${getCategoryDeletedItemsPage()}`}>Category Trashed</Link>
+          {allow("Category", "add") && <Link to="/catalogue/add-new-category" className="btn btn-success text-white me-3" >Add category</Link>}
+          {allow("Category", "view-trash") && <Link className="btn btn-danger text-white" to={`${getCategoryDeletedItemsPage()}`}>Category Trashed</Link>}
         </Col>
       </Row>
       <Row>

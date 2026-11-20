@@ -5,6 +5,7 @@ import Loader from "../layouts/layoutcomponents/loader";
 import toast from "react-hot-toast";
 import { useGetOptometristUserProfileQuery } from "../redux/features/optometristAPIEndPoint";
 import { paymentPageAllowed, paymentRequired } from "./optometristPayment";
+import { hasPermission, isFullAccess } from "./permissions";
 
 const baseUrl = (import.meta.env.BASE_URL || "").replace(/\/$/, "");
 
@@ -35,8 +36,8 @@ function isOptometristRoute(currentPath) {
     return OPTOMETRIST_ONLY_PATHS.some((p) => currentPath === p);
 }
 
-const RouteGuard = ({ children, requiredPermissions = [] }) => {
-    const { permissions, role, loading, country } = usePermissions();
+const RouteGuard = ({ children, requiredPermissions = [], matchAny = false }) => {
+    const { permissions, role, loading, country, permissionsReady } = usePermissions();
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -136,20 +137,23 @@ const RouteGuard = ({ children, requiredPermissions = [] }) => {
             role &&
             permissions &&
             role !== "Optometrist" &&
-            !(role === "SuperAdmin" && country) &&
-            role !== "Admin"
+            !isFullAccess(role, country) &&
+            permissionsReady &&
+            requiredPermissions.length
         ) {
-            const hasPermission = requiredPermissions.every((permission) => {
-                const categoryPermissions = permissions[permission.category] || [];
-                return categoryPermissions.includes(permission.action);
-            });
+            const allowed = requiredPermissions[matchAny ? "some" : "every"]((permission) => (
+                hasPermission(role, permissions, permission.category, permission.action)
+            ));
 
-            if (!hasPermission) {
+            if (!allowed) {
+                const dashboardPath = baseUrl ? `${baseUrl}/dashboard` : "/dashboard";
+                const here = location.pathname.replace(/\/$/, "") || "/";
+                if (here === dashboardPath.replace(/\/$/, "")) return;
                 toast.error("You don't have permission to access this module.");
-                navigate(baseUrl ? `${baseUrl}/dashboard` : "/dashboard", { replace: true });
+                navigate(dashboardPath, { replace: true });
             }
         }
-    }, [role, permissions, requiredPermissions, country, loading, navigate]);
+    }, [role, permissions, permissionsReady, requiredPermissions, matchAny, country, loading, navigate, location.pathname]);
 
     const currentPath = getCurrentPath(location.pathname, baseUrl);
     const redirecting = paymentLocked && isOptometristRoute(currentPath) && !paymentPageAllowed(currentPath);

@@ -1,5 +1,4 @@
 
-
 export const MENUITEMS = [
   {
     menutitle: "MAIN",
@@ -21,7 +20,7 @@ export const MENUITEMS = [
         active: false,
         title: "Analytics",
         permission: "view",
-        model: "Dashboard",
+        model: "Analytics",
         children: [],
       },
     ],
@@ -50,14 +49,16 @@ export const MENUITEMS = [
             related_fields: [`${import.meta.env.BASE_URL}hto-order-detail/:id`],
             type: "link",
             permission: "view",
-            model: "Order",
+            model: "HtoOrder",
           },
           {
             path: `/dispute`,
             type: "link",
             title: "Disputes",
-            related_fields: [""],
+            related_fields: [`${import.meta.env.BASE_URL}dispute/view-disputes/:id`],
             active: false,
+            permission: "view",
+            model: "Dispute",
           },
         ],
       },
@@ -115,6 +116,8 @@ export const MENUITEMS = [
         type: "link",
         title: "Wishlist",
         active: false,
+        permission: "view",
+        model: "Wishlist",
       },
     ],
   },
@@ -200,7 +203,7 @@ export const MENUITEMS = [
             ],
             type: "link",
             permission: "view",
-            model: "Frame",
+            model: "ContactLens",
           },
           {
             path: `${import.meta.env.BASE_URL}catalogue/accessories`,
@@ -423,6 +426,8 @@ export const MENUITEMS = [
             type: "link",
             active: false,
             title: "All Reviews",
+            permission: "view",
+            model: "Review",
           },
         ],
       },
@@ -442,6 +447,8 @@ export const MENUITEMS = [
             type: "link",
             active: false,
             title: "User",
+            permission: "view",
+            model: "Customer",
           },
           // {
           //   path: `/all-students`,
@@ -456,6 +463,8 @@ export const MENUITEMS = [
             type: "link",
             active: false,
             title: "Contact Enquiries",
+            permission: "view",
+            model: "ContactEnquiry",
           },
           {
             path: `/job-application-enquiries`,
@@ -463,6 +472,8 @@ export const MENUITEMS = [
             type: "link",
             active: false,
             title: "Job Application Enquiries",
+            permission: "view",
+            model: "JobApplication",
           },
         ],
       },
@@ -488,14 +499,14 @@ export const MENUITEMS = [
             active: false,
             title: "Arabic",
             permission: "view",
-            model: "Localization",
+            model: "LocalizationArabic",
           },
           {
             path: `${import.meta.env.BASE_URL}localization/en`,
             active: false,
             title: "English",
             permission: "view",
-            model: "Localization",
+            model: "LocalizationEnglish",
           },
         ],
       },
@@ -521,14 +532,14 @@ export const MENUITEMS = [
             title: "Withdrawal Requests",
             type: "link",
             permission: "view",
-            model: "Optometrist",
+            model: "OptometristWithdrawal",
           },
           {
             path: `${import.meta.env.BASE_URL}optometrist/memberships-plans`,
             title: "Memberships Plans",
             type: "link",
             permission: "view",
-            model: "Optometrist",
+            model: "OptometristMembership",
           },
           // {
           //   path: `${import.meta.env.BASE_URL}optometrist/all-stores`,
@@ -562,6 +573,8 @@ export const MENUITEMS = [
             type: "link",
             active: false,
             title: "All Posts",
+            permission: "view",
+            model: "BlogPost",
           },
           {
             path: `/add-new-post`,
@@ -569,6 +582,8 @@ export const MENUITEMS = [
             type: "link",
             active: false,
             title: "Add new post",
+            permission: "view",
+            model: "BlogPostAdd",
           },
           {
             path: `/all-blog-categories`,
@@ -576,6 +591,8 @@ export const MENUITEMS = [
             type: "link",
             active: false,
             title: "Categories",
+            permission: "view",
+            model: "BlogCategory",
           },
           {
             path: `/all-blog-tags`,
@@ -583,6 +600,8 @@ export const MENUITEMS = [
             type: "link",
             active: false,
             title: "Tags",
+            permission: "view",
+            model: "BlogTag",
           },
           // {
           //   path: `/all-comments`,
@@ -654,7 +673,7 @@ export const MENUITEMS = [
   //           type: "link",
   //           permission: "view",
   //           model: 'Notification',
-  //           // show: (role, permissions) => role === "Admin" || (role === "Staff" && permissions.Notification.includes("view"))
+  //           // show: (role, permissions) => hasPermission(role, permissions, "Notification", "view")
   //         },
   //         {
   //           path: `/push-notification`,
@@ -668,7 +687,7 @@ export const MENUITEMS = [
   //           type: "link",
   //           permission: "view",
   //           model: 'PushNotification',
-  //           // show: (role, permissions) => role === "Admin" || (role === "Staff" && permissions.PushNotification.includes("view"))
+  //           // show: (role, permissions) => hasPermission(role, permissions, "PushNotification", "view")
   //         },
   //       ],
   //     },
@@ -722,6 +741,8 @@ export const MENUITEMS = [
             icon: "phone",
             title: "Policies",
             type: "link",
+            permission: "view",
+            model: "Policy",
           },
           {
             path: `${import.meta.env.BASE_URL}cms/affiliate-page`,
@@ -749,14 +770,14 @@ export const MENUITEMS = [
             title: "Become an optometrist page content",
             type: "link",
             permission: "view",
-            model: "Optometrist",
+            model: "BecomeOptometrist",
           },
           {
             path: `${import.meta.env.BASE_URL}optometrist-network`,
             title: "Optometrist Network page content",
             type: "link",
             permission: "view",
-            model: "Optometrist",
+            model: "OptometristNetwork",
           },
         ],
       },
@@ -772,7 +793,7 @@ export const MENUITEMS = [
   //       title: "Media Uploaded",
   //       permission: "view",
   //       model: 'Media',
-  //       // show: (role, permissions) => role === "Admin" || (role === "Staff" && permissions.Media.includes("view"))
+  //       // show: (role, permissions) => hasPermission(role, permissions, "Media", "view")
   //     },
   //   ],
   // },
@@ -798,7 +819,7 @@ export const MENUITEMS = [
             type: "link",
             active: false,
             permission: "view",
-            model: "StaffLogin",
+            model: "StaffUser",
           },
         ],
       },
@@ -814,8 +835,8 @@ export const MENUITEMS = [
         active: false,
         title: "Login Data",
         permission: "view",
-        model: 'StaffLogin',
-        // show: (role, permissions) => role === "Admin" || (role === "Staff" && permissions.StaffLogin.includes("view"))
+        model: 'LoginData',
+        // show: (role, permissions) => hasPermission(role, permissions, "StaffLogin", "view")
       },
     ],
   },

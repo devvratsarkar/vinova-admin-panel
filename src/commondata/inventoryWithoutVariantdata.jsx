@@ -7,6 +7,7 @@ import Loader from "../layouts/layoutcomponents/loader";
 import Error from "../layouts/layoutcomponents/Error";
 import { useGetAllInventoryWithoutVariantQuery } from "../redux/features/inventory";
 import { ListFilters, ListTable, boundFilters, formatDate, indexColumn, useListFilters } from "../components/common/ListFilters";
+import { allow } from "./permissions";
 
 function readInventory(response) {
   const payload = response?.data;
@@ -53,12 +54,16 @@ export const InventoryWithoutVariantDataTable = () => {
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link to={`/inventory/view-invertory-without-variant/${row._id}`}><Button type="button" className="btn btn-icon btn-primary" variant=""><i className="fe fe-eye"></i></Button></Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+          {allow("InventoryWithOutVariant", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
             <Link to={`/inventory/edit-invertory-without-variant/${row._id}`} className="action_icon"><Button type="button" className="btn btn-icon btn-warning" variant=""><i className="fe fe-edit"></i></Button></Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+)}
+          {allow("InventoryWithOutVariant", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
             <Button type="button" className="btn btn-icon btn-danger" variant="" onClick={() => dispatch(openModal({ componentName: "DeleteInventoryWithoutVariant", data: row, softDelete: true }))}><i className="fe fe-trash text-white"></i></Button>
           </OverlayTrigger>
+)}
         </div>
       ),
     },

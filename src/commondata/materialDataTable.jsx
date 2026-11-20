@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import moment from "moment";
 import { useGetAllMaterialsQuery, useUpdateMaterialStatusMutation } from "../redux/features/materialAPIEndPoint";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, indexColumn, useListFilters } from "../components/common/ListFilters";
+import { allow } from "./permissions";
 
 const FILTER_KEYS = ["status"];
 const getMaterialId = (row) => row?.id ?? row?._id;
@@ -52,7 +53,7 @@ function MaterialStatusSwitch({ row, updateStatus, onSuccess }) {
     }
   };
 
-  return <StatusSwitch checked={checked} onChange={handleStatusChange} />;
+  return <StatusSwitch disabled={!allow("Material", "edit")}  checked={checked} onChange={handleStatusChange} />;
 }
 
 export const MaterialDataTable = () => {
@@ -86,12 +87,16 @@ export const MaterialDataTable = () => {
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link to={`/catalogue/material/view/${getMaterialId(row)}`}><Button className="btn btn-icon btn-primary me-2"><i className="fe fe-eye"></i></Button></Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+          {allow("Material", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
             <Link to={`/catalogue/material/edit/${getMaterialId(row)}`}><Button type="button" className="btn btn-icon btn-warning me-2" variant=""><i className="fe fe-edit"></i></Button></Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+)}
+          {allow("Material", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
             <Button type="button" className="btn btn-icon btn-danger" variant="" onClick={() => dispatch(openModal({ componentName: "DeleteMaterial", data: row }))}><i className="fe fe-trash text-white"></i></Button>
           </OverlayTrigger>
+)}
         </div>
       ),
     },

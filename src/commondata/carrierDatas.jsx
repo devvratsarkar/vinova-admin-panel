@@ -1,3 +1,4 @@
+import { hasPermission } from "./permissions";
 
 import React, { useEffect, useState } from "react";
 import { Button, OverlayTrigger, Table, Tooltip, Row, Col, Form, } from "react-bootstrap";
@@ -40,8 +41,8 @@ export const CarrierDatas = () => {
   const role = localStorage.getItem("role")
   const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-  const showEdit = role === "Admin" || (role === "Staff" && permissions.Carrier.includes("edit"))
-  const showAddTrash = role === "Admin" || (role === "Staff" && permissions.Carrier.includes("add-trash"))
+  const showEdit = hasPermission(role, permissions, "Carrier", "edit")
+  const showAddTrash = hasPermission(role, permissions, "Carrier", "add-trash")
 
   if (isError) {
     return <Error error_mes={error} />;
@@ -87,8 +88,6 @@ export const CarrierDatas = () => {
         const [checked, setChecked] = useState(row?.status);
         return (
           <>
-            {/* {
-              showEdit ? ( */}
             <label className="custom-switch">
               <input
                 type="checkbox"
@@ -98,21 +97,10 @@ export const CarrierDatas = () => {
                   setChecked(!checked)
                 }}
                 checked={checked}
+                disabled={!showEdit}
               />
               <span className="custom-switch-indicator custum-green-btn"></span>
             </label>
-            {/* ) : (
-                <label className="custom-switch">
-                  <input
-                    type="checkbox"
-                    className="custom-switch-input"
-                    checked={checked}
-                    disabled
-                  />
-                  <span className="custom-switch-indicator custum-green-btn"></span>
-                </label>
-              )
-            } */}
 
           </>
         )
@@ -127,17 +115,17 @@ export const CarrierDatas = () => {
               <i className="fe fe-eye"></i>
             </Link>
           </OverlayTrigger>
-          {/* {
-            showEdit && ( */}
+           {
+            showEdit && ( 
           <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
             <Link className="btn btn-icon btn-warning" to={`/shipping/carrier/edit-carrier/${row?.id}`}>
               <i className="fe fe-edit"></i>
             </Link>
           </OverlayTrigger>
-          {/* )
+           )
           }
           {
-            showAddTrash && ( */}
+            showAddTrash && ( 
           <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
             <Button
               className="btn btn-icon btn-danger"
@@ -149,8 +137,8 @@ export const CarrierDatas = () => {
               <i className="fe fe-trash"></i>
             </Button>
           </OverlayTrigger>
-          {/* )
-          } */}
+           )
+          } 
         </div>
       ),
       width: "150px",

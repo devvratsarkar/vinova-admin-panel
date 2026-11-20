@@ -1,4 +1,5 @@
 import React from "react";
+import { hasPermission } from "../../commondata/permissions";
 // import PageHeader from "../../../layouts/layoutcomponents/pageheader";
 import { Row, Card, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -10,23 +11,23 @@ export default function Frame() {
   const role = localStorage.getItem("role")
   const permission = JSON.parse(localStorage.getItem("permissions"))
 
-  const showAdd = role === "Admin" || (role === "Staff" && permission.Frame.includes("add"))
-  const showTrash = role === "Admin" || (role === "Staff" && permission.Frame.includes("view-trash"))
+  const showAdd = hasPermission(role, permission, "Frame", "add")
+  const showTrash = hasPermission(role, permission, "Frame", "view-trash")
   return (
     <>
       <Row className="align-items-center">
         <Col> <PageHeader titles="Frame" active="Frame List" items={["Home"]} links={['/dashboard']} /> </Col>
         <Col className="text-end d-flex justify-content-end gap-1">
-          {/* {
-            showAdd && ( */}
+           {
+            showAdd && ( 
           <Link to="/catalogue/frames/add" className="btn btn-success text-white me-3" >Add Frame</Link>
-          {/* )
+           )
           }
-          { */}
-          {/* showTrash && ( */}
+          { 
+           showTrash && ( 
           <Link className="btn btn-danger text-white" to={`/catalogue/frames/deleted`}>Frame Trashed</Link>
-          {/* )
-          } */}
+           )
+          } 
         </Col>
       </Row>
       <Row>

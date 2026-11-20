@@ -1,3 +1,4 @@
+import { hasPermission } from "../../../commondata/permissions";
 
 import React, { useState } from "react";
 import { Button, OverlayTrigger, Table, Tooltip, Row, Col, Form, Card, } from "react-bootstrap";
@@ -22,9 +23,9 @@ export const CarrierTrash = () => {
     const role = localStorage.getItem("role")
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-    const showEdit = role === "Admin" || (role === "Staff" && permissions.Carrier.includes("edit"))
-    const showRestore = role === "Admin" || (role === "Staff" && permissions.Carrier.includes("restore-trash"))
-    const showDelete = role === "Admin" || (role === "Staff" && permissions.Carrier.includes("delete"))
+    const showEdit = hasPermission(role, permissions, "Carrier", "edit")
+    const showRestore = hasPermission(role, permissions, "Carrier", "restore-trash")
+    const showDelete = hasPermission(role, permissions, "Carrier", "delete")
 
 
     if (isError) {

@@ -10,6 +10,7 @@ import { useGetAllCategoryQuery, useGetAllCategorySelectQuery, useUpdateCategory
 import useDebounce from "../hooks/useDebounce";
 import MuiDataTable from "../components/common/MuiDataTable";
 import DateRangeFields from "../components/common/DateRangeFields";
+import { allow } from "./permissions";
 
 const fieldStyle = { borderColor: "#e8edf3", borderRadius: 10, fontSize: 13, backgroundColor: "#fff" };
 const TYPES = [
@@ -83,7 +84,7 @@ function CategoryStatusSwitch({ row, updateStatus, onSuccess }) {
         className="custom-switch-input"
         onChange={handleStatusChange}
         checked={checked}
-      />
+       disabled={!allow("Category", "edit")} />
       <span className="custom-switch-indicator custum-green-btn"></span>
     </label>
   );
@@ -210,12 +211,15 @@ export const CategoryDataTable = () => {
           </OverlayTrigger>
           {!row?.is_disabled && (
             <>
-              <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+              {allow("Category", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
                 <Link to={`/catalogue/edit-category/${row?._id}`}>
                   <Button type="button" className="btn btn-icon btn-warning me-2" variant=""><i className="fe fe-edit"></i></Button>
                 </Link>
               </OverlayTrigger>
-              <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+)}
+              {allow("Category", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
                 <Button
                   type="button"
                   className="btn btn-icon btn-danger"
@@ -225,6 +229,7 @@ export const CategoryDataTable = () => {
                   <i className="fe fe-trash text-white"></i>
                 </Button>
               </OverlayTrigger>
+)}
             </>
           )}
         </div>

@@ -9,6 +9,7 @@ import PageHeader from '../../layouts/layoutcomponents/pageheader'
 import { useGetAllDeletedOptometristStoreDataQuery } from '../../redux/features/optometristAPIEndPoint';
 import Loader from "../../layouts/layoutcomponents/loader";
 import { openModal } from "../../redux/slices/allModalSlice";
+import { hasPermission } from "../../commondata/permissions";
 
 export default function DeletedOptometristStore() {
   const [serialNumberm, setSerialNUmber] = useState(1)
@@ -41,8 +42,8 @@ export default function DeletedOptometristStore() {
   const role = localStorage.getItem("role")
   const permission = JSON.parse(localStorage.getItem("permissions"))
 
-  const showEdit = role === "Admin" || (role === "Staff" && permission.Frame.includes("edit"))
-  const showTrash = role === "Admin" || (role === "Staff" && permission.Frame.includes("add-trash"))
+  const showEdit = hasPermission(role, permission, "Accessories", "edit")
+  const showTrash = hasPermission(role, permission, "Accessories", "add-trash")
 
   if (isLoading || isFetching) {
     return <Loader />;
@@ -88,8 +89,6 @@ export default function DeletedOptometristStore() {
           const [checked, setChecked] = useState(row?.status);
           return (
             <>
-              {/* {
-                                showEdit ? ( */}
               <label className="custom-switch">
                 <input
                   type="checkbox"
@@ -99,21 +98,10 @@ export default function DeletedOptometristStore() {
                     setChecked(!checked)
                   }}
                   checked={checked}
+                  disabled={!showEdit}
                 />
                 <span className="custom-switch-indicator custum-green-btn"></span>
               </label>
-              {/* ) : (
-                                    <label className="custom-switch">
-                                        <input
-                                            type="checkbox"
-                                            className="custom-switch-input"
-                                            checked={checked}
-                                            disabled
-                                        />
-                                        <span className="custom-switch-indicator custum-green-btn"></span>
-                                    </label>
-                                )
-                            } */}
             </>
           )
         },
@@ -128,20 +116,20 @@ export default function DeletedOptometristStore() {
         cell: (row) => (
           <div className="action_icon_wrapper">
             <div className="action_icon_wrapper">
-              {/* {
-                                      showRestore && ( */}
+               {
+                                      showRestore && ( 
               <OverlayTrigger placement="top" overlay={<Tooltip>Restore</Tooltip>}>
                 <Button type="button" className="btn btn-icon  btn-primary" variant="" onClick={() => { dispatch(openModal({ componentName: 'RestoreOptometristStore', data: row })) }}><i className="fe fe-refresh-ccw text-white"></i></Button>
               </OverlayTrigger>
-              {/* )
+               )
                                   }
                                   {
-                                      showEdit && ( */}
+                                      showEdit && ( 
               <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
                 <Button type="button" className="btn btn-icon  btn-danger" variant="" onClick={() => { dispatch(openModal({ componentName: 'DeleteOptometristStore', data: row, softDelete: false })) }}><i className="fe fe-trash text-white"></i></Button>
               </OverlayTrigger>
-              {/* )
-                                  } */}
+               )
+                                  } 
             </div>
           </div>
         ),

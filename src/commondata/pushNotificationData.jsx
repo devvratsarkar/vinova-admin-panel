@@ -7,6 +7,7 @@ import Error from "../layouts/layoutcomponents/Error";
 import DataTable from '../components/common/DataTable'
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { hasPermission } from "./permissions";
 // import { useGetAllNotificationQuery, useGetAllPushNotificationQuery } from "../redux/features/supportDeskEndPoint";
 
 const dummyData = [
@@ -91,8 +92,8 @@ export const PushNotificationDataTable = () => {
   const role = localStorage.getItem("role")
   const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-  const showEdit = role === "SuperAdmin" || (role === "Staff" && permissions.PushNotification.includes("edit"))
-  const showAddTrash = role === "SuperAdmin" || (role === "Staff" && permissions.PushNotification.includes("add-trash"))
+  const showEdit = hasPermission(role, permissions, "PushNotification", "edit")
+  const showAddTrash = hasPermission(role, permissions, "PushNotification", "add-trash")
 
   // if (isError) {
   //   return <Error error_mes={error} />;

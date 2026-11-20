@@ -6,6 +6,7 @@ import Loader from "../../../layouts/layoutcomponents/loader";
 import Error from "../../../layouts/layoutcomponents/Error";
 import DataTable from '../../common/DataTable'
 import { Link } from "react-router-dom";
+import { hasPermission } from "../../../commondata/permissions";
 // import { useGetDeletedPushNotificationQuery } from "../../../redux/features/supportDeskEndPoint";
 import PageHeader from "../../../layouts/layoutcomponents/pageheader";
 
@@ -20,8 +21,8 @@ export const PushNotificationTrash = () => {
     const role = localStorage.getItem("role")
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-    const showRestore = role === "SuperAdmin" || (role === "Staff" && permissions.Notification.includes("restore-trash"))
-    const showDelete = role === "SuperAdmin" || (role === "Staff" && permissions.Notification.includes("delete"))
+    const showRestore = hasPermission(role, permissions, "Notification", "restore-trash")
+    const showDelete = hasPermission(role, permissions, "Notification", "delete")
 
     // if (isError) {
     //     return <Error error_mes={error} />;

@@ -200,7 +200,7 @@ export const RouterData = [
   },
   {
     path: `${import.meta.env.BASE_URL}/analytics`,
-    element: <RouteGuard requiredPermissions={[{ category: "Dashboard", action: "view" }]}><Analytics /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "Analytics", action: "view" }]}><Analytics /></RouteGuard>,
   },
   // Profile
   {
@@ -278,23 +278,23 @@ export const RouterData = [
   // contact lens
   {
     path: `${import.meta.env.BASE_URL}/catalogue/contact-lenses`,
-    element: <RouteGuard requiredPermissions={[{ category: "Frame", action: "view" }]}><AllContactLens /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "ContactLens", action: "view" }]}><AllContactLens /></RouteGuard>,
   },
   {
     path: `${import.meta.env.BASE_URL}/catalogue/contact-lenses/add`,
-    element: <RouteGuard requiredPermissions={[{ category: "Frame", action: "add" }]}><AddNewContactLens /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "ContactLens", action: "add" }]}><AddNewContactLens /></RouteGuard>,
   },
   {
     path: `${import.meta.env.BASE_URL}/catalogue/contact-lenses/edit/:id`,
-    element: <RouteGuard requiredPermissions={[{ category: "Frame", action: "edit" }]}><EditContactLens /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "ContactLens", action: "edit" }]}><EditContactLens /></RouteGuard>,
   },
   {
     path: `${import.meta.env.BASE_URL}/catalogue/contact-lenses/view/:id`,
-    element: <RouteGuard requiredPermissions={[{ category: "Frame", action: "add" }]}><ViewContactLens /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "ContactLens", action: "view" }]}><ViewContactLens /></RouteGuard>,
   },
   {
     path: `${import.meta.env.BASE_URL}/catalogue/contact-lenses/deleted`,
-    element: <RouteGuard requiredPermissions={[{ category: "Frame", action: "view-trash" }]}><DeletedContactLens /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "ContactLens", action: "view-trash" }]}><DeletedContactLens /></RouteGuard>,
   },
 
   // Accessories 
@@ -343,23 +343,23 @@ export const RouterData = [
   // Lens Type
   {
     path: `${import.meta.env.BASE_URL}/catalogue/lens-type`,
-    element: <RouteGuard requiredPermissions={[{ category: "Filter", action: "view" }]}><Filter /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "LensType", action: "view" }]}><Filter /></RouteGuard>,
   },
   {
     path: `${import.meta.env.BASE_URL}/catalogue/lens-type/add`,
-    element: <RouteGuard requiredPermissions={[{ category: "Filter", action: "add" }]}><AddFilter /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "LensType", action: "add" }]}><AddFilter /></RouteGuard>,
   },
   {
     path: `${import.meta.env.BASE_URL}/catalogue/lens-type/edit/:id`,
-    element: <RouteGuard requiredPermissions={[{ category: "Filter", action: "edit" }]}><EditFilter /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "LensType", action: "edit" }]}><EditFilter /></RouteGuard>,
   },
   {
     path: `${import.meta.env.BASE_URL}/catalogue/lens-type/view/:id`,
-    element: <RouteGuard requiredPermissions={[{ category: "Filter", action: "view" }]}><ViewFilter /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "LensType", action: "view" }]}><ViewFilter /></RouteGuard>,
   },
   {
     path: `${import.meta.env.BASE_URL}/catalogue/lens-type/deleted-list`,
-    element: <RouteGuard requiredPermissions={[{ category: "Filter", action: "view-trash" }]}><DeletedFilter /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "LensType", action: "view-trash" }]}><DeletedFilter /></RouteGuard>,
   },
   // Lens Thickness
   {
@@ -705,11 +705,11 @@ export const RouterData = [
   // HTO Orders
   {
     path: `${import.meta.env.BASE_URL}/hto-orders`,
-    element: <RouteGuard requiredPermissions={[{ category: "Order", action: "view" }]}><HtoOrders /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "HtoOrder", action: "view" }]}><HtoOrders /></RouteGuard>,
   },
   {
     path: `${import.meta.env.BASE_URL}/hto-order-detail/:id`,
-    element: <RouteGuard requiredPermissions={[{ category: "Order", action: "view" }]}><HtoOrderDetails /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "HtoOrder", action: "view" }]}><HtoOrderDetails /></RouteGuard>,
   },
 
   //global setting
@@ -742,7 +742,7 @@ export const RouterData = [
   },
   {
     path: `${import.meta.env.BASE_URL}/optometrist/withdrawal-request`,
-    element: <RouteGuard requiredPermissions={[{ category: "optometrist", action: "view" }]}><OptometristWithdrawalRequests /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "OptometristWithdrawal", action: "view" }]}><OptometristWithdrawalRequests /></RouteGuard>,
   },
   {
     path: `${import.meta.env.BASE_URL}/optometrist/enquiry/:id`,
@@ -750,11 +750,11 @@ export const RouterData = [
   },
   {
     path: `${import.meta.env.BASE_URL}/optometrist/memberships-plans`,
-    element: <RouteGuard requiredPermissions={[{ category: "optometrist", action: "view" }]}><AllOptometristMembershipsPlans /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "OptometristMembership", action: "view" }]}><AllOptometristMembershipsPlans /></RouteGuard>,
   },
   {
     path: `${import.meta.env.BASE_URL}/optometrist/memberships-plans/trashed`,
-    element: <RouteGuard requiredPermissions={[{ category: "optometrist", action: "view" }]}><TrashedMembershipPlans /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "OptometristMembership", action: "view" }]}><TrashedMembershipPlans /></RouteGuard>,
   },
   // {
   //   path: `${import.meta.env.BASE_URL}/optometrist/all-stores`,
@@ -835,7 +835,7 @@ export const RouterData = [
 
   {
     path: `${import.meta.env.BASE_URL}/optometrist/become-an-optometrist`,
-    element: <RouteGuard requiredPermissions={[{ category: "optometrist", action: "view" }]}><BecomeAnOptometrist /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "BecomeOptometrist", action: "view" }]}><BecomeAnOptometrist /></RouteGuard>,
   },
 
 
@@ -844,7 +844,7 @@ export const RouterData = [
   // optometrist network
   {
     path: `${import.meta.env.BASE_URL}/optometrist-network`,
-    element: <RouteGuard requiredPermissions={[{ category: "optometrist", action: "view" }]}><OptometristNetwork /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "OptometristNetwork", action: "view" }]}><OptometristNetwork /></RouteGuard>,
   },
 
   //  Localization
@@ -854,11 +854,11 @@ export const RouterData = [
   },
   {
     path: `${import.meta.env.BASE_URL}/localization/ar`,
-    element: <RouteGuard requiredPermissions={[{ category: "localization", action: "view" }]}><LocalizationAR /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "LocalizationArabic", action: "view" }]}><LocalizationAR /></RouteGuard>,
   },
   {
     path: `${import.meta.env.BASE_URL}/localization/en`,
-    element: <RouteGuard requiredPermissions={[{ category: "localization", action: "view" }]}><LocalizationEN /></RouteGuard>,
+    element: <RouteGuard requiredPermissions={[{ category: "LocalizationEnglish", action: "view" }]}><LocalizationEN /></RouteGuard>,
   },
 
 
@@ -874,7 +874,7 @@ export const RouterData = [
   {
     path: `${import.meta.env.BASE_URL}/add-new-post`,
     element: (
-      <RouteGuard requiredPermissions={[{ category: "BlogPost", action: "add" }]}>
+      <RouteGuard matchAny requiredPermissions={[{ category: "BlogPost", action: "add" }, { category: "BlogPostAdd", action: "view" }]}>
         <AddNewPost />
       </RouteGuard>
     ),
@@ -1154,6 +1154,6 @@ export const RouterData = [
 
 
 
-  { path: `${import.meta.env.BASE_URL}/staff-login`, element: (<RouteGuard requiredRoles={["Admin", "Staff"]} requiredPermissions={[{ category: "StaffLogin", action: "view" }]}><StaffLogin /></RouteGuard>) },
+  { path: `${import.meta.env.BASE_URL}/staff-login`, element: (<RouteGuard requiredRoles={["Admin", "Staff"]} requiredPermissions={[{ category: "LoginData", action: "view" }]}><StaffLogin /></RouteGuard>) },
 
 ];

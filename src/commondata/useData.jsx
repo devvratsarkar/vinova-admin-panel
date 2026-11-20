@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { openModal } from '../redux/slices/allModalSlice';
 import Loader from '../layouts/layoutcomponents/loader';
+import { hasPermission } from "./permissions";
 
 export default function UseDataTable() {
     const dispatch = useDispatch()
@@ -17,8 +18,8 @@ export default function UseDataTable() {
     const role = localStorage.getItem("role")
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-    const showEdit = role === "Admin" || (role === "Staff" && permissions.Uses.includes("edit"))
-    const showAddTrash = role === "Admin" || (role === "Staff" && permissions.Uses.includes("add-trash"))
+    const showEdit = hasPermission(role, permissions, "Uses", "edit")
+    const showAddTrash = hasPermission(role, permissions, "Uses", "add-trash")
 
     const COLUMNS = [
         {

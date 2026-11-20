@@ -1,10 +1,11 @@
 import React from "react";
 import { Card, Col, Row } from "react-bootstrap";
+import { hasPermission } from "../../commondata/permissions";
 
 export default function CustomerDetails({ singleOrder }) {
   const role = localStorage.getItem("role");
   const permissions = JSON.parse(localStorage.getItem("permissions") || "{}");
-  const showOrderEdit = role === "Admin" || (role === "Staff" && permissions.Order?.includes("edit"));
+  const showOrderEdit = hasPermission(role, permissions, "Order", "edit");
   const customer_details = singleOrder?.shipping_address;
 
   return (

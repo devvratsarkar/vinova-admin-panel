@@ -10,6 +10,7 @@ import Loader from "../../layouts/layoutcomponents/loader";
 import { openModal } from "../../redux/slices/allModalSlice";
 import { useGetAllSoftDeletedQuestionsQuery } from "../../redux/features/questionsAPIEndPoint";
 import moment from "moment";
+import { allow } from "../../commondata/permissions";
 
 
 
@@ -84,9 +85,11 @@ export default function DeletedQuestion() {
                             <Button type="button" className="btn btn-icon  btn-warning" variant="" onClick={() => { dispatch(openModal({ componentName: 'RestoreQuestion', data: row, })) }}><i className="fe fe-refresh-ccw text-white"></i></Button>
                         </OverlayTrigger>
 
-                        <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+                        {allow("Question", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
                             <Button type="button" className="btn btn-icon  btn-danger" variant="" onClick={() => { dispatch(openModal({ componentName: 'DeleteQuestion', data: row, softDelete: false })) }}><i className="fe fe-trash text-white"></i></Button>
                         </OverlayTrigger>
+)}
 
                     </div>
                 ),

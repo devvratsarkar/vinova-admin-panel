@@ -9,6 +9,7 @@ import Loader from "../../layouts/layoutcomponents/loader";
 import Error from "../../layouts/layoutcomponents/Error";
 import DataTable from '../common/DataTable'
 import { openModal } from "../../redux/slices/allModalSlice";
+import { hasPermission } from "../../commondata/permissions";
 
 
 export default function TrashJobPosition() {
@@ -20,9 +21,9 @@ export default function TrashJobPosition() {
     const role = localStorage.getItem("role")
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-    const showEdit = role === "SuperAdmin" || role === "Admin" || (role === "Staff" && permissions?.JobOpening?.includes("edit"))
-    const showDelete = role === "SuperAdmin" || role === "Admin" || (role === "Staff" && permissions?.JobOpening?.includes("delete"))
-    const showRestore = role === "SuperAdmin" || role === "Admin" || (role === "Staff" && permissions?.JobOpening?.includes("restore"))
+    const showEdit = hasPermission(role, permissions, "JobOpening", "edit")
+    const showDelete = hasPermission(role, permissions, "JobOpening", "delete")
+    const showRestore = hasPermission(role, permissions, "JobOpening", "restore")
 
 
     const { data, isError, error, isLoading, isFetching, isSuccess, refetch } = useGetTrashedJobOpeningsQuery()

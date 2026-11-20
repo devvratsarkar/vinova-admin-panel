@@ -1,3 +1,4 @@
+import { hasPermission } from "../../commondata/permissions";
 import React from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
 import PageHeader from '../../layouts/layoutcomponents/pageheader'
@@ -10,8 +11,8 @@ export default function LensThickness() {
     const role = localStorage.getItem("role")
     const permission = JSON.parse(localStorage.getItem("permissions"))
 
-    const showAdd = role === "Admin" || (role === "Staff" && permission.Lens.includes("add"))
-    const showTrash = role === "Admin" || (role === "Staff" && permission.Lens.includes("view-trash"))
+    const showAdd = hasPermission(role, permission, "LensSize", "add")
+    const showTrash = hasPermission(role, permission, "LensSize", "view-trash")
     return (
         <>
             <Row className="align-items-center">
@@ -19,16 +20,16 @@ export default function LensThickness() {
                     <PageHeader titles="Refractive Index" active="Refractive Index List" items={["Home"]} links={['/dashboard']} />
                 </Col>
                 <Col className="text-end d-flex justify-content-end gap-1">
-                    {/* {
-                        showAdd && ( */}
+                     {
+                        showAdd && ( 
                     <Link to="/catalogue/lens-thickness/add" className="btn btn-success text-white me-3" >Add Refractive Index</Link>
-                    {/* )
+                     )
                     }
                     {
-                        showTrash && ( */}
+                        showTrash && ( 
                     <Link className="btn btn-danger text-white" to={`/catalogue/lens-thickness/deleted-list`}>Trashed Refractive Index</Link>
-                    {/* )
-                    } */}
+                     )
+                    } 
                 </Col>
             </Row>
             <Row>

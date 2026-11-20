@@ -3,6 +3,7 @@ import { Row, Col, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { MaterialDataTable } from "../../commondata/materialDataTable";
 import PageHeader from "../../layouts/layoutcomponents/pageheader";
+import { allow } from "../../commondata/permissions";
 
 export default function Material() {
     return (
@@ -17,9 +18,11 @@ export default function Material() {
                     />
                 </Col>
                 <Col className="text-end d-flex justify-content-end gap-1">
+                    {allow("Material", "add") && (
                     <Link to="/catalogue/material/add" className="btn btn-success text-white me-3">
                         Add Material
                     </Link>
+                    )}
                 </Col>
             </Row>
             <Row>

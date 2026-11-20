@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { useGetAllLensQuery, useUpdateLensStatusMutation } from "../redux/features/LensAPIEndPoint";
 import { useGetBrandsSelectQuery } from "../redux/features/BrandAPIEndpoint";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, namedOptions, useListFilters } from "../components/common/ListFilters";
+import { allow } from "./permissions";
 
 function readLenses(response) {
   const payload = response?.data;
@@ -63,7 +64,7 @@ export const LensDataTable = () => {
       width: 120,
       sortable: false,
       filterable: false,
-      render: (row) => <StatusSwitch checked={row?.status} onChange={() => handleStatus(row?._id)} />,
+      render: (row) => <StatusSwitch disabled={!allow("Lens", "edit")}  checked={row?.status} onChange={() => handleStatus(row?._id)} />,
     },
     { id: "date", label: "Created At", minWidth: 190, flex: 0.8, render: (row) => formatDate(row?.createdAt) },
     {
@@ -78,12 +79,16 @@ export const LensDataTable = () => {
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link to={`/catalogue/lens/view/${row?._id}`}><Button className="btn btn-icon btn-primary me-2"><i className="fe fe-eye"></i></Button></Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+          {allow("Lens", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
             <Link to={`/catalogue/lens/edit/${row?._id}`}><Button type="button" className="btn btn-icon btn-warning me-2" variant=""><i className="fe fe-edit"></i></Button></Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+)}
+          {allow("Lens", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
             <Button type="button" className="btn btn-icon btn-danger" variant="" onClick={() => dispatch(openModal({ componentName: "DeleteLens", data: row, softDelete: true }))}><i className="fe fe-trash text-white"></i></Button>
           </OverlayTrigger>
+)}
         </div>
       ),
     },

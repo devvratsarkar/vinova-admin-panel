@@ -69,16 +69,15 @@ function Authlogin() {
               ? `?lang=${new URLSearchParams(location.search).get("lang") || localStorage.getItem("lang") || "en"}`
               : "";
             const dashboardPath = role === "Optometrist" ? "/optometrist-dashboard/overview" : `/dashboard${langParam}`;
-            navigate(dashboardPath);
-
-            setLoader(false)
-            toast.success(res.data.message)
             dispatch(loginSuccess({
               token: res.data.data.token,
               role: res?.data?.data?.role,
-              permissions: JSON.stringify(res?.data?.data?.permissions),
+              permissions: res.data.data.userPermissions || res.data.data.permissions,
               country_code,
             }));
+            setLoader(false)
+            toast.success(res.data.message)
+            navigate(dashboardPath);
           }
         } catch (error) {
           console.error('error ----->', error);

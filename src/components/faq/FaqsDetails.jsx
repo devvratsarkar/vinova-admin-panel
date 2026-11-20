@@ -3,6 +3,7 @@ import PageHeader from "../../layouts/layoutcomponents/pageheader"
 import { Button, Card, Col, Form, Row } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import FaqsDatatable from '../../commondata/faqDataTable'
+import { allow } from '../../commondata/permissions'
 
 
 export default function FaqsDetails() {
@@ -14,7 +15,7 @@ export default function FaqsDetails() {
                     <PageHeader titles="Add FAQs" active="Add FAQs" items={["Home"]} links={["/dashboard"]} />
                 </Col>
                 <Col as={Col} md={6} className='text-end'>
-                    <Link to={'/cms/faqs/add'} className='btn btn-success'>Add FAQs</Link>
+                    {allow("Faqs", "add") && <Link to={'/cms/faqs/add'} className='btn btn-success'>Add FAQs</Link>}
                 </Col>
             </Row>
             <Row>

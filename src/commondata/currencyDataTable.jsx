@@ -8,6 +8,7 @@ import Error from "../layouts/layoutcomponents/Error";
 import DataTable from '../components/common/DataTable'
 import toast from "react-hot-toast";
 import { useGetAllCurrenciesQuery, useUpdateCurrencyStatusMutation } from "../redux/features/currencyCountryAPIEndPoint";
+import { hasPermission } from "./permissions";
 
 export default function CurrrencyDataTable() {
 
@@ -22,8 +23,8 @@ export default function CurrrencyDataTable() {
     const role = localStorage.getItem("role")
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-    const showEdit = role === "Admin" || (role === "Staff" && permissions.Currency.includes("edit"))
-    const showAddTrash = role === "Admin" || (role === "Staff" && permissions.Currency.includes("trash"))
+    const showEdit = hasPermission(role, permissions, "Currency", "edit")
+    const showAddTrash = hasPermission(role, permissions, "Currency", "trash")
 
     const { data, isError, error, isLoading, isFetching, isSuccess, refetch } = useGetAllCurrenciesQuery()
 

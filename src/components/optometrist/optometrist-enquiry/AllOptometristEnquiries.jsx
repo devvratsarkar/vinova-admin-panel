@@ -1,3 +1,4 @@
+import { allow } from "../../../commondata/permissions";
 import React, { useMemo, useState } from 'react'
 import { Button, Card, Col, Form, Modal, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
@@ -296,14 +297,17 @@ export default function AllOptometristEnquiries() {
                                         <i className="fe fe-eye"></i>
                                     </Button>
                                 </OverlayTrigger>
-                                <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+                                {allow("Optometrist", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
                                     <Button size="sm" variant="secondary" className="btn-icon" onClick={() => dispatch(openModal({ componentName: 'EditOptometristEnquiry', data: row }))}>
                                         <i className="fe fe-edit"></i>
                                     </Button>
                                 </OverlayTrigger>
+)}
                             </>
                         )}
-                        <OverlayTrigger placement="top" overlay={<Tooltip>{viewingTrash ? 'Restore' : 'Delete'}</Tooltip>}>
+                        {allow("Optometrist", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>{viewingTrash ? 'Restore' : 'Delete'}</Tooltip>}>
                             <Button
                                 type="button"
                                 size="sm"
@@ -319,6 +323,7 @@ export default function AllOptometristEnquiries() {
                                 <i className={`fe ${viewingTrash ? 'fe-refresh-ccw' : 'fe-trash'}`}></i>
                             </Button>
                         </OverlayTrigger>
+)}
                         {!viewingTrash && isPending && (
                             <>
                                 <OverlayTrigger placement="top" overlay={<Tooltip>Approve</Tooltip>}>

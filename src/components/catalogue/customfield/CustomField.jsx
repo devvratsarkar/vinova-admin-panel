@@ -7,14 +7,15 @@ import { CustomFieldDataTable } from "../../../commondata/customfielddata";
 import { useDispatch } from "react-redux";
 import { openModal } from "../../../redux/slices/allModalSlice";
 import { getCustomFieldTrashPage } from "../../../utils/routes";
+import { hasPermission } from "../../../commondata/permissions";
 
 export default function CustomField() {
     const dispatch = useDispatch();
     const role = localStorage.getItem("role")
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-    const showAdd = role === "Admin" || (role === "Staff" && permissions.CustomFiled.includes("add"))
-    const showTrash = role === "Admin" || (role === "Staff" && permissions.CustomFiled.includes("view-trash"))
+    const showAdd = hasPermission(role, permissions, "CustomField", "add")
+    const showTrash = hasPermission(role, permissions, "CustomField", "view-trash")
     return (
         <>
             <Row className="align-items-center">
@@ -22,16 +23,16 @@ export default function CustomField() {
                     <PageHeader titles="Catalogue - CustomField" active="Custom Field" items={["Home"]} links={["/dashboard"]} />
                 </Col>
                 <Col className="text-end d-flex justify-content-end gap-2">
-                    {/* {
-                        showAdd && ( */}
+                     {
+                        showAdd && ( 
                     <Button onClick={() => { dispatch(openModal({ componentName: 'AddCustomField', })) }} className="btn btn-success" variant="success" > Add Custom Fields </Button>
-                    {/* )
+                     )
                     }
                     {
-                        showTrash && ( */}
+                        showTrash && ( 
                     <Link className="btn btn-danger text-white" to={getCustomFieldTrashPage()} state={{ name: "Custom-Field" }} >Custom Field Trashed</Link>
-                    {/* )
-                    } */}
+                     )
+                    } 
                 </Col>
             </Row>
 

@@ -60,20 +60,20 @@ export default function InventoryWithoutVariantTrash() {
             name: "Action",
             cell: (row) => (
                 <div className="action_icon_wrapper">
-                    {/* {
-                        showRestore && ( */}
+                     {
+                        showRestore && ( 
                     <OverlayTrigger placement="top" overlay={<Tooltip>Restore</Tooltip>}>
                         <Button onClick={() => { dispatch(openModal({ componentName: 'RestoreInventoryWithoutVariant', data: row, })) }} className="btn btn-icon btn-warning" variant=""><i className="fa fa-refresh"></i></Button>
                     </OverlayTrigger>
-                    {/* )
+                     )
                     }
                     {
-                        showDelete && ( */}
+                        showDelete && ( 
                     <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
                         <Button className="btn btn-icon btn-danger" variant="" onClick={() => { dispatch(openModal({ componentName: 'DeleteInventoryWithoutVariant', data: row, softDelete: false, })) }} ><i className="fe fe-trash text-light"></i></Button>
                     </OverlayTrigger>
-                    {/* )
-                    } */}
+                     )
+                    } 
                 </div>
             ),
         },

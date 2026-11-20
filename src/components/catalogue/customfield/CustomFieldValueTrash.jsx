@@ -8,6 +8,7 @@ import Loader from "../../../layouts/layoutcomponents/loader";
 import Error from "../../../layouts/layoutcomponents/Error";
 import DataTable from '../../common/DataTable'
 import { useGetAllDeletedCustomFieldValueQuery } from "../../../redux/features/customFieldValueAPIEndPoint";
+import { hasPermission } from "../../../commondata/permissions";
 
 export default function CustomFieldValueTrash() {
     const [serialNumber, setSerialNumber] = useState(1)
@@ -27,8 +28,8 @@ export default function CustomFieldValueTrash() {
     const role = localStorage.getItem("role")
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
-    const showRestore = role === "Admin" || (role === "Staff" && permissions.CustomFiledValue.includes("restore-trash"))
-    const showDelete = role === "Admin" || (role === "Staff" && permissions.CustomFiledValue.includes("delete"))
+    const showRestore = hasPermission(role, permissions, "CustomFieldValue", "restore-trash")
+    const showDelete = hasPermission(role, permissions, "CustomFieldValue", "delete")
 
     if (isSuccess) {
         const COLUMNS = [
@@ -56,20 +57,20 @@ export default function CustomFieldValueTrash() {
                 name: "Action",
                 cell: (row) => (
                     <div className="action_icon_wrapper">
-                        {/* {
-                            showRestore && ( */}
+                         {
+                            showRestore && ( 
                         <OverlayTrigger placement="top" overlay={<Tooltip>Restore</Tooltip>}>
                             <Button onClick={() => { dispatch(openModal({ componentName: 'CustomFieldValueRestore', data: { row, id }, })) }} className="btn btn-icon btn-warning" variant=""><i className="fa fa-refresh"></i></Button>
                         </OverlayTrigger>
-                        {/* )
+                         )
                         }
                         {
-                            showDelete && ( */}
+                            showDelete && ( 
                         <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
                             <Button className="btn btn-icon btn-danger" variant="" onClick={() => { dispatch(openModal({ componentName: 'DeleteFieldValue', data: { row, id }, softDelete: false, })) }} ><i className="fe fe-trash text-light"></i></Button>
                         </OverlayTrigger>
-                        {/* )
-                        } */}
+                         )
+                        } 
                     </div>
                 ),
             },

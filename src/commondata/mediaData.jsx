@@ -6,6 +6,7 @@ import Loader from "../layouts/layoutcomponents/loader";
 import Error from "../layouts/layoutcomponents/Error";
 import toast from "react-hot-toast";
 import { useGetAllMediaQuery } from "../redux/features/MediaEndPoints";
+import { hasPermission } from "./permissions";
 
 const getMediaId = (item) => item?.id ?? item?._id;
 
@@ -62,10 +63,7 @@ export const MediaDataTable = () => {
     const role = localStorage.getItem("role");
     const permissions = JSON.parse(localStorage.getItem("permissions") || "{}");
 
-    const showDelete =
-        role === "SuperAdmin" ||
-        role === "Admin" ||
-        (role === "Staff" && permissions?.Media?.includes("delete"));
+    const showDelete = hasPermission(role, permissions, "Media", "delete");
 
     const handleCopy = (url) => {
         const path = getMediaPathForCopy(url);

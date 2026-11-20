@@ -7,6 +7,7 @@ import DataTable from '../../common/DataTable'
 // import { useGetDeletedNotificationQuery } from "../../../redux/features/supportDeskEndPoint";
 import { openModal } from "../../../redux/slices/allModalSlice";
 import PageHeader from "../../../layouts/layoutcomponents/pageheader";
+import { allow } from "../../../commondata/permissions";
 
 export const NotificationTrash = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -55,9 +56,11 @@ export const NotificationTrash = () => {
             cell: (row) => (
                 <div className="action_icon_wrapper">
                     <Button onClick={() => { dispatch(openModal({ componentName: 'RestoreNotification', data: row, })) }} className="btn btn-icon btn-warning" variant=""><i className="fa fa-refresh"></i></Button>
-                    <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+                    {allow("Notification", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
                         <Button className="btn btn-icon btn-danger" variant="" onClick={() => { dispatch(openModal({ componentName: 'DeleteNotifiation', data: row, softDelete: false })) }}> <i className="fe fe-trash text-light"></i> </Button>
                     </OverlayTrigger>
+)}
                 </div>
             ),
         },

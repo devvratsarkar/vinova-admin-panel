@@ -12,6 +12,7 @@ import { useGetBrandsSelectQuery } from "../redux/features/BrandAPIEndpoint";
 import useDebounce from "../hooks/useDebounce";
 import MuiDataTable from "../components/common/MuiDataTable";
 import DateRangeFields from "../components/common/DateRangeFields";
+import { allow } from "./permissions";
 
 const fieldStyle = { borderColor: '#e8edf3', borderRadius: 10, fontSize: 13, backgroundColor: '#fff' }
 const TYPES = [
@@ -151,6 +152,7 @@ export const FrameDataTable = () => {
             className="custom-switch-input"
             checked={Boolean(row?.status)}
             onChange={() => handleStatusChange(row?._id)}
+            disabled={!allow("Frame", "edit")}
           />
           <span className="custom-switch-indicator custum-green-btn"></span>
         </label>
@@ -177,16 +179,20 @@ export const FrameDataTable = () => {
               <Button className="btn btn-icon btn-primary me-2"><i className="fe fe-eye"></i></Button>
             </Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+          {allow("Frame", "edit") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
             <Link to={`/catalogue/frames/edit/${row?._id}`}>
               <Button type="button" className="btn btn-icon btn-warning me-2" variant=""><i className="fe fe-edit"></i></Button>
             </Link>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+)}
+          {allow("Frame", "delete") && (
+<OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
             <Button type="button" className="btn btn-icon btn-danger" variant="" onClick={() => dispatch(openModal({ componentName: "DeleteFrame", data: row, softDelete: true }))}>
               <i className="fe fe-trash text-white"></i>
             </Button>
           </OverlayTrigger>
+)}
         </div>
       ),
     },
