@@ -762,20 +762,20 @@ export const MENUITEMS = [
       },
     ],
   },
-  {
-    Items: [
-      {
-        path: `/media-list`,
-        icon: "image",
-        type: "link",
-        active: false,
-        title: "Media Uploaded",
-        permission: "view",
-        model: 'Media',
-        // show: (role, permissions) => role === "Admin" || (role === "Staff" && permissions.Media.includes("view"))
-      },
-    ],
-  },
+  // {
+  //   Items: [
+  //     {
+  //       path: `/media-list`,
+  //       icon: "image",
+  //       type: "link",
+  //       active: false,
+  //       title: "Media Uploaded",
+  //       permission: "view",
+  //       model: 'Media',
+  //       // show: (role, permissions) => role === "Admin" || (role === "Staff" && permissions.Media.includes("view"))
+  //     },
+  //   ],
+  // },
   {
     Items: [
       {
@@ -843,7 +843,7 @@ export const OPTometristMENUITEMS = [
       { title: "Services", path: baseUrl ? `${baseUrl}/optometrist-dashboard/services` : "/optometrist-dashboard/services", icon: "briefcase", type: "link", active: false, children: [] },
       { title: "Working Rules", path: baseUrl ? `${baseUrl}/optometrist-dashboard/working-rules` : "/optometrist-dashboard/working-rules", icon: "clipboard", type: "link", active: false, children: [] },
       { title: "Availability", path: baseUrl ? `${baseUrl}/optometrist-dashboard/availability` : "/optometrist-dashboard/availability", icon: "calendar", type: "link", active: false, children: [] },
-      { title: "Appointments", path: baseUrl ? `${baseUrl}/optometrist-dashboard/appointments` : "/optometrist-dashboard/appointments ", icon: "calendar", type: "link", active: false, children: [] },
+      { title: "Appointments", path: baseUrl ? `${baseUrl}/optometrist-dashboard/appointments` : "/optometrist-dashboard/appointments", icon: "calendar", type: "link", active: false, children: [] },
       { title: "Customers & Prescriptions", path: baseUrl ? `${baseUrl}/optometrist-dashboard/customers` : "/optometrist-dashboard/customers", icon: "users", type: "link", active: false, children: [] },
       { title: "Wallet", path: baseUrl ? `${baseUrl}/optometrist-dashboard/wallet` : "/optometrist-dashboard/wallet", icon: "dollar-sign", type: "link", active: false, children: [] },
       { title: "Plan history", path: baseUrl ? `${baseUrl}/optometrist-dashboard/plan-history` : "/optometrist-dashboard/plan-history", icon: "file-text", type: "link", active: false, children: [] },

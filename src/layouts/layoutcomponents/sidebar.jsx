@@ -1,13 +1,40 @@
-import React, { Fragment, useState, useEffect } from "react";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import { Link, useLocation, useParams } from "react-router-dom";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { MENUITEMS, OPTometristMENUITEMS } from "../../commondata/sidemenu";
 import { usePermissions } from "../../commondata/usePermissions";
 import { useGetOptometristUserProfileQuery } from "../../redux/features/optometristAPIEndPoint";
 import { paymentPageAllowed, paymentRequired } from "../../commondata/optometristPayment";
+import "./sidebar.css";
+
+const cleanPath = (path) => String(path || "").trim();
+
+const normalizePath = (path) => {
+  const cleaned = cleanPath(path).split("?")[0].split("#")[0];
+  if (cleaned.length > 1 && cleaned.endsWith("/")) return cleaned.slice(0, -1);
+  return cleaned;
+};
+
+const pathMatches = (pathname, pattern) => {
+  const current = normalizePath(pathname);
+  const target = normalizePath(pattern);
+  if (!current || !target) return false;
+
+  const currentSegments = current.split("/");
+  const targetSegments = target.split("/");
+  if (currentSegments.length !== targetSegments.length) return false;
+
+  return targetSegments.every(
+    (segment, index) => segment.startsWith(":") || segment === currentSegments[index]
+  );
+};
+
+const itemMatchesPath = (pathname, item) => {
+  if (!item) return false;
+  if (pathMatches(pathname, item.path)) return true;
+  return (item.related_fields || []).some((field) => pathMatches(pathname, field));
+};
 
 const Sidebar = () => {
-  const { id } = useParams();
   const location = useLocation();
   const { permissions, role, country, loading } = usePermissions();
   const { data: profileResponse } = useGetOptometristUserProfileQuery(undefined, {
@@ -16,146 +43,77 @@ const Sidebar = () => {
   });
   const paymentLocked = role === "Optometrist" && paymentRequired(profileResponse);
   const menuSource = role === "Optometrist" ? OPTometristMENUITEMS : MENUITEMS;
-  const [mainmenu, setMainMenu] = useState(menuSource);
+  const pathname = normalizePath(location.pathname);
+  const [manualOpen, setManualOpen] = useState(null);
+  const [routeCollapsed, setRouteCollapsed] = useState(false);
 
-  // Sync menu source when role changes (e.g. Optometrist vs others)
-  useEffect(() => {
-    setMainMenu(role === "Optometrist" ? OPTometristMENUITEMS : MENUITEMS);
-  }, [role]);
-
-  // Always run hooks
-  useEffect(() => {
-    const pathname = location.pathname.endsWith("/")
-      ? location.pathname.slice(0, -1)
-      : location.pathname;
-    setNavActive(pathname);
-  }, [location.pathname]);
-
-  const isPathMatch = (pathname, pattern) => {
-    if (!pathname || !pattern) return false;
-
-    const pathSegments = pathname.split("/");
-    const patternSegments = pattern.split("/");
-
-    if (pathSegments.length !== patternSegments.length) {
-      return false;
-    }
-
-    for (let i = 0; i < pathSegments.length; i++) {
-      if (
-        patternSegments[i] !== pathSegments[i] &&
-        !patternSegments[i]?.startsWith(":")
-      ) {
-        return false;
+  const routeSection = useMemo(() => {
+    for (const group of menuSource) {
+      for (const item of group.Items || []) {
+        if (item.type !== "sub") continue;
+        if ((item.children || []).some((child) => itemMatchesPath(pathname, child))) {
+          return item.title;
+        }
       }
     }
+    return null;
+  }, [menuSource, pathname]);
 
-    return true;
+  useEffect(() => {
+    setManualOpen(null);
+    setRouteCollapsed(false);
+  }, [pathname, role]);
+
+  useEffect(() => {
+    const menu = document.querySelector(".vinova-sidebar__menu");
+    const activeItem = menu?.querySelector(".slide-item.active, .side-menu__item.active");
+    if (!menu || !activeItem) return;
+
+    const header = menu.parentElement?.querySelector(".side-header");
+    const menuRect = menu.getBoundingClientRect();
+    const visibleTop = Math.max(menuRect.top, header?.getBoundingClientRect().bottom ?? menuRect.top);
+    const itemRect = activeItem.getBoundingClientRect();
+
+    if (itemRect.top < visibleTop + 4) {
+      menu.scrollTop = Math.max(0, menu.scrollTop - (visibleTop - itemRect.top) - 8);
+    } else if (itemRect.bottom > menuRect.bottom - 4) {
+      menu.scrollTop += itemRect.bottom - menuRect.bottom + 8;
+    }
+  }, [pathname, role, routeSection]);
+
+  const isSectionOpen = (title) => {
+    if (title === routeSection) return !routeCollapsed;
+    return manualOpen === title;
   };
 
-  const setNavActive = (pathname) => {
-    const updatedMenu = mainmenu.map((menu) => {
-      const updatedItems = menu.Items.map((item) => {
-        let isActive =
-          isPathMatch(pathname, item.path) ||
-          (item.related_fields &&
-            item.related_fields.some((field) => isPathMatch(pathname, field)));
-
-        if (item.children) {
-          item.children.forEach((child) => {
-            if (
-              isPathMatch(pathname, child.path) ||
-              (child.related_fields &&
-                child.related_fields.some((field) => isPathMatch(pathname, field)))
-            ) {
-              isActive = true;
-            }
-          });
-        }
-
-        return {
-          ...item,
-          active: isActive,
-          children: item.children
-            ? item.children.map((child) => ({
-                ...child,
-                active:
-                  isPathMatch(pathname, child.path) ||
-                  (child.related_fields &&
-                    child.related_fields.some((field) => isPathMatch(pathname, field))),
-              }))
-            : [],
-        };
-      });
-      return { ...menu, Items: updatedItems };
-    });
-
-    const updatedMenuWithParents = updatedMenu.map((menu) => {
-      const updatedItems = menu.Items.map((item) => {
-        if (item.type === "sub" && item.children) {
-          const hasActiveChild = item.children.some((child) => child.active);
-          return {
-            ...item,
-            active: hasActiveChild || item.active,
-          };
-        }
-        return item;
-      });
-      return { ...menu, Items: updatedItems };
-    });
-
-    setMainMenu(updatedMenuWithParents);
+  const toggleSection = (title) => {
+    if (title === routeSection) {
+      setRouteCollapsed((collapsed) => !collapsed);
+      setManualOpen(null);
+      return;
+    }
+    setManualOpen((current) => (current === title ? null : title));
+    if (routeSection) setRouteCollapsed(true);
   };
 
-  const toggletNavActive = (item) => {
-    const updatedMenu = mainmenu.map((menu) => {
-      const updatedItems = menu.Items.map((menuItem) => {
-        if (menuItem === item) {
-          return { ...menuItem, active: !menuItem.active };
-        }
-        if (menuItem.type === "sub" && menuItem.children) {
-          return {
-            ...menuItem,
-            active: menuItem.active && item.type === "link",
-          };
-        }
-        return { ...menuItem, active: false };
-      });
-      return { ...menu, Items: updatedItems };
-    });
-    setMainMenu(updatedMenu);
-  };
-
-  const shouldShowMenuItem = (menuItem, role, permissions) => {
-    // Optometrist: menu is already filtered to OPTometristMENUITEMS, show all items
+  const shouldShowMenuItem = (menuItem) => {
     if (role === "Optometrist") return true;
 
-    // SuperAdmin without country: only allow dashboard & country-list
     if (role === "SuperAdmin" && (!country || country === "null")) {
       if (menuItem.type === "link" && menuItem.path) {
-        return (
-          menuItem.path === "/dashboard" ||
-          menuItem.path === "/country-list"
-        );
+        const path = normalizePath(menuItem.path);
+        return path === "/dashboard" || path === "/country-list";
       }
       if (menuItem.type === "sub" && menuItem.children) {
-        return menuItem.children.some((child) =>
-          shouldShowMenuItem(child, role, permissions)
-        );
+        return menuItem.children.some((child) => shouldShowMenuItem(child));
       }
       return false;
     }
 
-    // SuperAdmin with country
-    if (role === "SuperAdmin" && country) {
-      return true;
-    }
+    if (role === "SuperAdmin" && country) return true;
 
-    // for normal roles with permission
     if (menuItem.type === "sub" && menuItem.children) {
-      return menuItem.children.some((child) =>
-        shouldShowMenuItem(child, role, permissions)
-      );
+      return menuItem.children.some((child) => shouldShowMenuItem(child));
     }
 
     if (menuItem.permission && menuItem.model) {
@@ -165,126 +123,110 @@ const Sidebar = () => {
     return true;
   };
 
-  // render safely after hooks
-  if (loading) {
-    return null;
-  }
+  if (loading) return null;
+
+  const renderLocked = (menuItem, className) => (
+    <span
+      className={`${className} vinova-sidebar__locked`}
+      aria-disabled="true"
+      title="Complete your plan payment to open this page"
+    >
+      {menuItem.icon ? <i className={`side-menu__icon fe fe-${menuItem.icon}`}></i> : null}
+      {menuItem.icon ? <span className="side-menu__label">{menuItem.title}</span> : menuItem.title}
+    </span>
+  );
 
   return (
     <div className="sticky">
       <aside
-        className="app-sidebar"
-        onMouseOver={() => document.querySelector(".app")?.classList.add("sidenav-toggled-open")}
-        onMouseOut={() => document.querySelector(".app")?.classList.remove("sidenav-toggled-open")}
+        className="app-sidebar vinova-sidebar"
+        onMouseEnter={() => document.querySelector(".app")?.classList.add("sidenav-toggled-open")}
+        onMouseLeave={() => document.querySelector(".app")?.classList.remove("sidenav-toggled-open")}
       >
-        <PerfectScrollbar options={{ suppressScrollX: true, useBothWheelAxes: false }}>
-          <div className="header side-header">
-            <Link to="/dashboard" className="header-brand1 d-grid align-items-center">
-              <img
-                src="/vinova_logo.png"
-                className="header-brand-img desktop-logo"
-                alt="logo"
-              />
-              <img
-                src="/vinova_logo.png"
-                className="header-brand-img toggle-logo"
-                alt="logo-1"
-              />
-              <img
-                src="/vinova_logo.png"
-                className="header-brand-img light-logo"
-                alt="logo-2"
-              />
-              <img
-                src="/vinova_logo.png"
-                className="header-brand-img light-logo-testing"
-                alt="logo-3"
-              />
-            </Link>
-          </div>
+        <div className="header side-header">
+          <Link to="/dashboard" className="header-brand1 d-grid align-items-center">
+            <img src="/vinova_logo.png" className="header-brand-img desktop-logo" alt="Vinova" />
+            <img src="/vinova_logo.png" className="header-brand-img toggle-logo" alt="" />
+            <img src="/vinova_logo.png" className="header-brand-img light-logo" alt="" />
+            <img src="/vinova_logo.png" className="header-brand-img light-logo-testing" alt="" />
+          </Link>
+        </div>
 
-          <div className="main-sidemenu mt-3">
-            <ul className="side-menu" id="sidebar-main">
-              {mainmenu.map((levelone, i) => (
-                <Fragment key={i}>
-                  {levelone.Items.map((menuItem, j) =>
-                    shouldShowMenuItem(menuItem, role, permissions) ? (
-                      <li
-                        className={`slide ${
-                          menuItem.active && menuItem.type === "sub" ? "is-expanded" : ""
-                        }`}
-                        key={j}
-                      >
-                        {menuItem.type === "link" ? (
-                          paymentLocked && !paymentPageAllowed(menuItem.path) ? (
-                            <span
-                              className="side-menu__item"
-                              aria-disabled="true"
-                              title="Complete your plan payment to open this page"
-                              style={{ opacity: 0.45, cursor: "not-allowed" }}
-                            >
-                              <i className={`side-menu__icon fe fe-${menuItem.icon}`}></i>
-                              <span className="side-menu__label">{menuItem.title}</span>
-                            </span>
-                          ) : (
-                          <Link
-                            to={menuItem.path}
-                            className={`side-menu__item ${menuItem.active ? "active" : ""}`}
-                            onClick={() => {
-                              setNavActive(menuItem.path);
-                              toggletNavActive(menuItem);
-                            }}
-                          >
-                            <i className={`side-menu__icon fe fe-${menuItem.icon}`}></i>
-                            <span className="side-menu__label">{menuItem.title}</span>
-                          </Link>
-                          )
+        <div className="main-sidemenu vinova-sidebar__menu">
+          <ul className="side-menu" id="sidebar-main">
+            {menuSource.map((group, groupIndex) => (
+              <Fragment key={group.menutitle || groupIndex}>
+                {group.Items.map((menuItem, itemIndex) => {
+                  if (!shouldShowMenuItem(menuItem)) return null;
+                  const itemKey = `${groupIndex}-${menuItem.title}-${itemIndex}`;
+
+                  if (menuItem.type === "link") {
+                    const active = itemMatchesPath(pathname, menuItem);
+                    const locked = paymentLocked && !paymentPageAllowed(menuItem.path);
+                    return (
+                      <li className="slide" key={itemKey}>
+                        {locked ? (
+                          renderLocked(menuItem, "side-menu__item")
                         ) : (
                           <Link
-                            to="#"
-                            className={`side-menu__item ${menuItem.active ? "active" : ""}`}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              toggletNavActive(menuItem);
-                            }}
+                            to={cleanPath(menuItem.path)}
+                            className={`side-menu__item ${active ? "active" : ""}`}
+                            aria-current={active ? "page" : undefined}
                           >
                             <i className={`side-menu__icon fe fe-${menuItem.icon}`}></i>
                             <span className="side-menu__label">{menuItem.title}</span>
-                            <i
-                              className={`angle fe ${
-                                menuItem.active ? "fe-chevron-down" : "fe-chevron-up"
-                              }`}
-                            ></i>
                           </Link>
                         )}
-                        {menuItem.type === "sub" && menuItem.children && (
-                          <ul className={`slide-menu ${menuItem.active ? "open" : ""}`}>
-                            {menuItem.children.map((child, k) =>
-                              shouldShowMenuItem(child, role, permissions) ? (
-                                <li key={k}>
+                      </li>
+                    );
+                  }
+
+                  const children = (menuItem.children || []).filter((child) => shouldShowMenuItem(child));
+                  const open = isSectionOpen(menuItem.title);
+                  const childActive = children.some((child) => itemMatchesPath(pathname, child));
+
+                  return (
+                    <li className={`slide ${open ? "is-expanded" : ""}`} key={itemKey}>
+                      <button
+                        type="button"
+                        className={`side-menu__item vinova-sidebar__toggle ${childActive ? "has-active" : ""}`}
+                        aria-expanded={open}
+                        onClick={() => toggleSection(menuItem.title)}
+                      >
+                        <i className={`side-menu__icon fe fe-${menuItem.icon}`}></i>
+                        <span className="side-menu__label">{menuItem.title}</span>
+                        <i className={`angle fe ${open ? "fe-chevron-down" : "fe-chevron-right"}`}></i>
+                      </button>
+                      {open && (
+                        <ul className="slide-menu">
+                          {children.map((child) => {
+                            const active = itemMatchesPath(pathname, child);
+                            const locked = paymentLocked && !paymentPageAllowed(child.path);
+                            return (
+                              <li key={cleanPath(child.path) || child.title}>
+                                {locked ? (
+                                  renderLocked(child, "slide-item")
+                                ) : (
                                   <Link
-                                    to={child.path}
-                                    className={`slide-item ${child.active ? "active" : ""}`}
-                                    onClick={() => {
-                                      setNavActive(child.path);
-                                      toggletNavActive(menuItem);
-                                    }}
+                                    to={cleanPath(child.path)}
+                                    className={`slide-item ${active ? "active" : ""}`}
+                                    aria-current={active ? "page" : undefined}
                                   >
                                     {child.title}
                                   </Link>
-                                </li>
-                              ) : null
-                            )}
-                          </ul>
-                        )}
-                      </li>
-                    ) : null
-                  )}
-                </Fragment>
-              ))}
-            </ul>
-          </div>
-        </PerfectScrollbar>
+                                )}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      )}
+                    </li>
+                  );
+                })}
+              </Fragment>
+            ))}
+          </ul>
+        </div>
       </aside>
     </div>
   );

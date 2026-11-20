@@ -1,0 +1,151 @@
+.app-sidebar.vinova-sidebar {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.app-sidebar.vinova-sidebar .side-header {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  width: 100% !important;
+  flex: 0 0 auto;
+  z-index: 2;
+}
+
+.app-sidebar.vinova-sidebar .main-sidemenu {
+  padding-top: 0 !important;
+}
+
+.app-sidebar.vinova-sidebar a.side-menu__item.active,
+.app-sidebar.vinova-sidebar a.side-menu__item.active:hover,
+.app-sidebar.vinova-sidebar a.side-menu__item.active:focus {
+  color: #fff !important;
+  background: var(--primary-bg-color) !important;
+  box-shadow: none;
+}
+
+.app-sidebar.vinova-sidebar a.side-menu__item.active .side-menu__icon,
+.app-sidebar.vinova-sidebar a.side-menu__item.active .side-menu__label,
+.app-sidebar.vinova-sidebar a.side-menu__item.active:hover .side-menu__label,
+.app-sidebar.vinova-sidebar a.side-menu__item.active:focus .side-menu__label {
+  color: #fff !important;
+}
+
+.app-sidebar.vinova-sidebar .vinova-sidebar__menu {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: 0;
+  padding-bottom: 28px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.app-sidebar.vinova-sidebar .side-menu {
+  padding: 6px 6px 0 0;
+}
+
+.app-sidebar.vinova-sidebar .side-menu__item {
+  margin-left: 0;
+  padding-left: 14px;
+  padding-right: 10px;
+  border-radius: 0 60px 60px 0;
+}
+
+.app-sidebar.vinova-sidebar .vinova-sidebar__menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.app-sidebar.vinova-sidebar .vinova-sidebar__menu::-webkit-scrollbar-thumb {
+  background: rgba(41, 56, 150, 0.28);
+  border-radius: 99px;
+}
+
+.app-sidebar.vinova-sidebar button.side-menu__item {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
+.app-sidebar.vinova-sidebar .angle,
+.app-sidebar.vinova-sidebar .slide.is-expanded .angle {
+  transform: none !important;
+  margin-left: 8px;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.app-sidebar.vinova-sidebar .side-menu__item.has-active {
+  color: var(--primary-bg-color);
+  background: rgba(41, 56, 150, 0.08);
+}
+
+.app-sidebar.vinova-sidebar .side-menu__item.has-active .side-menu__icon,
+.app-sidebar.vinova-sidebar .side-menu__item.has-active .side-menu__label,
+.app-sidebar.vinova-sidebar .side-menu__item.has-active .angle {
+  color: var(--primary-bg-color);
+}
+
+.app-sidebar.vinova-sidebar .slide.is-expanded > .slide-menu {
+  display: block;
+}
+
+.app-sidebar.vinova-sidebar .slide-menu {
+  margin: 2px 6px 8px 18px;
+  padding: 2px 0 4px 10px;
+  border-left: 2px solid #e4e8f2;
+}
+
+.app-sidebar.vinova-sidebar .slide-menu .slide-item {
+  border-radius: 8px;
+  margin: 1px 0;
+  padding: 8px 12px;
+  color: #4d5875;
+}
+
+.app-sidebar.vinova-sidebar .slide-menu .slide-item::before {
+  content: none !important;
+}
+
+.app-sidebar.vinova-sidebar .slide-menu a.slide-item.active,
+.app-sidebar.vinova-sidebar .slide-menu .slide-item.active {
+  color: var(--primary-bg-color) !important;
+  background: rgba(41, 56, 150, 0.1);
+  font-weight: 600;
+}
+
+.app-sidebar.vinova-sidebar .vinova-sidebar__locked {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.dark-mode .app-sidebar.vinova-sidebar .side-menu__item.has-active,
+.dark-mode .app-sidebar.vinova-sidebar .slide-menu a.slide-item.active {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff !important;
+}
+
+.dark-mode .app-sidebar.vinova-sidebar .side-menu__item.has-active .side-menu__icon,
+.dark-mode .app-sidebar.vinova-sidebar .side-menu__item.has-active .side-menu__label,
+.dark-mode .app-sidebar.vinova-sidebar .side-menu__item.has-active .angle,
+.dark-mode .app-sidebar.vinova-sidebar .slide-menu a.slide-item.active {
+  color: #fff !important;
+}
+
+.dark-mode .app-sidebar.vinova-sidebar .slide-menu {
+  border-left-color: rgba(255, 255, 255, 0.16);
+}
+
+@media (min-width: 992px) {
+  .sidebar-mini.sidenav-toggled.sidenav-toggled-open .app-sidebar.vinova-sidebar .side-menu__item {
+    padding: 10px 10px 10px 12px !important;
+  }
+
+  .sidebar-mini.sidenav-toggled:not(.sidenav-toggled-open) .app-sidebar.vinova-sidebar .vinova-sidebar__menu {
+    overflow: visible;
+  }
+}
