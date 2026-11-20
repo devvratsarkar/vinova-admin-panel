@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Card, Col, Row } from 'react-bootstrap'
 import PageHeader from '../../../layouts/layoutcomponents/pageheader'
@@ -21,7 +21,8 @@ const STATUS_OPTIONS = [
   { value: 'cancelled', label: 'Cancelled' },
   { value: 'refunded', label: 'Refunded' },
 ]
-import { useGetOptometristTransactionsQuery } from '../../../redux/features/optometristAPIEndPoint'
+import { optometristAPIEndPoint, useGetOptometristTransactionsQuery } from '../../../redux/features/optometristAPIEndPoint'
+import { useCsvDownload } from '../../../utils/fileDownload'
 
 function readPage(response) {
   const payload = response?.data
@@ -113,13 +114,12 @@ export default function Transactions() {
     fromDate: searchParams.get('fromDate') || '',
     toDate: searchParams.get('toDate') || '',
   })
-  const [doExport, setDoExport] = useState(false)
-  const { data, isLoading, isFetching } = useGetOptometristTransactionsQuery({ ...filters.query, export: doExport }, { skip: filters.skip })
+  const { download: exportTransactions, exporting: isExporting } = useCsvDownload(
+    optometristAPIEndPoint.endpoints.getOptometristTransactions,
+    'Transactions downloaded',
+  )
+  const { data, isLoading, isFetching } = useGetOptometristTransactionsQuery(filters.query, { skip: filters.skip })
   const list = readPage(data)
-
-  useEffect(() => {
-    if (doExport && !isFetching) setDoExport(false)
-  }, [doExport, isFetching])
 
   useEffect(() => {
     if (list.totalPages > 0 && filters.currentPage > list.totalPages) {
@@ -198,7 +198,8 @@ export default function Transactions() {
                 <ListFilters
                   {...boundFilters(filters, {
                     placeholder: 'Description or ID',
-                    onExport: () => { if (!filters.skip) setDoExport(true) },
+                    onExport: () => { if (!filters.skip) exportTransactions(filters.query) },
+                    exporting: isExporting,
                     selects: [
                       {
                         label: 'Type',

@@ -15,7 +15,9 @@ import toast from 'react-hot-toast'
 import PageHeader from '../../../layouts/layoutcomponents/pageheader'
 import Loader from '../../../layouts/layoutcomponents/loader'
 import useDebounce from '../../../hooks/useDebounce'
+import { useCsvDownload } from '../../../utils/fileDownload'
 import {
+  optometristAPIEndPoint,
   useAcceptOptometristAppointmentMutation,
   useCompleteOptometristAppointmentMutation,
   useGetOptometristAppointmentsQuery,
@@ -465,7 +467,6 @@ export default function Appointments() {
     setPage(1)
   }
 
-  const [doExport, setDoExport] = useState(false)
   const { data: response, isLoading, isFetching, refetch } = useGetOptometristAppointmentsQuery({
     status,
     payment_status: paymentStatus,
@@ -475,8 +476,11 @@ export default function Appointments() {
     search: debouncedSearch,
     page,
     limit,
-    export: doExport,
   }, { skip: Boolean(dateError) })
+  const { download: exportAppointments, exporting: isExporting } = useCsvDownload(
+    optometristAPIEndPoint.endpoints.getOptometristAppointments,
+    'Appointments downloaded',
+  )
   const { data: rulesResponse } = useGetOptometristWorkingRulesQuery()
   const { data: servicesResponse } = useGetOptometristServicesQuery()
   const [acceptAppointment, { isLoading: isAccepting }] = useAcceptOptometristAppointmentMutation()
@@ -500,10 +504,6 @@ export default function Appointments() {
   useEffect(() => {
     if (totalPages > 0 && page > totalPages) setPage(totalPages)
   }, [page, totalPages])
-
-  useEffect(() => {
-    if (doExport && !isFetching) setDoExport(false)
-  }, [doExport, isFetching])
 
   const closeAction = () => setAction(null)
 
@@ -586,10 +586,10 @@ export default function Appointments() {
                 variant="link"
                 size="sm"
                 className="p-0 text-decoration-none fw-semibold"
-                disabled={Boolean(dateError)}
-                onClick={() => setDoExport(true)}
+                disabled={Boolean(dateError) || isExporting}
+                onClick={() => exportAppointments({ status, payment_status: paymentStatus, type, fromDate, toDate, search: debouncedSearch })}
               >
-                Export
+                {isExporting ? 'Exporting...' : 'Export'}
               </Button>
               <Button type="button" variant="link" size="sm" className="p-0 text-decoration-none fw-semibold" onClick={clearFilters} disabled={!hasFilters}>
                 Clear filters

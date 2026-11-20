@@ -15,11 +15,13 @@ import toast from 'react-hot-toast'
 import PageHeader from '../../../layouts/layoutcomponents/pageheader'
 import Loader from '../../../layouts/layoutcomponents/loader'
 import {
+  optometristAPIEndPoint,
   useAddOptometristCustomerMutation,
   useDeleteOptometristPrescriptionMutation,
   useGetOptometristCustomersQuery,
 } from '../../../redux/features/optometristAPIEndPoint'
 import useDebounce from '../../../hooks/useDebounce'
+import { useCsvDownload } from '../../../utils/fileDownload'
 import RegisterCustomerModal from './RegisterCustomerModal'
 import PrescriptionForm from './PrescriptionForm'
 import DeletePrescriptionModal from './DeletePrescriptionModal'
@@ -154,13 +156,15 @@ export default function Customers() {
   const [rxModal, setRxModal] = useState({ open: false, mode: 'created', customer: null, prescription: null })
   const [deleteRx, setDeleteRx] = useState(null)
   const debouncedSearch = useDebounce(search.trim(), 500)
-  const [doExport, setDoExport] = useState(false)
+  const { download: exportCustomers, exporting: isExporting } = useCsvDownload(
+    optometristAPIEndPoint.endpoints.getOptometristCustomers,
+    'Customers downloaded',
+  )
   const { data: customersResponse, isLoading: customersLoading, isFetching, refetch: refetchCustomers } = useGetOptometristCustomersQuery({
     filter,
     search: debouncedSearch,
     page,
     limit,
-    export: doExport,
   })
   const [addCustomer, { isLoading: isAddingCustomer }] = useAddOptometristCustomerMutation()
   const [deletePrescription, { isLoading: isDeletingPrescription }] = useDeleteOptometristPrescriptionMutation()
@@ -195,10 +199,6 @@ export default function Customers() {
   useEffect(() => {
     if (totalPages > 0 && page > totalPages) setPage(totalPages)
   }, [page, totalPages])
-
-  useEffect(() => {
-    if (doExport && !isFetching) setDoExport(false)
-  }, [doExport, isFetching])
 
   const handleRegister = async (payload) => {
     try {
@@ -261,8 +261,8 @@ export default function Customers() {
             <span className="px-3 py-2 fw-semibold" style={{ fontSize: 13, background: '#f8fafc', border: '1px solid #e8edf3', borderRadius: 10 }}>
               {prescriptionCount} prescriptions
             </span>
-            <Button type="button" variant="outline-primary" className="d-inline-flex align-items-center gap-2" onClick={() => setDoExport(true)}>
-              Export
+            <Button type="button" variant="outline-primary" className="d-inline-flex align-items-center gap-2" onClick={() => exportCustomers({ filter, search: debouncedSearch })} disabled={isExporting}>
+              {isExporting ? 'Exporting...' : 'Export'}
             </Button>
             <Button type="button" variant="primary" className="d-inline-flex align-items-center gap-2" onClick={() => setRegisterOpen(true)}>
               <FaUserPlus />

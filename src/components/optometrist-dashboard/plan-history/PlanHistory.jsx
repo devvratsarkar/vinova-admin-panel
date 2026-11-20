@@ -5,7 +5,8 @@ import toast from 'react-hot-toast'
 import PageHeader from '../../../layouts/layoutcomponents/pageheader'
 import Loader from '../../../layouts/layoutcomponents/loader'
 import { ListFilters, ListTable, boundFilters, indexColumn, useListFilters } from '../../common/ListFilters'
-import { useGetOptometristPlanHistoryQuery, useLazyGetOptometristPlanInvoiceQuery } from '../../../redux/features/optometristAPIEndPoint'
+import { optometristAPIEndPoint, useGetOptometristPlanHistoryQuery, useLazyGetOptometristPlanInvoiceQuery } from '../../../redux/features/optometristAPIEndPoint'
+import { useCsvDownload } from '../../../utils/fileDownload'
 
 const STATUS_OPTIONS = [
   { value: 'completed', label: 'Completed' },
@@ -100,15 +101,14 @@ function statusStyle(status) {
 
 export default function PlanHistory() {
   const filters = useListFilters(['status', 'plan_type'])
-  const [doExport, setDoExport] = useState(false)
-  const { data, isLoading, isFetching } = useGetOptometristPlanHistoryQuery({ ...filters.query, export: doExport }, { skip: filters.skip })
+  const { download: exportHistory, exporting: isExporting } = useCsvDownload(
+    optometristAPIEndPoint.endpoints.getOptometristPlanHistory,
+    'Plan history downloaded',
+  )
+  const { data, isLoading, isFetching } = useGetOptometristPlanHistoryQuery(filters.query, { skip: filters.skip })
   const [downloadInvoice] = useLazyGetOptometristPlanInvoiceQuery()
   const [downloadingId, setDownloadingId] = useState('')
   const list = readPage(data)
-
-  useEffect(() => {
-    if (doExport && !isFetching) setDoExport(false)
-  }, [doExport, isFetching])
 
   useEffect(() => {
     if (list.totalPages > 0 && filters.currentPage > list.totalPages) {
@@ -216,7 +216,8 @@ export default function PlanHistory() {
                 <ListFilters
                   {...boundFilters(filters, {
                     placeholder: 'Plan or transaction ID',
-                    onExport: () => { if (!filters.skip) setDoExport(true) },
+                    onExport: () => { if (!filters.skip) exportHistory(filters.query) },
+                    exporting: isExporting,
                     selects: [
                       {
                         label: 'Status',

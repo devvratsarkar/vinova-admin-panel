@@ -162,13 +162,14 @@ export function ListFilters({
   onClear,
   hasFilters,
   onExport,
+  exporting = false,
 }) {
   return (
     <div className="orders-filters mx-3 mt-3 mb-4 p-3" style={{ background: "#f8fafc", border: "1px solid #e8edf3", borderRadius: 10 }}>
       <div className="d-flex justify-content-end align-items-center gap-3 mb-2">
         {onExport && (
-          <Button type="button" variant="link" size="sm" className="p-0 text-decoration-none fw-semibold" onClick={onExport}>
-            Export
+          <Button type="button" variant="link" size="sm" className="p-0 text-decoration-none fw-semibold" onClick={onExport} disabled={exporting}>
+            {exporting ? "Exporting..." : "Export"}
           </Button>
         )}
         <Button type="button" variant="link" size="sm" className="p-0 text-decoration-none fw-semibold" onClick={onClear} disabled={!hasFilters}>
