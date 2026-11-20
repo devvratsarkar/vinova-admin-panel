@@ -2,21 +2,17 @@ import React, { useEffect, useState } from "react";
 import moment from "moment";
 
 const LiveClock = React.memo(() => {
-  const [time, setTime] = useState(
-    moment().format("DD-MM-YYYY hh:mm:ss A")
-  );
+  const [now, setNow] = useState(() => moment());
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTime(moment().format("DD-MM-YYYY hh:mm:ss A"));
-    }, 1000);
-
+    const timer = setInterval(() => setNow(moment()), 1000);
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <div className="live-clock text-dark fw-bold px-3 py-2 border rounded-3 bg-light d-flex align-items-center">
-      {time}
+    <div className="live-clock" aria-label={now.format("DD-MM-YYYY hh:mm:ss A")}>
+      <span className="live-clock__date">{now.format("DD-MM-YYYY")}</span>
+      <span className="live-clock__time">{now.format("hh:mm:ss A")}</span>
     </div>
   );
 });

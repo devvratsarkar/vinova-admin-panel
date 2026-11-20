@@ -9,7 +9,7 @@ import {
 } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/images/brand/logo.png";
-import { MENUITEMS } from "../../commondata/sidemenu";
+import HeaderMenuSearch from "./HeaderMenuSearch";
 import { useDispatch } from "react-redux";
 import { logoutSuccess, setCountryCode } from "../../redux/slices/authSlice";
 import toast from "react-hot-toast";
@@ -17,7 +17,6 @@ import { openModal } from "../../redux/slices/allModalSlice";
 import { jwtDecode } from 'jwt-decode';
 import { usePermissions } from "../../commondata/usePermissions";
 // import { useGetAllCoutriesQuery } from "../../redux/features/currencyCountryAPIEndPoint";
-import { Image } from "react-bootstrap";
 import { useGetGlobalSettingQuery } from "../../redux/features/globalSettingEndPoints";
 import { catalogueSlice } from "../../redux/services/catalogueSlice";
 import { setLanguages } from "../../redux/slices/languageSlice";
@@ -25,6 +24,7 @@ import { languageMap } from "../../commondata/languageMap";
 import { useSelector } from "react-redux";
 import useLangTabs from "../../hooks/useLangTabs";
 import LiveClock from "./LiveClock";
+import "./header.css";
 import { useGetUserProfileQuery } from "../../redux/features/commonApiCall";
 import { useGetOptometristUserProfileQuery, usePayOptometristPlanMutation } from "../../redux/features/optometristAPIEndPoint";
 import { openPaymentLink, paymentLink, paymentRequired, planRenewDue } from "../../commondata/optometristPayment";
@@ -152,19 +152,19 @@ export default function Header() {
   }
 
   // Darkmode
-  const DarkMode = () => {
-    const body = document.querySelector("body");
-
-    if (body?.classList.contains("dark-mode")) {
-      body.classList.remove("dark-mode");
-      localStorage.setItem("zanexlightmode", "true");
-      localStorage.setItem("zanexdarkmode", "false");
-    } else {
-      body.classList.add("dark-mode");
-      localStorage.setItem("zanexdarkmode", "true");
-      localStorage.setItem("zanexlightmode", "false");
-    }
-  };
+  // const DarkMode = () => {
+  //   const body = document.querySelector("body");
+  //
+  //   if (body?.classList.contains("dark-mode")) {
+  //     body.classList.remove("dark-mode");
+  //     localStorage.setItem("zanexlightmode", "true");
+  //     localStorage.setItem("zanexdarkmode", "false");
+  //   } else {
+  //     body.classList.add("dark-mode");
+  //     localStorage.setItem("zanexdarkmode", "true");
+  //     localStorage.setItem("zanexlightmode", "false");
+  //   }
+  // };
 
   //leftsidemenu
   const openCloseSidebar = () => {
@@ -174,14 +174,6 @@ export default function Header() {
   const openCloseSidebarright = () => {
     document.querySelector(".sidebar-right")?.classList.toggle("sidebar-open");
   };
-
-  // responsivesearch
-  const responsivesearch = () => {
-    document.querySelector(".header-search")?.classList.toggle("show");
-  };
-  document.addEventListener("click", function () {
-    document.querySelector(".search-result")?.classList.add("d-none");
-  });
 
   const handleLogout = () => {
     dispatch(logoutSuccess())
@@ -244,9 +236,9 @@ export default function Header() {
   return (
     <>
     <RenewPlanModal show={renewOpen} profile={data} onClose={() => setRenewOpen(false)} />
-    <Navbar expand="md" className="app-header header sticky">
+    <Navbar expand="lg" className="app-header header sticky">
       <Container fluid className="main-container">
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center w-100">
           <Link
             aria-label="Hide Sidebar"
             className="app-sidebar__toggle"
@@ -272,9 +264,9 @@ export default function Header() {
             {role === "SuperAdmin" && (
               <>
                 <div className="country-dropdown-wrapper">
-                  <Dropdown>
+                  <Dropdown align="start">
                     <Dropdown.Toggle
-                      id="dropdown-basic"
+                      id="country-menu"
                       className="country-dropdown position-relative"
                     >
                       {selectedCountryData ? (
@@ -284,37 +276,34 @@ export default function Header() {
                             alt={selectedCountryData.name}
                             className="me-2"
                           />
-                          {selectedCountryData.name}
+                          <span className="country-name">{selectedCountryData.name}</span>
                         </div>
                       ) : (
                         "Select Country"
                       )}
                     </Dropdown.Toggle>
 
-                    <Dropdown.Menu className="custom-dropdown-menu">
+                    <Dropdown.Menu className="custom-dropdown-menu country-menu">
                       {countryData.map((country) => (
                         <Dropdown.Item
                           key={country.code}
                           onClick={() => handleSelect(country.code)}
-                          className="d-flex align-items-center"
+                          active={country.code === effectiveCountry}
                         >
-                          <Image
-                            src={country.flag}
-                            alt={country.name}
-                            width="24"
-                            height="16"
-                            className="me-2"
-                          />
-                          {country.name}
+                          <img src={country.flag} alt="" />
+                          <span>{country.name}</span>
+                          {country.code === effectiveCountry && (
+                            <i className="fe fe-check country-check" aria-hidden="true"></i>
+                          )}
                         </Dropdown.Item>
                       ))}
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
                 <div className="language-dropdown-wrapper">
-                  <Dropdown>
+                  <Dropdown align="start">
                     <Dropdown.Toggle
-                      id="dropdown-basic"
+                      id="language-menu"
                       className="country-dropdown position-relative"
                     >
                       {activeTab?.toUpperCase()}
@@ -324,6 +313,7 @@ export default function Header() {
                       {totalLanguages && totalLanguages?.length > 0 && totalLanguages?.map((lang, index) => (
                         <Dropdown.Item
                           key={index}
+                          active={lang.code === activeTab}
                           onClick={() => setActiveTab(lang.code)}
                         >
                           {lang.name}
@@ -336,15 +326,8 @@ export default function Header() {
             )}
 
             <LiveClock />
-            <Navbar.Toggle
-              aria-controls="navbarScroll"
-              className="navresponsive-toggler d-lg-none ms-auto"
-              type="button"
-            >
-              <span className="navbar-toggler-icon fe fe-more-vertical text-dark"></span>
-            </Navbar.Toggle>
 
-            <div className="navbar navbar-collapse responsive-navbar p-0">
+            <div className="navbar navbar-collapse responsive-navbar p-0 d-none d-lg-flex">
               <Navbar.Collapse
                 className="navbar-collapse"
                 id="navbarSupportedContent-4"
@@ -361,28 +344,7 @@ export default function Header() {
                       {isRenewing ? 'Starting...' : needsPayment ? 'Pay' : 'Renew'}
                     </button>
                   )}
-                  <div className="dropdown d-block d-lg-none">
-                    <Link
-                      to="#"
-                      className="nav-link icon"
-                      onClick={() => responsivesearch()}
-                    >
-                      <i className="fe fe-search"></i>
-                    </Link>
-                    <div className="dropdown-menu header-search dropdown-menu-start">
-                      <div className="input-group w-100 p-2 border">
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="Search...."
-                        />
-                        <div className="input-group-text btn btn-primary">
-                          <i className="fa fa-search" aria-hidden="true"></i>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="dropdown d-md-flex">
+                  {/* <div className="dropdown d-md-flex">
                     <Link
                       to="#"
                       className="nav-link icon theme-layout nav-link-bg layout-setting"
@@ -395,7 +357,7 @@ export default function Header() {
                         <i className={`fe ${"fe-sun"}`}></i>
                       </span>
                     </Link>
-                  </div>
+                  </div> */}
                   <div className="dropdown d-md-flex">
                     <Link
                       to="#"
@@ -406,8 +368,6 @@ export default function Header() {
                     </Link>
                   </div>
                   <Dropdown className="d-md-flex notifications">
-                    <div className="" style={{ width: "50px" }}>
-                    </div>
                     <Dropdown.Menu
                       className=" dropdown-menu-end dropdown-menu-arrow "
                       style={{ margin: 0 }}
@@ -487,52 +447,52 @@ export default function Header() {
                     </Dropdown.Menu>
                   </Dropdown>
 
-                  <Dropdown className=" d-md-flex profile-1">
-                    <Dropdown.Toggle
-                      className="nav-link profile leading-none d-flex px-1"
-                      variant=""
-                    >
-                      <span>
-                        <img
-                          src={adminData?.profile_pic}
-                          alt="profile-user"
-                          className="avatar  profile-user brround cover-image"
-                        />
-                      </span>
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu
-                      className="dropdown-menu-end dropdown-menu-arrow"
-                      style={{ margin: 0 }}
-                    >
-                      <div className="drop-heading">
-                        <div className="text-center">
-                          <h5 className="text-dark mb-0">{adminData?.name}</h5>
-                          <small className="text-muted">Admin</small>
-                        </div>
-                      </div>
-                      <div className="dropdown-divider m-0"></div>
-                      <Link
-                        className="dropdown-item"
-                        to={`/profile`}
-                      >
-                        <i className="dropdown-icon fe fe-user"></i> Profile
-                      </Link>
-                      <button
-                        className="dropdown-item"
-                        onClick={() => { dispatch(openModal({ componentName: "ChangePassword" })) }}
-                      >
-                        <i className="dropdown-icon fe fe-lock"></i> Change Password
-                      </button>
-                      <div className="dropdown-item cursor-pointer" onClick={() => handleLogout()} >
-                        <i className="dropdown-icon fe fe-alert-circle"></i>
-                        Sign out
-                      </div>
-                    </Dropdown.Menu>
-                  </Dropdown>
-
                 </div>
               </Navbar.Collapse>
             </div>
+            <HeaderMenuSearch />
+            <Dropdown className="profile-1 header-profile">
+              <Dropdown.Toggle
+                className="nav-link profile leading-none d-flex px-1"
+                variant=""
+              >
+                <span>
+                  <img
+                    src={adminData?.profile_pic}
+                    alt="profile-user"
+                    className="avatar profile-user brround cover-image"
+                  />
+                </span>
+              </Dropdown.Toggle>
+              <Dropdown.Menu
+                className="dropdown-menu-end header-profile-menu"
+                style={{ margin: 0 }}
+              >
+                <div className="drop-heading">
+                  <div className="text-start">
+                    <h5 className="text-dark mb-0">{adminData?.name}</h5>
+                    <small className="text-muted">Admin</small>
+                  </div>
+                </div>
+                <div className="dropdown-divider m-0"></div>
+                <Link
+                  className="dropdown-item"
+                  to={`/profile`}
+                >
+                  <i className="dropdown-icon fe fe-user"></i> Profile
+                </Link>
+                <button
+                  className="dropdown-item"
+                  onClick={() => { dispatch(openModal({ componentName: "ChangePassword" })) }}
+                >
+                  <i className="dropdown-icon fe fe-lock"></i> Change Password
+                </button>
+                <div className="dropdown-item cursor-pointer" onClick={() => handleLogout()} >
+                  <i className="dropdown-icon fe fe-alert-circle"></i>
+                  Sign out
+                </div>
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
         </div>
       </Container>
