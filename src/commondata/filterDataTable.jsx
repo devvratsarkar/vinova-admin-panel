@@ -10,6 +10,8 @@ import { useGetAllLensQuery } from "../redux/features/LensAPIEndPoint";
 import { useGetLensColorQuery } from "../redux/features/lensColorAPIEndPoint";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, namedOptions, useListFilters } from "../components/common/ListFilters";
 import { allow } from "./permissions";
+import { catalogueSlice } from "../redux/services/catalogueSlice";
+import { exportProps, useExportAction } from "../utils/fileDownload";
 
 function readCoatings(response) {
   const payload = response?.data;
@@ -30,6 +32,7 @@ export const FilterDataTable = () => {
   const { data: lensData } = useGetAllLensQuery();
   const { data: colorData } = useGetLensColorQuery();
   const { data, isLoading, isFetching, refetch } = useGetAllFiltersQuery(list.query, { skip: list.skip });
+  const fileExport = useExportAction(catalogueSlice.endpoints.getAllFilters, "LensType", "Filters downloaded");
   const [updateStatus, { isLoading: loadingStatus }] = useUpdateLensTypeStatusMutation();
   const { rows, total } = readCoatings(data);
 
@@ -108,6 +111,7 @@ export const FilterDataTable = () => {
         <ListFilters
           {...boundFilters(list, {
             placeholder: "Name",
+            ...exportProps(fileExport, list.query, list.skip),
             selects: [
               { label: "Lens quality category", value: list.filters.lens, onChange: (value) => list.setFilter("lens", value), empty: "All categories", options: namedOptions(lensData?.data) },
               { label: "Lens color", value: list.filters.lensColor, onChange: (value) => list.setFilter("lensColor", value), empty: "All colors", options: namedOptions(colorData?.data) },

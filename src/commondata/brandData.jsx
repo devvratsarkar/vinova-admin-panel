@@ -8,6 +8,8 @@ import toast from "react-hot-toast";
 import { useGetBrandsQuery, useGetBrandsSelectQuery, useUpdateBrandStatusMutation } from "../redux/features/BrandAPIEndpoint";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, indexColumn, useListFilters } from "../components/common/ListFilters";
 import { allow } from "./permissions";
+import { catalogueSlice } from "../redux/services/catalogueSlice";
+import { exportProps, useExportAction } from "../utils/fileDownload";
 
 const FILTER_KEYS = ["status"];
 
@@ -36,6 +38,7 @@ export const BrandDataTable = () => {
   const dispatch = useDispatch();
   const list = useListFilters(FILTER_KEYS);
   const { data, isLoading, isFetching, refetch } = useGetBrandsQuery(list.query, { skip: list.skip });
+  const fileExport = useExportAction(catalogueSlice.endpoints.getBrands, "Brand", "Brands downloaded");
   const { refetch: refetchSelectBrand } = useGetBrandsSelectQuery();
   const [updateStatus, { isLoading: loadingStatus }] = useUpdateBrandStatusMutation();
   const { rows, total } = readBrands(data);
@@ -120,6 +123,7 @@ export const BrandDataTable = () => {
         <ListFilters
           {...boundFilters(list, {
             placeholder: "Brand name",
+            ...exportProps(fileExport, list.query, list.skip),
             selects: [
               { label: "Status", value: list.filters.status, onChange: (value) => list.setFilter("status", value), options: STATUS_FILTERS },
             ],

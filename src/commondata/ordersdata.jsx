@@ -1,12 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Button, Row, Col, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Button, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { Link, useSearchParams } from "react-router-dom";
-import { API_BASE_URL } from "../utils/config";
-import axios from "axios";
 import Loader from "../layouts/layoutcomponents/loader";
 import toast from "react-hot-toast";
 import moment from "moment";
-import { useGetAllOrdersQuery } from "../redux/features/ordersAPIEndPoint";
+import { ordersAPIEndPoint, useGetAllOrdersQuery } from "../redux/features/ordersAPIEndPoint";
+import { useExportAction } from "../utils/fileDownload";
 import useDebounce from "../hooks/useDebounce";
 import MuiDataTable from "../components/common/MuiDataTable";
 import DateRangeFields from "../components/common/DateRangeFields";
@@ -84,6 +83,7 @@ export const OrdersDataTable = () => {
   };
 
   const { data, isLoading, isFetching } = useGetAllOrdersQuery(apiQuery, { skip: Boolean(dateError) });
+  const { onExport, exporting } = useExportAction(ordersAPIEndPoint.endpoints.getAllOrders, "Order", "Orders downloaded");
   const { rows: orders, total } = readOrdersResult(data);
 
   const setQuery = (updates) => {
@@ -110,28 +110,7 @@ export const OrdersDataTable = () => {
 
   const permissions = JSON.parse(localStorage.getItem("permissions") || "{}")
   const role = localStorage.getItem("role")
-  const shouldShowExportButton = hasPermission(role, permissions, "Order", "export");
   const shouldShowSingleView = hasPermission(role, permissions, "Order", "view");
-
-  const handleExport = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/download-order-csv`, {
-        responseType: 'blob',
-      });
-
-      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'text/csv' }));
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = url;
-      a.download = 'Orders.csv';
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      toast.success("Orders downloaded successfully!");
-    } catch (error) {
-      toast.error("An error occurred during export.");
-    }
-  };
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(
@@ -257,20 +236,13 @@ export const OrdersDataTable = () => {
     <>
       {(isLoading || isFetching) && <Loader />}
       <div className="e-table pb-5">
-        {shouldShowExportButton && (
-          <Row className="justify-content-end mt-3 mx-2">
-            <Col xs={12} className="text-end">
-              <Button
-                className="btn btn-success text-white me-3 border-success"
-                onClick={handleExport}
-              >
-                <i className="fa fa-download"></i> Export
-              </Button>
-            </Col>
-          </Row>
-        )}
         <div className="orders-filters mx-3 mt-3 mb-4 p-3" style={{ background: '#f8fafc', border: '1px solid #e8edf3', borderRadius: 10 }}>
-          <div className="d-flex justify-content-end mb-2">
+          <div className="d-flex justify-content-end align-items-center gap-3 mb-2">
+            {onExport && (
+              <Button type="button" variant="link" size="sm" className="p-0 text-decoration-none fw-semibold" onClick={() => onExport(apiQuery, Boolean(dateError))} disabled={exporting}>
+                {exporting ? "Exporting..." : "Export"}
+              </Button>
+            )}
             <Button
               type="button"
               variant="link"

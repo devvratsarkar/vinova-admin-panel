@@ -1,4 +1,5 @@
 import { catalogueSlice } from "../services/catalogueSlice";
+import { listRequest } from "./listParams";
 
 export const StaffEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -45,7 +46,9 @@ export const StaffEndPoint = catalogueSlice.injectEndpoints({
             invalidatesTags: ["StaffList"],
         }),
         getAllStaff: builder.query({
-            query: (params = {}) => ({
+            query: (params = {}) => params?.export
+                ? listRequest(`/all-staff`, params, "staff-users.csv", ["search", "role", "status", "fromDate", "toDate"])
+                : ({
                 url: `/all-staff`,
                 params: {
                     ...(params.page && { page: params.page }),

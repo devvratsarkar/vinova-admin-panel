@@ -8,6 +8,8 @@ import PageHeader from "../../../layouts/layoutcomponents/pageheader";
 import { useGetAllUsersQuery } from "../../../redux/features/getApiSecond";
 import { useUpdateCustomerMutation } from "../../../redux/features/postApiSecond";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, useListFilters } from "../../common/ListFilters";
+import { commonDataSlice } from "../../../redux/slices/commonApiSlice";
+import { exportProps, useExportAction } from "../../../utils/fileDownload";
 
 const FILTER_KEYS = ["status"];
 
@@ -44,6 +46,7 @@ export default function Customer() {
     skip: list.skip,
     refetchOnMountOrArgChange: true,
   });
+  const fileExport = useExportAction(commonDataSlice.endpoints.getAllUsers, "Customer", "Customers downloaded");
   const [updateCustomer, { isLoading: updating }] = useUpdateCustomerMutation();
   const { rows, total } = readCustomers(data);
 
@@ -107,7 +110,7 @@ export default function Customer() {
               {isError && <Error error_mes={error} />}
               <div className="e-table pb-5">
                 <ListFilters
-                  {...boundFilters(list, { placeholder: "Name, email, or phone" })}
+                  {...boundFilters(list, { placeholder: "Name, email, or phone", ...exportProps(fileExport, list.query, list.skip) })}
                   selects={[{ label: "Status", value: list.filters.status, onChange: (value) => list.setFilter("status", value), options: STATUS_FILTERS }]}
                 />
                 <ListTable

@@ -1,5 +1,5 @@
 import { catalogueSlice } from "../services/catalogueSlice";
-import { listParams } from "./listParams";
+import { listParams, listRequest } from "./listParams";
 
 export const lensColorAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -20,10 +20,12 @@ export const lensColorAPIEndPoint = catalogueSlice.injectEndpoints({
             invalidatesTags: ["LensColors"],
         }),
         getLensColor: builder.query({
-            query: (params = {}) => ({
-                url: `/lens-color`,
-                params: listParams(params),
-            }),
+            query: (params = {}) => params?.export
+                ? listRequest(`/lens-color`, params, "lens-colors.csv")
+                : ({
+                    url: `/lens-color`,
+                    params: listParams(params),
+                }),
             providesTags: ["LensColors"],
         }),
         getSingleLensColor: builder.query({

@@ -10,6 +10,8 @@ import { openModal } from "../../redux/slices/allModalSlice";
 import toast from "react-hot-toast";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, useListFilters, visibleRows } from "../common/ListFilters";
 import { allow } from "../../commondata/permissions";
+import { catalogueSlice } from "../../redux/services/catalogueSlice";
+import { exportProps, useExportAction } from "../../utils/fileDownload";
 
 const FILTER_KEYS = ["status"];
 
@@ -56,10 +58,12 @@ export default function InventorySizes() {
   const list = useListFilters(FILTER_KEYS);
   const [updateStatus, { isLoading: loadingStatusUpdate }] = useUpdateInventoryStatusMutation();
   const [copyDocument, { isLoading: loadingCopyDocument }] = useCopyVariantsMutation();
+  const sizeQuery = { id, ...list.query };
   const { data, isError, error, isLoading, isFetching, refetch } = useGetInventorySizeWiseQuery(
-    { id, ...list.query },
+    sizeQuery,
     { skip: !id || list.skip },
   );
+  const fileExport = useExportAction(catalogueSlice.endpoints.getInventorySizeWise, "InventoryWithVariant", "Inventory sizes downloaded");
   const result = readSizes(data);
   const rows = visibleRows(result, list.currentPage, list.pageSize);
 
@@ -148,6 +152,7 @@ export default function InventorySizes() {
               <ListFilters
                 {...boundFilters(list, {
                   placeholder: "Product name",
+                  ...exportProps(fileExport, sizeQuery, !id || list.skip),
                   selects: [
                     { label: "Status", value: list.filters.status, onChange: (value) => list.setFilter("status", value), options: STATUS_FILTERS },
                   ],

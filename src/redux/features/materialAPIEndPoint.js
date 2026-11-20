@@ -1,13 +1,15 @@
 import { catalogueSlice } from "../services/catalogueSlice";
-import { listParams } from "./listParams";
+import { listParams, listRequest } from "./listParams";
 
 export const materialAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
         getAllMaterials: builder.query({
-            query: (params = {}) => ({
-                url: `/material`,
-                params: listParams(params),
-            }),
+            query: (params = {}) => params?.export
+                ? listRequest(`/material`, params, "materials.csv")
+                : ({
+                    url: `/material`,
+                    params: listParams(params),
+                }),
             providesTags: ["Materials"],
         }),
         getSingleMaterial: builder.query({

@@ -216,7 +216,11 @@ export default function PlanHistory() {
                 <ListFilters
                   {...boundFilters(filters, {
                     placeholder: 'Plan or transaction ID',
-                    onExport: () => { if (!filters.skip) exportHistory(filters.query) },
+                    onExport: () => {
+                      if (filters.skip) return
+                      const { page, limit, ...query } = filters.query
+                      exportHistory(query)
+                    },
                     exporting: isExporting,
                     selects: [
                       {

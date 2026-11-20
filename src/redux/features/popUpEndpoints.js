@@ -1,4 +1,5 @@
 import { catalogueSlice } from "../services/catalogueSlice";
+import { listRequest } from "./listParams";
 
 export const popUpEndPoints = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -24,6 +25,7 @@ export const popUpEndPoints = catalogueSlice.injectEndpoints({
         }),
         getLoginData: builder.query({
             query: (params = {}) => {
+                if (params.export) return listRequest(`/get-login-data`, params, "login-data.csv");
                 const query = new URLSearchParams();
                 if (params.search) query.append("search", params.search);
                 if (params.fromDate) query.append("fromDate", params.fromDate);

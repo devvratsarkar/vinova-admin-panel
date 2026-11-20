@@ -1,13 +1,15 @@
 import { catalogueSlice } from "../services/catalogueSlice";
-import { listParams } from "./listParams";
+import { listParams, listRequest } from "./listParams";
 
 export const optometristEnquiryAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
         getOptometrists: builder.query({
-            query: (params = {}) => ({
-                url: `/get-optometrists`,
-                params: listParams(params),
-            }),
+            query: (params = {}) => params?.export
+                ? listRequest(`/get-optometrists`, params, "optometrists.csv")
+                : ({
+                    url: `/get-optometrists`,
+                    params: listParams(params),
+                }),
             providesTags: ["Optometrists"],
         }),
         getSingleOptometrist: builder.query({
@@ -68,10 +70,12 @@ export const optometristEnquiryAPIEndPoint = catalogueSlice.injectEndpoints({
             invalidatesTags: ["Optometrists"],
         }),
         getAdminOptometristWithdrawals: builder.query({
-            query: (params = {}) => ({
-                url: `/optometrist-withdrawal/request`,
-                params: listParams(params),
-            }),
+            query: (params = {}) => params?.export
+                ? listRequest(`/optometrist-withdrawal/request`, params, "optometrist-withdrawals.csv")
+                : ({
+                    url: `/optometrist-withdrawal/request`,
+                    params: listParams(params),
+                }),
             providesTags: ["OptometristWithdrawals"],
         }),
         updateAdminOptometristWithdrawal: builder.mutation({

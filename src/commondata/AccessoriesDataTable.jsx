@@ -8,6 +8,8 @@ import { useGetAllAccessoriesDataQuery } from "../redux/features/framesAPIEndPoi
 import { useGetBrandsSelectQuery } from "../redux/features/BrandAPIEndpoint";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, namedOptions, useListFilters } from "../components/common/ListFilters";
 import { allow } from "./permissions";
+import { catalogueSlice } from "../redux/services/catalogueSlice";
+import { exportProps, useExportAction } from "../utils/fileDownload";
 
 const FILTER_KEYS = ["brand", "status"];
 
@@ -23,6 +25,7 @@ export const AccessoriesDataTable = () => {
   const list = useListFilters(FILTER_KEYS);
   const { data: brandData } = useGetBrandsSelectQuery();
   const { data, isLoading, isFetching } = useGetAllAccessoriesDataQuery(list.query, { skip: list.skip });
+  const fileExport = useExportAction(catalogueSlice.endpoints.getAllAccessoriesData, "Accessories", "Accessories downloaded");
   const { rows, total } = readAccessories(data);
 
   const columns = useMemo(() => [
@@ -81,6 +84,7 @@ export const AccessoriesDataTable = () => {
         <ListFilters
           {...boundFilters(list, {
             placeholder: "Name or brand",
+            ...exportProps(fileExport, list.query, list.skip),
             selects: [
               { label: "Brand", value: list.filters.brand, onChange: (value) => list.setFilter("brand", value), empty: "All brands", options: namedOptions(brandData?.data) },
               { label: "Status", value: list.filters.status, onChange: (value) => list.setFilter("status", value), options: STATUS_FILTERS },

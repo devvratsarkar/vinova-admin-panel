@@ -1,5 +1,5 @@
 import { catalogueSlice } from "../services/catalogueSlice";
-import { listParams } from "./listParams";
+import { listParams, listRequest } from "./listParams";
 
 export const FiltersAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -24,10 +24,12 @@ export const FiltersAPIEndPoint = catalogueSlice.injectEndpoints({
             invalidatesTags: ["Filters"],
         }),
         getAllFilters: builder.query({
-            query: (params = {}) => ({
-                url: `/filter`,
-                params: listParams(params),
-            }),
+            query: (params = {}) => params?.export
+                ? listRequest(`/filter`, params, "filters.csv")
+                : ({
+                    url: `/filter`,
+                    params: listParams(params),
+                }),
             providesTags: ["Filters"],
         }),
         getSingleFilter: builder.query({

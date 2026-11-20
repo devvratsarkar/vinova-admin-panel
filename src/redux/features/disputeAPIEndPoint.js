@@ -1,9 +1,12 @@
 import { catalogueSlice } from "../services/catalogueSlice";
+import { listRequest } from "./listParams";
 
 export const disputeAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
         getAllDisputes: builder.query({
-            query: (params = {}) => ({
+            query: (params = {}) => params?.export
+                ? listRequest(`/get-all-disputes`, params, "disputes.csv")
+                : ({
                 url: `/get-all-disputes`,
                 params: {
                     ...(params.search && { search: params.search }),

@@ -3,7 +3,8 @@ import { Button, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { Link, useSearchParams } from "react-router-dom";
 import moment from "moment";
 import toast from "react-hot-toast";
-import { useGetAllHtoOrdersQuery } from "../redux/features/ordersAPIEndPoint";
+import { ordersAPIEndPoint, useGetAllHtoOrdersQuery } from "../redux/features/ordersAPIEndPoint";
+import { useExportAction } from "../utils/fileDownload";
 import useDebounce from "../hooks/useDebounce";
 import Loader from "../layouts/layoutcomponents/loader";
 import MuiDataTable from "../components/common/MuiDataTable";
@@ -74,6 +75,7 @@ export const HtoOrdersDataTable = () => {
   };
 
   const { data, isLoading, isFetching } = useGetAllHtoOrdersQuery(apiQuery, { skip: Boolean(dateError) });
+  const { onExport, exporting } = useExportAction(ordersAPIEndPoint.endpoints.getAllHtoOrders, "HtoOrder", "HTO orders downloaded");
   const { rows, total } = readHtoResult(data);
 
   const setQuery = (updates) => {
@@ -222,7 +224,12 @@ export const HtoOrdersDataTable = () => {
       {(isLoading || isFetching) && <Loader />}
       <div className="e-table pb-5">
         <div className="orders-filters mx-3 mt-3 mb-4 p-3" style={{ background: '#f8fafc', border: '1px solid #e8edf3', borderRadius: 10 }}>
-          <div className="d-flex justify-content-end mb-2">
+          <div className="d-flex justify-content-end align-items-center gap-3 mb-2">
+            {onExport && (
+              <Button type="button" variant="link" size="sm" className="p-0 text-decoration-none fw-semibold" onClick={() => onExport(apiQuery, Boolean(dateError))} disabled={exporting}>
+                {exporting ? "Exporting..." : "Export"}
+              </Button>
+            )}
             <Button
               type="button"
               variant="link"

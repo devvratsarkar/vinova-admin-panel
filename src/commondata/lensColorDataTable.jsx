@@ -8,6 +8,8 @@ import toast from "react-hot-toast";
 import { useGetLensColorQuery, useUpdateLinseColorStatusMutation } from "../redux/features/lensColorAPIEndPoint";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, useListFilters } from "../components/common/ListFilters";
 import { allow } from "./permissions";
+import { catalogueSlice } from "../redux/services/catalogueSlice";
+import { exportProps, useExportAction } from "../utils/fileDownload";
 
 const FILTER_KEYS = ["status"];
 
@@ -22,6 +24,7 @@ export const LensColorDataTable = () => {
   const dispatch = useDispatch();
   const list = useListFilters(FILTER_KEYS);
   const { data, isLoading, isFetching, refetch } = useGetLensColorQuery(list.query, { skip: list.skip });
+  const fileExport = useExportAction(catalogueSlice.endpoints.getLensColor, "LensColor", "Lens colors downloaded");
   const [updateStatus, { isLoading: loadingStatus }] = useUpdateLinseColorStatusMutation();
   const { rows, total } = readLensColors(data);
 
@@ -95,6 +98,7 @@ export const LensColorDataTable = () => {
         <ListFilters
           {...boundFilters(list, {
             placeholder: "Name",
+            ...exportProps(fileExport, list.query, list.skip),
             selects: [
               { label: "Status", value: list.filters.status, onChange: (value) => list.setFilter("status", value), options: STATUS_FILTERS },
             ],

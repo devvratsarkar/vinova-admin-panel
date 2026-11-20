@@ -8,6 +8,8 @@ import Error from "../layouts/layoutcomponents/Error";
 import { useGetAllInventoryVariantsQuery } from "../redux/features/inventory";
 import { ListFilters, ListTable, boundFilters, formatDate, indexColumn, useListFilters } from "../components/common/ListFilters";
 import { allow } from "./permissions";
+import { catalogueSlice } from "../redux/services/catalogueSlice";
+import { exportProps, useExportAction } from "../utils/fileDownload";
 
 function readInventoryVariants(response) {
   const payload = response?.data;
@@ -20,6 +22,7 @@ export const InventoryWithVariantDataTable = () => {
   const dispatch = useDispatch();
   const list = useListFilters();
   const { data, isError, error, isLoading, isFetching } = useGetAllInventoryVariantsQuery(list.query, { skip: list.skip });
+  const fileExport = useExportAction(catalogueSlice.endpoints.getAllInventoryVariants, "InventoryWithVariant", "Inventory downloaded");
   const { rows, total } = readInventoryVariants(data);
 
   const columns = useMemo(() => [
@@ -62,7 +65,7 @@ export const InventoryWithVariantDataTable = () => {
       {(isLoading || isFetching) && <Loader />}
       {isError && <Error error_mes={error} />}
       <div className="e-table pb-5">
-        <ListFilters {...boundFilters(list, { placeholder: "Product, SKU, or price" })} />
+        <ListFilters {...boundFilters(list, { placeholder: "Product, SKU, or price", ...exportProps(fileExport, list.query, list.skip) })} />
         <ListTable
           columns={columns}
           rows={rows}

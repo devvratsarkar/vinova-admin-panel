@@ -9,6 +9,8 @@ import { useGetAllLensQuery, useUpdateLensStatusMutation } from "../redux/featur
 import { useGetBrandsSelectQuery } from "../redux/features/BrandAPIEndpoint";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, namedOptions, useListFilters } from "../components/common/ListFilters";
 import { allow } from "./permissions";
+import { catalogueSlice } from "../redux/services/catalogueSlice";
+import { exportProps, useExportAction } from "../utils/fileDownload";
 
 function readLenses(response) {
   const payload = response?.data;
@@ -28,6 +30,7 @@ export const LensDataTable = () => {
   const list = useListFilters(FILTER_KEYS);
   const { data: brandData } = useGetBrandsSelectQuery();
   const { data, isLoading, isFetching, refetch } = useGetAllLensQuery(list.query, { skip: list.skip });
+  const fileExport = useExportAction(catalogueSlice.endpoints.getAllLens, "Lens", "Lenses downloaded");
   const [updateStatus, { isLoading: loadingStatus }] = useUpdateLensStatusMutation();
   const { rows, total } = readLenses(data);
 
@@ -101,6 +104,7 @@ export const LensDataTable = () => {
         <ListFilters
           {...boundFilters(list, {
             placeholder: "Name or brand",
+            ...exportProps(fileExport, list.query, list.skip),
             selects: [
               { label: "Brand", value: list.filters.brand, onChange: (value) => list.setFilter("brand", value), empty: "All brands", options: namedOptions(brandData?.data) },
               { label: "Type", value: list.filters.type, onChange: (value) => list.setFilter("type", value), empty: "All types", options: TYPES },

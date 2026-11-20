@@ -1,5 +1,5 @@
 import { catalogueSlice } from "../services/catalogueSlice";
-import { listParams } from "./listParams";
+import { listParams, listRequest } from "./listParams";
 
 export const LensThicknessAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -20,10 +20,12 @@ export const LensThicknessAPIEndPoint = catalogueSlice.injectEndpoints({
             invalidatesTags: ["LensThickness"],
         }),
         getAllLensThickness: builder.query({
-            query: (params = {}) => ({
-                url: `/lens-size`,
-                params: listParams(params),
-            }),
+            query: (params = {}) => params?.export
+                ? listRequest(`/lens-size`, params, "lens-sizes.csv")
+                : ({
+                    url: `/lens-size`,
+                    params: listParams(params),
+                }),
             providesTags: ["LensThickness"],
         }),
         getSingleLensThickness: builder.query({

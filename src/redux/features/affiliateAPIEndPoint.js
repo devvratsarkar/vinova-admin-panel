@@ -1,9 +1,12 @@
 import { catalogueSlice } from "../services/catalogueSlice";
+import { listRequest } from "./listParams";
 
 export const affiliateAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
         getAllWithdrawalRequestData: builder.query({
-            query: (params = {}) => ({
+            query: (params = {}) => params?.export
+                ? listRequest(`/get-all-withdrawal/request`, params, "withdrawal-requests.csv")
+                : ({
                 url: `/get-all-withdrawal/request`,
                 params: {
                     ...(params.page && { page: params.page }),
@@ -23,7 +26,9 @@ export const affiliateAPIEndPoint = catalogueSlice.injectEndpoints({
             })
         }),
         getAllCouponRequestData: builder.query({
-            query: (params = {}) => ({
+            query: (params = {}) => params?.export
+                ? listRequest(`/all-affiliate-coupon`, params, "coupon-requests.csv")
+                : ({
                 url: `/all-affiliate-coupon`,
                 params: {
                     ...(params.page && { page: params.page }),

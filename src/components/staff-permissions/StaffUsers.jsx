@@ -9,6 +9,8 @@ import './StaffUsers.css'
 import Loader from '../../layouts/layoutcomponents/loader'
 import { openModal } from '../../redux/slices/allModalSlice'
 import { useAddStaffMutation, useGetAllRolesQuery, useGetAllStaffQuery } from '../../redux/features/staffEndPoint'
+import { catalogueSlice } from '../../redux/services/catalogueSlice'
+import { exportProps, useExportAction } from '../../utils/fileDownload'
 
 const roleName = (role) => role?.role_name || role?.name || ''
 const staffRole = (person) => (typeof person.role === 'string' ? person.role : person.role?.name || person.role?.role_name || '')
@@ -20,6 +22,7 @@ export default function StaffUsers() {
   const list = useListFilters(['role', 'status'])
   const { data: rolesData, isLoading: rolesLoading } = useGetAllRolesQuery()
   const { data: staffData, isLoading: staffLoading, isFetching: staffFetching } = useGetAllStaffQuery(list.query, { skip: list.skip })
+  const fileExport = useExportAction(catalogueSlice.endpoints.getAllStaff, 'StaffUser', 'Staff users downloaded')
   const [addStaff, { isLoading: adding }] = useAddStaffMutation()
   const roles = Array.isArray(rolesData?.data) ? rolesData.data : []
   const { rows, total } = readList(staffData)
@@ -129,6 +132,7 @@ export default function StaffUsers() {
             <ListFilters
               {...boundFilters(list, {
                 placeholder: 'Name or email',
+                ...exportProps(fileExport, list.query, list.skip),
                 selects: [
                   { label: 'Role', value: list.filters.role, onChange: (value) => list.setFilter('role', value), empty: 'All roles', options: roleOptions, searchable: true },
                   { label: 'Status', value: list.filters.status, onChange: (value) => list.setFilter('status', value), options: STATUS_FILTERS },

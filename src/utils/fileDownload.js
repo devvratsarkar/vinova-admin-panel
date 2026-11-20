@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import toast from 'react-hot-toast'
+import { allow } from '../commondata/permissions'
 
 export function csvRequest(url, params, filename) {
   return {
@@ -48,4 +49,24 @@ export function useCsvDownload(endpoint, successMessage) {
   }
 
   return { download, exporting }
+}
+
+export function useExportAction(endpoint, model, successMessage) {
+  const { download, exporting } = useCsvDownload(endpoint, successMessage)
+  const onExport = allow(model, 'export')
+    ? (query, skip) => {
+      if (skip) return
+      const { page, limit, ...filters } = query || {}
+      download(filters)
+    }
+    : undefined
+  return { onExport, exporting }
+}
+
+export function exportProps(action, query, skip) {
+  if (!action?.onExport) return {}
+  return {
+    onExport: () => action.onExport(query, skip),
+    exporting: action.exporting,
+  }
 }

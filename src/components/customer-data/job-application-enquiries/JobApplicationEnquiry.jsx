@@ -5,6 +5,8 @@ import Error from "../../../layouts/layoutcomponents/Error";
 import PageHeader from "../../../layouts/layoutcomponents/pageheader";
 import { useGetAllJobApplicationsQuery } from "../../../redux/features/getApiSecond";
 import { ListFilters, ListTable, boundFilters, formatDate, indexColumn, useListFilters } from "../../common/ListFilters";
+import { commonDataSlice } from "../../../redux/slices/commonApiSlice";
+import { exportProps, useExportAction } from "../../../utils/fileDownload";
 
 function readApplications(response) {
   const payload = response?.data;
@@ -19,6 +21,7 @@ export default function JobApplicationEnquiry() {
     skip: list.skip,
     refetchOnMountOrArgChange: true,
   });
+  const fileExport = useExportAction(commonDataSlice.endpoints.getAllJobApplications, "JobApplication", "Job applications downloaded");
   const { rows, total } = readApplications(data);
 
   const columns = useMemo(() => [
@@ -55,7 +58,7 @@ export default function JobApplicationEnquiry() {
               {(isLoading || isFetching) && <Loader />}
               {isError && <Error error_mes={error} />}
               <div className="e-table pb-5">
-                <ListFilters {...boundFilters(list, { placeholder: "Name, email, or phone" })} />
+                <ListFilters {...boundFilters(list, { placeholder: "Name, email, or phone", ...exportProps(fileExport, list.query, list.skip) })} />
                 <ListTable
                   columns={columns}
                   rows={rows}

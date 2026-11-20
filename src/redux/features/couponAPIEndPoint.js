@@ -1,5 +1,5 @@
 import { catalogueSlice } from "../services/catalogueSlice";
-import { listParams } from "./listParams";
+import { listParams, listRequest } from "./listParams";
 
 export const couponAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -35,10 +35,12 @@ export const couponAPIEndPoint = catalogueSlice.injectEndpoints({
             invalidatesTags: ["Coupons"],
         }),
         getAllCoupons: builder.query({
-            query: (params = {}) => ({
-                url: `/all-coupons`,
-                params: listParams(params),
-            }),
+            query: (params = {}) => params?.export
+                ? listRequest(`/all-coupons`, params, "coupons.csv")
+                : ({
+                    url: `/all-coupons`,
+                    params: listParams(params),
+                }),
             providesTags: ["Coupons"],
         }),
         getSingleCoupon: builder.query({

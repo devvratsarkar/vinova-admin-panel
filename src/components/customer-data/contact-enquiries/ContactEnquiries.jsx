@@ -5,6 +5,8 @@ import Error from "../../../layouts/layoutcomponents/Error";
 import PageHeader from "../../../layouts/layoutcomponents/pageheader";
 import { useGetAllContactEnquiriesQuery } from "../../../redux/features/getApiSecond";
 import { ListFilters, ListTable, STATUS_FILTERS, boundFilters, formatDate, indexColumn, useListFilters } from "../../common/ListFilters";
+import { commonDataSlice } from "../../../redux/slices/commonApiSlice";
+import { exportProps, useExportAction } from "../../../utils/fileDownload";
 
 const FILTER_KEYS = ["status"];
 
@@ -21,6 +23,7 @@ export default function ContactEnquiries() {
     skip: list.skip,
     refetchOnMountOrArgChange: true,
   });
+  const fileExport = useExportAction(commonDataSlice.endpoints.getAllContactEnquiries, "ContactEnquiry", "Contact enquiries downloaded");
   const { rows, total } = readContacts(data);
 
   const columns = useMemo(() => [
@@ -69,7 +72,7 @@ export default function ContactEnquiries() {
               {isError && <Error error_mes={error} />}
               <div className="e-table pb-5">
                 <ListFilters
-                  {...boundFilters(list, { placeholder: "Name, email, or phone" })}
+                  {...boundFilters(list, { placeholder: "Name, email, or phone", ...exportProps(fileExport, list.query, list.skip) })}
                   selects={[{ label: "Status", value: list.filters.status, onChange: (value) => list.setFilter("status", value), options: STATUS_FILTERS }]}
                 />
                 <ListTable

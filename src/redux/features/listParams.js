@@ -1,3 +1,5 @@
+import { csvRequest } from "../../utils/fileDownload";
+
 const LIST_KEYS = [
   "page",
   "limit",
@@ -23,4 +25,14 @@ export function listParams(params = {}) {
     if (params?.[key]) query[key] = params[key];
   });
   return query;
+}
+
+export function listRequest(url, params = {}, filename = "export.csv", keys = LIST_KEYS) {
+  const source = params && typeof params === "object" ? params : {};
+  const query = {};
+  keys.forEach((key) => {
+    if (key === "page" || key === "limit") return;
+    if (source[key]) query[key] = source[key];
+  });
+  return csvRequest(url, query, filename);
 }

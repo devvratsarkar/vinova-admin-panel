@@ -10,6 +10,8 @@ import { USER_BASE_URL } from "../../utils/config";
 import { useEditBlogMutation } from "../../redux/features/postApiSecond";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, useListFilters } from "../common/ListFilters";
 import { allow } from "../../commondata/permissions";
+import { commonDataSlice } from "../../redux/slices/commonApiSlice";
+import { exportProps, useExportAction } from "../../utils/fileDownload";
 
 const FILTER_KEYS = ["status"];
 
@@ -64,6 +66,7 @@ export const BlogsDataTable = () => {
   const list = useListFilters(FILTER_KEYS);
   const bare = useGetAllBlogsQuery();
   const { data, isError, error, isLoading, isFetching, refetch } = useGetAllBlogsQuery(list.query, { skip: list.skip });
+  const fileExport = useExportAction(commonDataSlice.endpoints.getAllBlogs, "BlogPost", "Posts downloaded");
   useRefreshAfterBareQuery(bare, refetch);
   const [editBlog, { isLoading: updating }] = useEditBlogMutation();
   const [selected, setSelected] = useState([]);
@@ -152,7 +155,7 @@ export const BlogsDataTable = () => {
       {isError && <Error error_mes={error} />}
       <div className="e-table pb-5">
         <ListFilters
-          {...boundFilters(list, { placeholder: "Title" })}
+          {...boundFilters(list, { placeholder: "Title", ...exportProps(fileExport, list.query, list.skip) })}
           selects={[{ label: "Status", value: list.filters.status, onChange: (value) => list.setFilter("status", value), options: STATUS_FILTERS }]}
         />
         {selected.length > 0 && (

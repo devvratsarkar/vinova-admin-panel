@@ -1,9 +1,11 @@
 import { catalogueSlice } from "../services/catalogueSlice";
+import { listRequest } from "./listParams";
 
 export const cartAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
         getAllCarts: builder.query({
             query: (params = {}) => {
+                if (params.export) return listRequest(`/all-cart`, params, "carts.csv");
                 const query = new URLSearchParams();
                 if (params.search) query.append("search", params.search);
                 if (params.fromDate) query.append("fromDate", params.fromDate);
@@ -19,6 +21,7 @@ export const cartAPIEndPoint = catalogueSlice.injectEndpoints({
         }),
         getWishlist: builder.query({
             query: (params = {}) => {
+                if (params.export) return listRequest(`/wishlist`, params, "wishlists.csv");
                 const query = new URLSearchParams();
                 if (params.search) query.append("search", params.search);
                 if (params.fromDate) query.append("fromDate", params.fromDate);

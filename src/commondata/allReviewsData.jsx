@@ -9,6 +9,8 @@ import { openModal } from "../redux/slices/allModalSlice";
 import { useGetAllReviewsQuery } from "../redux/features/getApiSecond";
 import { useUpdateReviewStatusMutation } from "../redux/features/postApiSecond";
 import { ListFilters, ListTable, boundFilters, formatDate, indexColumn, useListFilters } from "../components/common/ListFilters";
+import { commonDataSlice } from "../redux/slices/commonApiSlice";
+import { exportProps, useExportAction } from "../utils/fileDownload";
 
 const FILTER_KEYS = ["status"];
 
@@ -49,6 +51,7 @@ export const AllReviewssData = () => {
     skip: list.skip,
     refetchOnMountOrArgChange: true,
   });
+  const fileExport = useExportAction(commonDataSlice.endpoints.getAllReviews, "Review", "Reviews downloaded");
   const [updateReviewStatus, { isLoading: updatingStatus }] = useUpdateReviewStatusMutation();
   const { rows, total } = readReviews(data);
 
@@ -148,7 +151,7 @@ export const AllReviewssData = () => {
       {isError && <Error error_mes={error} />}
       <div className="e-table pb-5">
         <ListFilters
-          {...boundFilters(list, { placeholder: "Product, customer, or review" })}
+          {...boundFilters(list, { placeholder: "Product, customer, or review", ...exportProps(fileExport, list.query, list.skip) })}
           selects={[{ label: "Status", value: list.filters.status, onChange: (value) => list.setFilter("status", value), options: REVIEW_STATUSES }]}
         />
         <ListTable

@@ -198,7 +198,11 @@ export default function Transactions() {
                 <ListFilters
                   {...boundFilters(filters, {
                     placeholder: 'Description or ID',
-                    onExport: () => { if (!filters.skip) exportTransactions(filters.query) },
+                    onExport: () => {
+                      if (filters.skip) return
+                      const { page, limit, ...query } = filters.query
+                      exportTransactions(query)
+                    },
                     exporting: isExporting,
                     selects: [
                       {

@@ -1,5 +1,5 @@
 import { catalogueSlice } from "../services/catalogueSlice";
-import { listParams } from "./listParams";
+import { listParams, listRequest } from "./listParams";
 
 export const questionsAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -20,11 +20,13 @@ export const questionsAPIEndPoint = catalogueSlice.injectEndpoints({
             invalidatesTags: ["Questions"],
         }),
         getAllQuestions: builder.query({
-            query: (params = {}) => ({
-                url: `/questions`,
-                method: "GET",
-                params: listParams(params),
-            }),
+            query: (params = {}) => params?.export
+                ? listRequest(`/questions`, params, "questions.csv")
+                : ({
+                    url: `/questions`,
+                    method: "GET",
+                    params: listParams(params),
+                }),
             providesTags: ["Questions"],
         }),
         getQuestionById: builder.query({

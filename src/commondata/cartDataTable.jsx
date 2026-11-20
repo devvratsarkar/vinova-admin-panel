@@ -4,7 +4,8 @@ import { openModal } from "../redux/slices/allModalSlice";
 import { useDispatch } from "react-redux";
 import Loader from "../layouts/layoutcomponents/loader";
 import moment from "moment";
-import { useGetAllCartsQuery } from "../redux/features/cartAPIEndPoint";
+import { cartAPIEndPoint, useGetAllCartsQuery } from "../redux/features/cartAPIEndPoint";
+import { useExportAction } from "../utils/fileDownload";
 import useDebounce from "../hooks/useDebounce";
 import MuiDataTable from "../components/common/MuiDataTable";
 import DateRangeFields from "../components/common/DateRangeFields";
@@ -48,12 +49,14 @@ export default function CartDataTable() {
   const datesReady = Boolean(fromDate && toDate && !dateError);
   const hasFilters = Boolean(searchTerm || fromDate || toDate);
 
-  const { data, isLoading, isFetching } = useGetAllCartsQuery({
+  const apiQuery = {
     page: currentPage,
     limit: pageSize,
     ...(datesReady && { fromDate, toDate }),
     ...(debouncedSearch.trim() && { search: debouncedSearch.trim() }),
-  }, { skip: Boolean(dateError) });
+  };
+  const { data, isLoading, isFetching } = useGetAllCartsQuery(apiQuery, { skip: Boolean(dateError) });
+  const { onExport, exporting } = useExportAction(cartAPIEndPoint.endpoints.getAllCarts, "Cart", "Carts downloaded");
 
   const { rows, total } = readList(data);
 
@@ -141,7 +144,12 @@ export default function CartDataTable() {
       {(isLoading || isFetching) && <Loader />}
       <div className="e-table pb-5">
         <div className="orders-filters mx-3 mt-3 mb-4 p-3" style={{ background: '#f8fafc', border: '1px solid #e8edf3', borderRadius: 10 }}>
-          <div className="d-flex justify-content-end mb-2">
+          <div className="d-flex justify-content-end align-items-center gap-3 mb-2">
+            {onExport && (
+              <Button type="button" variant="link" size="sm" className="p-0 text-decoration-none fw-semibold" onClick={() => onExport(apiQuery, Boolean(dateError))} disabled={exporting}>
+                {exporting ? "Exporting..." : "Export"}
+              </Button>
+            )}
             <Button
               type="button"
               variant="link"

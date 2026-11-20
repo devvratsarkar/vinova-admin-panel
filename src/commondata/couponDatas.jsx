@@ -9,6 +9,8 @@ import moment from "moment";
 import { useGetAllCouponsQuery, useUpdateCouponStatusMutation } from "../redux/features/couponAPIEndPoint";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, useListFilters } from "../components/common/ListFilters";
 import { allow } from "./permissions";
+import { catalogueSlice } from "../redux/services/catalogueSlice";
+import { exportProps, useExportAction } from "../utils/fileDownload";
 
 const FILTER_KEYS = ["coupon_type", "status"];
 const TYPES = [
@@ -27,6 +29,7 @@ export const CouponData = () => {
   const dispatch = useDispatch();
   const list = useListFilters(FILTER_KEYS);
   const { data, isLoading, isFetching, refetch } = useGetAllCouponsQuery(list.query, { skip: list.skip });
+  const fileExport = useExportAction(catalogueSlice.endpoints.getAllCoupons, "Coupon", "Coupons downloaded");
   const [updateStatus, { isLoading: loadingStatus }] = useUpdateCouponStatusMutation();
   const { rows, total } = readCoupons(data);
 
@@ -100,6 +103,7 @@ export const CouponData = () => {
         <ListFilters
           {...boundFilters(list, {
             placeholder: "Coupon code",
+            ...exportProps(fileExport, list.query, list.skip),
             selects: [
               { label: "Coupon type", value: list.filters.coupon_type, onChange: (value) => list.setFilter("coupon_type", value), empty: "All types", options: TYPES },
               { label: "Status", value: list.filters.status, onChange: (value) => list.setFilter("status", value), options: STATUS_FILTERS },

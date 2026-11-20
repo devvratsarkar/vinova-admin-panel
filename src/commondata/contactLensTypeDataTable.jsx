@@ -8,6 +8,8 @@ import toast from "react-hot-toast";
 import { useGetAllContactLensTypeQuery, useUpdateContactLensTypeStatusMutation } from "../redux/features/contactLensTypeAPIEndPoint";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, useListFilters } from "../components/common/ListFilters";
 import { allow } from "./permissions";
+import { catalogueSlice } from "../redux/services/catalogueSlice";
+import { exportProps, useExportAction } from "../utils/fileDownload";
 
 const FILTER_KEYS = ["status"];
 
@@ -50,6 +52,7 @@ export const ContactLensTypeDataTable = () => {
   const dispatch = useDispatch();
   const list = useListFilters(FILTER_KEYS);
   const { data, isLoading, isFetching, refetch } = useGetAllContactLensTypeQuery(list.query, { skip: list.skip });
+  const fileExport = useExportAction(catalogueSlice.endpoints.getAllContactLensType, "ContactLensType", "Contact lens types downloaded");
   const [updateStatus, { isLoading: loadingStatus }] = useUpdateContactLensTypeStatusMutation();
   const { rows, total } = readContactLensTypes(data);
 
@@ -100,6 +103,7 @@ export const ContactLensTypeDataTable = () => {
         <ListFilters
           {...boundFilters(list, {
             placeholder: "Name or slug",
+            ...exportProps(fileExport, list.query, list.skip),
             selects: [
               { label: "Status", value: list.filters.status, onChange: (value) => list.setFilter("status", value), options: STATUS_FILTERS },
             ],

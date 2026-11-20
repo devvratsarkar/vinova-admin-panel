@@ -1,13 +1,15 @@
 import { catalogueSlice } from "../services/catalogueSlice";
-import { listParams } from "./listParams";
+import { listParams, listRequest } from "./listParams";
 
 export const contactLensTypeAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
         getAllContactLensType: builder.query({
-            query: (params = {}) => ({
-                url: `/all-contact-lens-type`,
-                params: listParams(params),
-            }),
+            query: (params = {}) => params?.export
+                ? listRequest(`/all-contact-lens-type`, params, "contact-lens-types.csv")
+                : ({
+                    url: `/all-contact-lens-type`,
+                    params: listParams(params),
+                }),
             providesTags: ["ContactLensTypes"],
         }),
         getSingleContactLensType: builder.query({

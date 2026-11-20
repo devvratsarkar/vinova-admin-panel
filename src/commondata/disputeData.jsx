@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import { useDispatch } from "react-redux";
 import { openModal } from "../redux/slices/allModalSlice";
-import { useGetAllDisputesQuery } from "../redux/features/disputeAPIEndPoint";
+import { disputeAPIEndPoint, useGetAllDisputesQuery } from "../redux/features/disputeAPIEndPoint";
+import { useExportAction } from "../utils/fileDownload";
 import Loader from "../layouts/layoutcomponents/loader";
 import Error from "../layouts/layoutcomponents/Error";
 import useDebounce from "../hooks/useDebounce";
@@ -47,13 +48,15 @@ export const DisputeDataTable = () => {
   const datesReady = Boolean(fromDate && toDate && !dateError);
   const hasFilters = Boolean(searchTerm || status || fromDate || toDate);
 
-  const { data, isError, error, isLoading, isFetching } = useGetAllDisputesQuery({
+  const apiQuery = {
     page: currentPage,
     limit: pageSize,
     ...(status && { status }),
     ...(datesReady && { fromDate, toDate }),
     ...(debouncedSearch.trim() && { search: debouncedSearch.trim() }),
-  }, { skip: Boolean(dateError) });
+  };
+  const { data, isError, error, isLoading, isFetching } = useGetAllDisputesQuery(apiQuery, { skip: Boolean(dateError) });
+  const { onExport, exporting } = useExportAction(disputeAPIEndPoint.endpoints.getAllDisputes, "Dispute", "Disputes downloaded");
 
   const { rows, total } = readDisputes(data);
 
@@ -143,7 +146,12 @@ export const DisputeDataTable = () => {
       {(isLoading || isFetching) && <Loader />}
       <div className="e-table pb-5">
         <div className="orders-filters mx-3 mt-3 mb-4 p-3" style={{ background: '#f8fafc', border: '1px solid #e8edf3', borderRadius: 10 }}>
-          <div className="d-flex justify-content-end mb-2">
+          <div className="d-flex justify-content-end align-items-center gap-3 mb-2">
+            {onExport && (
+              <Button type="button" variant="link" size="sm" className="p-0 text-decoration-none fw-semibold" onClick={() => onExport(apiQuery, Boolean(dateError))} disabled={exporting}>
+                {exporting ? "Exporting..." : "Export"}
+              </Button>
+            )}
             <Button
               type="button"
               variant="link"

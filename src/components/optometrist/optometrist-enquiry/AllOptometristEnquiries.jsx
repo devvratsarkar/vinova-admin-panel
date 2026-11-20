@@ -18,6 +18,8 @@ import {
     useUpdateOptometristCommissionMutation,
 } from '../../../redux/features/optometristEnquiryAPIEndPoint'
 import { ListFilters, ListTable, StatusSwitch, boundFilters, formatDate, indexColumn, useListFilters } from '../../common/ListFilters'
+import { catalogueSlice } from '../../../redux/services/catalogueSlice'
+import { exportProps, useExportAction } from '../../../utils/fileDownload'
 
 const FILTER_KEYS = ['status', 'trash']
 const STATUSES = [
@@ -69,6 +71,7 @@ export default function AllOptometristEnquiries() {
     const viewingTrash = list.filters.trash === true
 
     const { data, isError, error, isLoading, isFetching } = useGetOptometristsQuery(list.query, { skip: list.skip })
+    const fileExport = useExportAction(catalogueSlice.endpoints.getOptometrists, 'Optometrist', 'Optometrist enquiries downloaded')
     const [approveOptometrist, { isLoading: approving }] = useApproveOptometristMutation()
     const [rejectOptometrist, { isLoading: rejecting }] = useRejectOptometristMutation()
     const [deleteOptometrist, { isLoading: deleting }] = useDeleteOptometristMutation()
@@ -368,6 +371,7 @@ export default function AllOptometristEnquiries() {
                                 <ListFilters
                                     {...boundFilters(list, {
                                         placeholder: 'Store, name, or email',
+                                        ...exportProps(fileExport, list.query, list.skip),
                                         selects: [
                                             { label: 'Status', value: list.filters.status, onChange: (value) => list.setFilter('status', value), empty: 'All statuses', options: STATUSES },
                                         ],

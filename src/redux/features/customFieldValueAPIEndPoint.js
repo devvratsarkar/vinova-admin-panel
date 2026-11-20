@@ -1,5 +1,5 @@
 import { catalogueSlice } from "../services/catalogueSlice";
-import { listParams } from "./listParams";
+import { listParams, listRequest } from "./listParams";
 
 function valueListId(arg) {
     return arg && typeof arg === "object" ? arg.id : arg;
@@ -18,6 +18,7 @@ export const customFieldValueAPIEndPoint = catalogueSlice.injectEndpoints({
         getAllCustomFieldValues: builder.query({
             query: (arg) => {
                 const id = valueListId(arg);
+                if (arg?.export) return listRequest(`/get-all-values/${id}`, arg, "custom-field-values.csv");
                 const params = arg && typeof arg === "object" ? listParams(arg) : null;
                 return params && Object.keys(params).length
                     ? { url: `/get-all-values/${id}`, params }

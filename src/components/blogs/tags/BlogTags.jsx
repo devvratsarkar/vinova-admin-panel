@@ -9,6 +9,8 @@ import PageHeader from "../../../layouts/layoutcomponents/pageheader";
 import { useGetAllBlogsTagsQuery } from "../../../redux/features/getApiSecond";
 import { ListFilters, ListTable, boundFilters, indexColumn, useListFilters } from "../../common/ListFilters";
 import { allow } from "../../../commondata/permissions";
+import { commonDataSlice } from "../../../redux/slices/commonApiSlice";
+import { exportProps, useExportAction } from "../../../utils/fileDownload";
 
 function readTags(response) {
   const payload = response?.data;
@@ -38,6 +40,7 @@ export default function BlogTags() {
   const list = useListFilters();
   const bare = useGetAllBlogsTagsQuery();
   const { data, isError, error, isLoading, isFetching, refetch } = useGetAllBlogsTagsQuery(list.query, { skip: list.skip });
+  const fileExport = useExportAction(commonDataSlice.endpoints.getAllBlogsTags, "BlogTag", "Blog tags downloaded");
   useRefreshAfterBareQuery(bare, refetch);
   const { rows, total } = readTags(data);
 
@@ -90,7 +93,7 @@ export default function BlogTags() {
               {(isLoading || isFetching) && <Loader />}
               {isError && <Error error_mes={error} />}
               <div className="e-table pb-5">
-                <ListFilters {...boundFilters(list, { placeholder: "Name" })} />
+                <ListFilters {...boundFilters(list, { placeholder: "Name", ...exportProps(fileExport, list.query, list.skip) })} />
                 <ListTable
                   columns={columns}
                   rows={rows}

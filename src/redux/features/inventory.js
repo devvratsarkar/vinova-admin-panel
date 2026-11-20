@@ -1,5 +1,5 @@
 import { catalogueSlice } from "../services/catalogueSlice";
-import { listParams } from "./listParams";
+import { listParams, listRequest } from "./listParams";
 
 export const InventoryAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -22,6 +22,7 @@ export const InventoryAPIEndPoint = catalogueSlice.injectEndpoints({
         }),
         getAllInventoryVariants: builder.query({
             query: (params = {}) => {
+                if (params?.export) return listRequest(`/get-inventory-varients`, params, "inventory.csv");
                 const query = listParams(params);
                 return Object.keys(query).length
                     ? { url: `/get-inventory-varients`, params: query }
@@ -44,6 +45,7 @@ export const InventoryAPIEndPoint = catalogueSlice.injectEndpoints({
         getInventorySizeWise: builder.query({
             query: (arg) => {
                 const id = arg && typeof arg === "object" ? arg.id : arg;
+                if (arg?.export) return listRequest(`/get-inventory-sizewise/${id}`, arg, "inventory-sizes.csv");
                 const params = arg && typeof arg === "object" ? listParams(arg) : null;
                 return params && Object.keys(params).length
                     ? { url: `/get-inventory-sizewise/${id}`, params }
@@ -93,6 +95,7 @@ export const InventoryAPIEndPoint = catalogueSlice.injectEndpoints({
         }),
         getAllInventoryWithoutVariant: builder.query({
             query: (params) => {
+                if (params?.export) return listRequest(`/single-variant`, params, "inventory-without-variant.csv");
                 const query = params && typeof params === "object" ? listParams(params) : {};
                 return Object.keys(query).length
                     ? { url: `/single-variant`, params: query }

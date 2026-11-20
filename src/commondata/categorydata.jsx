@@ -11,6 +11,8 @@ import useDebounce from "../hooks/useDebounce";
 import MuiDataTable from "../components/common/MuiDataTable";
 import DateRangeFields from "../components/common/DateRangeFields";
 import { allow } from "./permissions";
+import { catalogueSlice } from "../redux/services/catalogueSlice";
+import { useExportAction } from "../utils/fileDownload";
 
 const fieldStyle = { borderColor: "#e8edf3", borderRadius: 10, fontSize: 13, backgroundColor: "#fff" };
 const TYPES = [
@@ -107,7 +109,7 @@ export const CategoryDataTable = () => {
   const { data: parentOptions } = useGetAllCategorySelectQuery();
   const parents = selectOptions(parentOptions?.data);
 
-  const { data, isLoading, isFetching, refetch } = useGetAllCategoryQuery({
+  const apiQuery = {
     page: currentPage,
     limit: pageSize,
     ...(parentCategory && { parent_category: parentCategory }),
@@ -115,7 +117,9 @@ export const CategoryDataTable = () => {
     ...(status && { status }),
     ...(datesReady && { fromDate, toDate }),
     ...(debouncedSearch.trim() && { search: debouncedSearch.trim() }),
-  }, { skip: Boolean(dateError) });
+  };
+  const { data, isLoading, isFetching, refetch } = useGetAllCategoryQuery(apiQuery, { skip: Boolean(dateError) });
+  const { onExport, exporting } = useExportAction(catalogueSlice.endpoints.getAllCategory, "Category", "Categories downloaded");
   const [updateStatus, { isLoading: loadingStatusChange }] = useUpdateCategoryStatusMutation();
   const { rows, total } = readCategories(data);
 
@@ -242,7 +246,12 @@ export const CategoryDataTable = () => {
       {(isLoading || isFetching || loadingStatusChange) && <Loader />}
       <div className="e-table pb-5">
         <div className="orders-filters mx-3 mt-3 mb-4 p-3" style={{ background: "#f8fafc", border: "1px solid #e8edf3", borderRadius: 10 }}>
-          <div className="d-flex justify-content-end mb-2">
+          <div className="d-flex justify-content-end align-items-center gap-3 mb-2">
+            {onExport && (
+              <Button type="button" variant="link" size="sm" className="p-0 text-decoration-none fw-semibold" onClick={() => onExport(apiQuery, Boolean(dateError))} disabled={exporting}>
+                {exporting ? "Exporting..." : "Export"}
+              </Button>
+            )}
             <Button
               type="button"
               variant="link"

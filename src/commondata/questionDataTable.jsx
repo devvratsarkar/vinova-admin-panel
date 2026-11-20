@@ -8,6 +8,8 @@ import toast from "react-hot-toast";
 import { useGetAllQuestionsQuery, useUpdateQuestionStatusMutation } from "../redux/features/questionsAPIEndPoint";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, useListFilters } from "../components/common/ListFilters";
 import { allow } from "./permissions";
+import { catalogueSlice } from "../redux/services/catalogueSlice";
+import { exportProps, useExportAction } from "../utils/fileDownload";
 
 const FILTER_KEYS = ["category", "status"];
 const CATEGORIES = [
@@ -27,6 +29,7 @@ export const QuestionDataTable = () => {
   const dispatch = useDispatch();
   const list = useListFilters(FILTER_KEYS);
   const { data, isLoading, isFetching, refetch } = useGetAllQuestionsQuery(list.query, { skip: list.skip });
+  const fileExport = useExportAction(catalogueSlice.endpoints.getAllQuestions, "Question", "Questions downloaded");
   const [updateStatus, { isLoading: loadingStatus }] = useUpdateQuestionStatusMutation();
   const { rows, total } = readQuestions(data);
 
@@ -91,6 +94,7 @@ export const QuestionDataTable = () => {
         <ListFilters
           {...boundFilters(list, {
             placeholder: "Category or text",
+            ...exportProps(fileExport, list.query, list.skip),
             selects: [
               { label: "Category", value: list.filters.category, onChange: (value) => list.setFilter("category", value), empty: "All categories", options: CATEGORIES },
               { label: "Status", value: list.filters.status, onChange: (value) => list.setFilter("status", value), options: STATUS_FILTERS },

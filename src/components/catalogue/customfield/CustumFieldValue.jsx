@@ -10,6 +10,8 @@ import { getCustomFieldValueTrashPage } from "../../../utils/routes";
 import { useGetAllCustomFieldValuesQuery } from "../../../redux/features/customFieldValueAPIEndPoint";
 import { ListFilters, ListTable, boundFilters, indexColumn, useListFilters } from "../../common/ListFilters";
 import { hasPermission } from "../../../commondata/permissions";
+import { catalogueSlice } from "../../../redux/services/catalogueSlice";
+import { exportProps, useExportAction } from "../../../utils/fileDownload";
 
 function readCustomFieldValues(response) {
   const payload = response?.data;
@@ -22,10 +24,12 @@ export default function CustumFieldValue() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const list = useListFilters();
+  const valueQuery = { id, ...list.query };
   const { data, isError, error, isLoading, isFetching } = useGetAllCustomFieldValuesQuery(
-    { id, ...list.query },
+    valueQuery,
     { skip: !id || list.skip },
   );
+  const fileExport = useExportAction(catalogueSlice.endpoints.getAllCustomFieldValues, "CustomField", "Custom field values downloaded");
   const { rows, total } = readCustomFieldValues(data);
   const customField = data?.data?.custom_field;
 
@@ -99,7 +103,7 @@ export default function CustumFieldValue() {
             <Card.Body className="data_table">
               {isError && <Error error_mes={error} />}
               <div className="e-table pb-5">
-                <ListFilters {...boundFilters(list, { placeholder: "Value" })} />
+                <ListFilters {...boundFilters(list, { placeholder: "Value", ...exportProps(fileExport, valueQuery, !id || list.skip) })} />
                 <ListTable
                   columns={columns}
                   rows={rows}

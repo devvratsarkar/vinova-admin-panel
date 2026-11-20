@@ -8,6 +8,8 @@ import { useGetAllBlogsCategoryQuery } from "../../../redux/features/getApiSecon
 import { openModal } from "../../../redux/slices/allModalSlice";
 import { ListFilters, ListTable, boundFilters, indexColumn, useListFilters } from "../../common/ListFilters";
 import { allow } from "../../../commondata/permissions";
+import { commonDataSlice } from "../../../redux/slices/commonApiSlice";
+import { exportProps, useExportAction } from "../../../utils/fileDownload";
 
 function readCategories(response) {
   const payload = response?.data;
@@ -41,6 +43,7 @@ export const BlogsCategoriesDatatable = () => {
   const list = useListFilters();
   const bare = useGetAllBlogsCategoryQuery();
   const { data, isError, error, isLoading, isFetching, refetch } = useGetAllBlogsCategoryQuery(list.query, { skip: list.skip });
+  const fileExport = useExportAction(commonDataSlice.endpoints.getAllBlogsCategory, "BlogCategory", "Blog categories downloaded");
   useRefreshAfterBareQuery(bare, refetch);
   const { rows, total } = readCategories(data);
 
@@ -103,7 +106,7 @@ export const BlogsCategoriesDatatable = () => {
       {(isLoading || isFetching) && <Loader />}
       {isError && <Error error_mes={error} />}
       <div className="e-table pb-5">
-        <ListFilters {...boundFilters(list, { placeholder: "Name or slug" })} />
+        <ListFilters {...boundFilters(list, { placeholder: "Name or slug", ...exportProps(fileExport, list.query, list.skip) })} />
         <ListTable
           columns={columns}
           rows={rows}

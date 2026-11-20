@@ -1,5 +1,5 @@
 import { catalogueSlice } from "../services/catalogueSlice";
-import { listParams } from "./listParams";
+import { listParams, listRequest } from "./listParams";
 
 export const BrandAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -12,20 +12,22 @@ export const BrandAPIEndPoint = catalogueSlice.injectEndpoints({
             invalidatesTags: ["Frames", "ContactLenses", "Accessories"],
         }),
         getFrames: builder.query({
-            query: (params = {}) => ({
-                url: `/frame`,
-                params: {
-                    ...(params.page && { page: params.page }),
-                    ...(params.limit && { limit: params.limit }),
-                    ...(params.search && { search: params.search }),
-                    ...(params.category && { category: params.category }),
-                    ...(params.brand && { brand: params.brand }),
-                    ...(params.status && { status: params.status }),
-                    ...(params.type && { type: params.type }),
-                    ...(params.fromDate && { fromDate: params.fromDate }),
-                    ...(params.toDate && { toDate: params.toDate }),
-                },
-            }),
+            query: (params = {}) => params?.export
+                ? listRequest(`/frame`, params, "frames.csv")
+                : ({
+                    url: `/frame`,
+                    params: {
+                        ...(params.page && { page: params.page }),
+                        ...(params.limit && { limit: params.limit }),
+                        ...(params.search && { search: params.search }),
+                        ...(params.category && { category: params.category }),
+                        ...(params.brand && { brand: params.brand }),
+                        ...(params.status && { status: params.status }),
+                        ...(params.type && { type: params.type }),
+                        ...(params.fromDate && { fromDate: params.fromDate }),
+                        ...(params.toDate && { toDate: params.toDate }),
+                    },
+                }),
             providesTags: ["Frames"],
         }),
         getSingleFrames: builder.query({
@@ -76,10 +78,12 @@ export const BrandAPIEndPoint = catalogueSlice.injectEndpoints({
             query: () => `/frame/all-select`
         }),
         getAllContactLensData: builder.query({
-            query: (params = {}) => ({
-                url: `/all-contact-lens`,
-                params: listParams(params),
-            }),
+            query: (params = {}) => params?.export
+                ? listRequest(`/all-contact-lens`, params, "contact-lenses.csv")
+                : ({
+                    url: `/all-contact-lens`,
+                    params: listParams(params),
+                }),
             providesTags: ["ContactLenses"],
         }),
         getSingleContactLensData: builder.query({
@@ -98,10 +102,12 @@ export const BrandAPIEndPoint = catalogueSlice.injectEndpoints({
             invalidatesTags: ["ContactLenses"],
         }),
         getAllAccessoriesData: builder.query({
-            query: (params = {}) => ({
-                url: `/all-accessories`,
-                params: listParams(params),
-            }),
+            query: (params = {}) => params?.export
+                ? listRequest(`/all-accessories`, params, "accessories.csv")
+                : ({
+                    url: `/all-accessories`,
+                    params: listParams(params),
+                }),
             providesTags: ["Accessories"],
         }),
         getAccessoriesData: builder.query({

@@ -8,6 +8,8 @@ import { useGetAllCustomFieldsQuery } from "../redux/features/customFieldsAPIEnd
 import { useGetAllCategorySelectQuery } from "../redux/features/CategoryAPIEndPoint";
 import { ListFilters, ListTable, boundFilters, indexColumn, namedOptions, useListFilters } from "../components/common/ListFilters";
 import { allow } from "./permissions";
+import { catalogueSlice } from "../redux/services/catalogueSlice";
+import { exportProps, useExportAction } from "../utils/fileDownload";
 
 const FILTER_KEYS = ["attribute_type", "category"];
 const TYPES = [
@@ -28,6 +30,7 @@ export const CustomFieldDataTable = () => {
   const list = useListFilters(FILTER_KEYS);
   const { data: categoryData } = useGetAllCategorySelectQuery();
   const { data, isLoading, isFetching } = useGetAllCustomFieldsQuery(list.query, { skip: list.skip });
+  const fileExport = useExportAction(catalogueSlice.endpoints.getAllCustomFields, "CustomField", "Custom fields downloaded");
   const { rows, total } = readCustomFields(data);
 
   const columns = useMemo(() => [
@@ -76,6 +79,7 @@ export const CustomFieldDataTable = () => {
         <ListFilters
           {...boundFilters(list, {
             placeholder: "Name",
+            ...exportProps(fileExport, list.query, list.skip),
             selects: [
               { label: "Type", value: list.filters.attribute_type, onChange: (value) => list.setFilter("attribute_type", value), empty: "All types", options: TYPES },
               { label: "Category", value: list.filters.category, onChange: (value) => list.setFilter("category", value), empty: "All categories", options: namedOptions(categoryData?.data, "category_name") },

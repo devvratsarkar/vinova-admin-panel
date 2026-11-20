@@ -1,5 +1,5 @@
 import { catalogueSlice } from "../services/catalogueSlice";
-import { listParams } from "./listParams";
+import { listParams, listRequest } from "./listParams";
 
 export const customFieldsAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -12,10 +12,12 @@ export const customFieldsAPIEndPoint = catalogueSlice.injectEndpoints({
             invalidatesTags: ["CustomFields"],
         }),
         getAllCustomFields: builder.query({
-            query: (params = {}) => ({
-                url: `/get-all-fields`,
-                params: listParams(params),
-            }),
+            query: (params = {}) => params?.export
+                ? listRequest(`/get-all-fields`, params, "custom-fields.csv")
+                : ({
+                    url: `/get-all-fields`,
+                    params: listParams(params),
+                }),
             providesTags: ["CustomFields"],
         }),
         getSingleCustomeField: builder.query({

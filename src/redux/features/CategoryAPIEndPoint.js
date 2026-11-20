@@ -1,4 +1,5 @@
 import { catalogueSlice } from "../services/catalogueSlice";
+import { listRequest } from "./listParams";
 
 export const CategoryAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -15,7 +16,9 @@ export const CategoryAPIEndPoint = catalogueSlice.injectEndpoints({
             invalidatesTags: ["Categories"],
         }),
         getAllCategory: builder.query({
-            query: (params = {}) => ({
+            query: (params = {}) => params?.export
+                ? listRequest(`/category`, params, "categories.csv", ["search", "parent_category", "type", "status", "fromDate", "toDate"])
+                : ({
                 url: `/category`,
                 params: {
                     ...(params.page && { page: params.page }),

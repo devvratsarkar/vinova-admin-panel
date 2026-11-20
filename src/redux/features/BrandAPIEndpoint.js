@@ -1,5 +1,5 @@
 import { catalogueSlice } from "../services/catalogueSlice";
-import { listParams } from "./listParams";
+import { listParams, listRequest } from "./listParams";
 
 export const BrandAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -20,10 +20,12 @@ export const BrandAPIEndPoint = catalogueSlice.injectEndpoints({
             invalidatesTags: ["Brands"],
         }),
         getBrands: builder.query({
-            query: (params = {}) => ({
-                url: `/get-brand`,
-                params: listParams(params),
-            }),
+            query: (params = {}) => params?.export
+                ? listRequest(`/get-brand`, params, "brands.csv")
+                : ({
+                    url: `/get-brand`,
+                    params: listParams(params),
+                }),
             providesTags: ["Brands"],
         }),
         getSingleBrand: builder.query({

@@ -1,5 +1,5 @@
 import { catalogueSlice } from "../services/catalogueSlice";
-import { listParams } from "./listParams";
+import { listParams, listRequest } from "./listParams";
 
 export const FiltersAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -20,10 +20,12 @@ export const FiltersAPIEndPoint = catalogueSlice.injectEndpoints({
             invalidatesTags: ["Lenses"],
         }),
         getAllLens: builder.query({
-            query: (params = {}) => ({
-                url: `/lens`,
-                params: listParams(params),
-            }),
+            query: (params = {}) => params?.export
+                ? listRequest(`/lens`, params, "lenses.csv")
+                : ({
+                    url: `/lens`,
+                    params: listParams(params),
+                }),
             providesTags: ["Lenses"],
         }),
         getSingleLens: builder.query({

@@ -3,6 +3,8 @@ import { useGetLoginDataQuery } from "../redux/features/popUpEndpoints";
 import Loader from "../layouts/layoutcomponents/loader";
 import Error from "../layouts/layoutcomponents/Error";
 import { ListFilters, ListTable, boundFilters, indexColumn, readList, useListFilters } from "../components/common/ListFilters";
+import { catalogueSlice } from "../redux/services/catalogueSlice";
+import { exportProps, useExportAction } from "../utils/fileDownload";
 
 export default function LoginDataTale() {
   const list = useListFilters();
@@ -10,6 +12,7 @@ export default function LoginDataTale() {
     skip: list.skip,
     refetchOnMountOrArgChange: true,
   });
+  const fileExport = useExportAction(catalogueSlice.endpoints.getLoginData, "LoginData", "Login data downloaded");
   const { rows, total } = readList(data);
 
   const columns = useMemo(() => [
@@ -26,7 +29,7 @@ export default function LoginDataTale() {
       {(isLoading || isFetching) && <Loader />}
       {isError && <Error error_mes={error} />}
       <div className="e-table pb-5">
-        <ListFilters {...boundFilters(list, { placeholder: "Name, email, phone, or IP" })} />
+        <ListFilters {...boundFilters(list, { placeholder: "Name, email, phone, or IP", ...exportProps(fileExport, list.query, list.skip) })} />
         <ListTable
           columns={columns}
           rows={rows}

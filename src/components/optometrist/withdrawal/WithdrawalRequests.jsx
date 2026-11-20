@@ -6,6 +6,8 @@ import Loader from '../../../layouts/layoutcomponents/loader'
 import Error from '../../../layouts/layoutcomponents/Error'
 import { useGetAdminOptometristWithdrawalsQuery } from '../../../redux/features/optometristEnquiryAPIEndPoint'
 import { ListFilters, ListTable, boundFilters, formatDate, indexColumn, readList, useListFilters } from '../../common/ListFilters'
+import { catalogueSlice } from '../../../redux/services/catalogueSlice'
+import { exportProps, useExportAction } from '../../../utils/fileDownload'
 import WithdrawalReviewModal from './WithdrawalReviewModal'
 
 const STATUSES = [
@@ -36,6 +38,7 @@ export default function WithdrawalRequests() {
   const list = useListFilters(['status'], { status: searchParams.get('status') || '' })
   const [selected, setSelected] = useState(null)
   const { data, isError, error, isLoading, isFetching } = useGetAdminOptometristWithdrawalsQuery(list.query, { skip: list.skip })
+  const fileExport = useExportAction(catalogueSlice.endpoints.getAdminOptometristWithdrawals, 'OptometristWithdrawal', 'Withdrawal requests downloaded')
   const { rows, total } = readList(data)
 
   const columns = useMemo(() => [
@@ -135,6 +138,7 @@ export default function WithdrawalRequests() {
               <ListFilters
                 {...boundFilters(list, {
                   placeholder: 'Name, email, phone, or reference',
+                  ...exportProps(fileExport, list.query, list.skip),
                   selects: [
                     {
                       label: 'Status',

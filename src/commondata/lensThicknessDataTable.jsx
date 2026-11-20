@@ -11,6 +11,8 @@ import { useGetAllLensThicknessQuery, useUpdateLensThicknessStatusMutation } fro
 import { useGetAllLensQuery } from "../redux/features/LensAPIEndPoint";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, indexColumn, namedOptions, useListFilters } from "../components/common/ListFilters";
 import { allow } from "./permissions";
+import { catalogueSlice } from "../redux/services/catalogueSlice";
+import { exportProps, useExportAction } from "../utils/fileDownload";
 
 function readThickness(response) {
   const payload = response?.data;
@@ -68,6 +70,7 @@ export const LensThicknessDataTable = () => {
   const { data: lensData } = useGetAllLensQuery();
   const { data: coatingData } = useGetAllFiltersQuery();
   const { data, isLoading, isFetching, refetch } = useGetAllLensThicknessQuery(list.query, { skip: list.skip });
+  const fileExport = useExportAction(catalogueSlice.endpoints.getAllLensThickness, "LensSize", "Lens sizes downloaded");
   const [updateStatus, { isLoading: loadingStatus }] = useUpdateLensThicknessStatusMutation();
   const { rows, total } = readThickness(data);
 
@@ -170,6 +173,7 @@ export const LensThicknessDataTable = () => {
         <ListFilters
           {...boundFilters(list, {
             placeholder: "Name",
+            ...exportProps(fileExport, list.query, list.skip),
             selects: [
               { label: "Lens quality category", value: list.filters.lens, onChange: (value) => list.setFilter("lens", value), empty: "All categories", options: namedOptions(lensData?.data) },
               { label: "Coating", value: list.filters.lensFilters, onChange: (value) => list.setFilter("lensFilters", value), empty: "All coatings", options: namedOptions(coatingData?.data) },

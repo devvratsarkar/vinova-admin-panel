@@ -9,6 +9,8 @@ import moment from "moment";
 import { useGetAllMaterialsQuery, useUpdateMaterialStatusMutation } from "../redux/features/materialAPIEndPoint";
 import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, indexColumn, useListFilters } from "../components/common/ListFilters";
 import { allow } from "./permissions";
+import { catalogueSlice } from "../redux/services/catalogueSlice";
+import { exportProps, useExportAction } from "../utils/fileDownload";
 
 const FILTER_KEYS = ["status"];
 const getMaterialId = (row) => row?.id ?? row?._id;
@@ -60,6 +62,7 @@ export const MaterialDataTable = () => {
   const dispatch = useDispatch();
   const list = useListFilters(FILTER_KEYS);
   const { data, isLoading, isFetching, refetch } = useGetAllMaterialsQuery(list.query, { skip: list.skip });
+  const fileExport = useExportAction(catalogueSlice.endpoints.getAllMaterials, "Material", "Materials downloaded");
   const [updateStatus, { isLoading: loadingStatus }] = useUpdateMaterialStatusMutation();
   const { rows, total } = readMaterials(data);
 
@@ -109,6 +112,7 @@ export const MaterialDataTable = () => {
         <ListFilters
           {...boundFilters(list, {
             placeholder: "Name",
+            ...exportProps(fileExport, list.query, list.skip),
             selects: [
               { label: "Status", value: list.filters.status, onChange: (value) => list.setFilter("status", value), options: STATUS_FILTERS },
             ],
