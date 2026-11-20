@@ -1,0 +1,41 @@
+.ga-error,
+.ga-empty {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.ga-error {
+  background: #fff1f2;
+  color: #9f1239;
+}
+
+.ga-empty {
+  margin: 0;
+  color: #64748b;
+}
+
+.ga-channel {
+  min-width: 0;
+  flex: 1;
+}
+
+.ga-channel b {
+  display: block;
+  margin-bottom: 6px;
+  overflow: hidden;
+  font-weight: 650;
+  color: #0f172a;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ga-meter {
+  width: min(220px, 100%);
+}
+
+.ga-card-body {
+  padding: 0 18px 18px;
+}

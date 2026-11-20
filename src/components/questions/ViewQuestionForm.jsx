@@ -1,0 +1,430 @@
+import React, { useEffect } from 'react'
+import { Col, Form, Row, Card } from 'react-bootstrap'
+import SelectWithDragDrop from '../common/SelectWithDragDrop'
+import { useFormik } from 'formik'
+import { useGetAllQuestionsQuery, useGetQuestionByIdQuery, useUpdateQuestionMutation } from '../../redux/features/questionsAPIEndPoint'
+import Loader from '../../layouts/layoutcomponents/loader'
+import toast from 'react-hot-toast'
+import { useNavigate, useParams } from 'react-router-dom'
+import PageHeader from '../../layouts/layoutcomponents/pageheader'
+import { questionsValidationSchema } from '../../commondata/formvalidations'
+
+export default function ViewQuestionForm({ lang }) {
+    const { id } = useParams()
+    const navigate = useNavigate()
+    const { refetch } = useGetAllQuestionsQuery()
+    const { data, isLoading: loadingSingleData, isSuccess, refetch: refetchSingleData } = useGetQuestionByIdQuery(id)
+
+    const singleData = data?.data || null
+
+    const [updateData, { isLoading: loadingUpdateData }] = useUpdateQuestionMutation()
+
+    useEffect(() => {
+        refetchSingleData()
+    }, [refetchSingleData])
+
+    const initialValues = {
+        text: "",
+        type: "text",
+        options: [
+            {
+                value: "",
+                label: ""
+            }
+        ],
+        conditions: [
+            {
+                field: "",
+                value: "",
+                operator: ""
+            }
+        ],
+        dependsOn: {
+            questionId: "",
+            answer: ""
+        },
+        category: "frame",
+        order: 1,
+        status: true
+    }
+
+    const { errors, values, touched, handleChange, handleBlur, setFieldValue, setFieldTouched, handleSubmit } = useFormik({
+        initialValues,
+        validationSchema: questionsValidationSchema,
+        onSubmit: async (values) => {
+            try {
+                // console.log("values", values)
+                // const resp = await updateData({ id: id, formData: values })
+                // if (resp?.data?.http_status_code === 200) {
+                //     refetch()
+                //     refetchSingleData()
+                //     toast.success(resp?.data?.message)
+                //     navigate("/catalogue/questions")
+                // } else {
+                //     toast.error(resp?.data?.message)
+                // }
+            } catch (err) {
+                toast.error(err?.message)
+            }
+        }
+    })
+
+    const typeOptions = [
+        { value: "multiple_choice", label: "Multiple Choice" },
+        { value: "yes_no", label: "Yes/No" },
+        { value: "text", label: "Text" }
+    ]
+
+    const categoryOptions = [
+        { value: "frame", label: "Frame" },
+        { value: "sunglasses", label: "Sunglasses" },
+        { value: "contact_lens", label: "Contact Lens" }
+    ]
+
+    const operatorOptions = [
+        { value: "equals", label: "Equals" },
+        { value: "greater_than", label: "Greater Than" },
+        { value: "less_than", label: "Less Than" },
+        { value: "in", label: "In" }
+    ]
+
+    const statusOptions = [
+        { value: true, label: "Active" },
+        { value: false, label: "Inactive" }
+    ]
+
+    const customStyles = {
+        control: (provided) => ({
+            ...provided,
+            minHeight: '38px',
+            height: '38px'
+        }),
+        valueContainer: (provided) => ({
+            ...provided,
+            height: '38px',
+            padding: '0 6px'
+        }),
+        input: (provided) => ({
+            ...provided,
+            margin: '0px',
+        }),
+        indicatorsContainer: (provided) => ({
+            ...provided,
+            height: '38px',
+        }),
+    }
+
+    // Handle dynamic addition of options
+    const addOption = () => {
+        setFieldValue('options', [...values.options, { value: "", label: "" }])
+    }
+
+    // Handle dynamic removal of options
+    const removeOption = (index) => {
+        const newOptions = values.options.filter((_, i) => i !== index)
+        setFieldValue('options', newOptions.length > 0 ? newOptions : [{ value: "", label: "" }])
+    }
+
+    // Handle dynamic addition of conditions
+    const addCondition = () => {
+        setFieldValue('conditions', [...values.conditions, { field: "", value: "", operator: "" }])
+    }
+
+    // Handle dynamic removal of conditions
+    const removeCondition = (index) => {
+        const newConditions = values.conditions.filter((_, i) => i !== index)
+        setFieldValue('conditions', newConditions.length > 0 ? newConditions : [{ field: "", value: "", operator: "" }])
+    }
+
+    useEffect(() => {
+        if (isSuccess && singleData) {
+            setFieldValue('text', singleData?.text || '')
+            setFieldValue('type', singleData?.type || 'text')
+            setFieldValue('options', singleData?.options?.length > 0 ? singleData.options : [{ value: "", label: "" }])
+            setFieldValue('conditions', singleData?.conditions?.length > 0 ? singleData.conditions : [{ field: "", value: "", operator: "" }])
+            setFieldValue('dependsOn.questionId', singleData?.dependsOn?.questionId || '')
+            setFieldValue('dependsOn.answer', singleData?.dependsOn?.answer || '')
+            setFieldValue('category', singleData?.category || 'frame')
+            setFieldValue('order', singleData?.order || 1)
+            setFieldValue('status', singleData?.status !== undefined ? singleData.status : true)
+        }
+    }, [isSuccess, singleData, setFieldValue])
+
+    return (
+        <>
+            {
+                (loadingUpdateData || loadingSingleData) && <Loader />
+            }
+            <Row>
+                <Col>
+                    <Card>
+                        <Card.Body className="">
+                            <Form onSubmit={handleSubmit}>
+                                <Row>
+                                    <Col md={6}>
+                                        <Form.Group className="mb-3" controlId="formBasicText">
+                                            <Form.Label>Question Text<span className='text-danger'>*</span></Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                placeholder="Enter Question Text"
+                                                name="text"
+                                                value={values.text}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                isInvalid={touched.text && errors.text}
+                                                disabled
+                                            />
+                                            <Form.Control.Feedback type="invalid">
+                                                {errors.text}
+                                            </Form.Control.Feedback>
+                                        </Form.Group>
+                                    </Col>
+                                    <Col md={6}>
+                                        <Form.Group className="mb-3" controlId="formBasicType">
+                                            <Form.Label>Question Type<span className='text-danger'>*</span></Form.Label>
+                                            <SelectWithDragDrop
+                                                options={typeOptions}
+                                                value={typeOptions.find(option => option.value === values.type)}
+                                                onChange={(option) => {
+                                                    setFieldValue('type', option.value)
+                                                    setFieldTouched('type', true)
+                                                }}
+                                                styles={customStyles}
+                                                classNamePrefix="react-select"
+                                                isDisabled
+                                            />
+                                            {touched.type && errors.type && (
+                                                <div className="invalid-feedback d-block">
+                                                    {errors.type}
+                                                </div>
+                                            )}
+                                        </Form.Group>
+                                    </Col>
+                                    {(values.type === "multiple_choice" || values.type === "yes_no") && (
+                                        <Col md={12}>
+                                            <Form.Group className="mb-3" controlId="formBasicOptions">
+                                                <Form.Label>Options<span className='text-danger'>*</span></Form.Label>
+                                                {values.options.map((option, index) => (
+                                                    <Row key={index} className="mb-2">
+                                                        <Col md={5}>
+                                                            <Form.Control
+                                                                type="text"
+                                                                placeholder="Option Value"
+                                                                name={`options[${index}].value`}
+                                                                value={option.value}
+                                                                onChange={handleChange}
+                                                                onBlur={handleBlur}
+                                                                isInvalid={touched.options?.[index]?.value && errors.options?.[index]?.value}
+                                                                disabled
+                                                            />
+                                                            <Form.Control.Feedback type="invalid">
+                                                                {errors.options?.[index]?.value}
+                                                            </Form.Control.Feedback>
+                                                        </Col>
+                                                        <Col md={5}>
+                                                            <Form.Control
+                                                                type="text"
+                                                                placeholder="Option Label"
+                                                                name={`options[${index}].label`}
+                                                                value={option.label}
+                                                                onChange={handleChange}
+                                                                onBlur={handleBlur}
+                                                                isInvalid={touched.options?.[index]?.label && errors.options?.[index]?.label}
+                                                                disabled
+                                                            />
+                                                            <Form.Control.Feedback type="invalid">
+                                                                {errors.options?.[index]?.label}
+                                                            </Form.Control.Feedback>
+                                                        </Col>
+                                                        <Col md={2}>
+                                                            {/* <Button variant="primary" onClick={addOption} className="me-1">
+                                                                Add
+                                                            </Button>
+                                                            {values.options.length > 1 && (
+                                                                <Button variant="danger" onClick={() => removeOption(index)}>
+                                                                    Remove
+                                                                </Button>
+                                                            )} */}
+                                                        </Col>
+                                                    </Row>
+                                                ))}
+                                            </Form.Group>
+                                        </Col>
+                                    )}
+                                    <Col md={12}>
+                                        <Form.Group className="mb-3" controlId="formBasicConditions">
+                                            <Form.Label>Conditions</Form.Label>
+                                            {values.conditions.map((condition, index) => (
+                                                <Row key={index} className="mb-2">
+                                                    <Col md={3}>
+                                                        <Form.Control
+                                                            type="text"
+                                                            placeholder="Field"
+                                                            name={`conditions[${index}].field`}
+                                                            value={condition.field}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                            isInvalid={touched.conditions?.[index]?.field && errors.conditions?.[index]?.field}
+                                                            disabled
+                                                        />
+                                                        <Form.Control.Feedback type="invalid">
+                                                            {errors.conditions?.[index]?.field}
+                                                        </Form.Control.Feedback>
+                                                    </Col>
+                                                    <Col md={3}>
+                                                        <Form.Control
+                                                            type="text"
+                                                            placeholder="Value"
+                                                            name={`conditions[${index}].value`}
+                                                            value={condition.value}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                            isInvalid={touched.conditions?.[index]?.value && errors.conditions?.[index]?.value}
+                                                            disabled
+                                                        />
+                                                        <Form.Control.Feedback type="invalid">
+                                                            {errors.conditions?.[index]?.value}
+                                                        </Form.Control.Feedback>
+                                                    </Col>
+                                                    <Col md={3}>
+                                                        <SelectWithDragDrop
+                                                            options={operatorOptions}
+                                                            value={operatorOptions.find(option => option.value === condition.operator)}
+                                                            onChange={(option) => {
+                                                                setFieldValue(`conditions[${index}].operator`, option.value)
+                                                                setFieldTouched(`conditions[${index}].operator`, true)
+                                                            }}
+                                                            styles={customStyles}
+                                                            classNamePrefix="react-select"
+                                                            isDisabled
+                                                        />
+                                                        {touched.conditions?.[index]?.operator && errors.conditions?.[index]?.operator && (
+                                                            <div className="invalid-feedback d-block">
+                                                                {errors.conditions?.[index]?.operator}
+                                                            </div>
+                                                        )}
+                                                    </Col>
+                                                    <Col md={3}>
+                                                        {/* <Button variant="primary" onClick={addCondition} className="me-1">
+                                                            Add
+                                                        </Button>
+                                                        {values.conditions.length > 1 && (
+                                                            <Button variant="danger" onClick={() => removeCondition(index)}>
+                                                                Remove
+                                                            </Button>
+                                                        )} */}
+                                                    </Col>
+                                                </Row>
+                                            ))}
+                                        </Form.Group>
+                                    </Col>
+                                    <Col md={6}>
+                                        <Form.Group className="mb-3" controlId="formBasicDependsOnQuestionId">
+                                            <Form.Label>Depends On Question ID</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                placeholder="Enter Question ID"
+                                                name="dependsOn.questionId"
+                                                value={values.dependsOn.questionId}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                isInvalid={touched.dependsOn?.questionId && errors.dependsOn?.questionId}
+                                                disabled
+                                            />
+                                            <Form.Control.Feedback type="invalid">
+                                                {errors.dependsOn?.questionId}
+                                            </Form.Control.Feedback>
+                                        </Form.Group>
+                                    </Col>
+                                    <Col md={6}>
+                                        <Form.Group className="mb-3" controlId="formBasicDependsOnAnswer">
+                                            <Form.Label>Depends On Answer</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                placeholder="Enter Answer"
+                                                name="dependsOn.answer"
+                                                value={values.dependsOn.answer}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                isInvalid={touched.dependsOn?.answer && errors.dependsOn?.answer}
+                                                disabled
+                                            />
+                                            <Form.Control.Feedback type="invalid">
+                                                {errors.dependsOn?.answer}
+                                            </Form.Control.Feedback>
+                                        </Form.Group>
+                                    </Col>
+                                    <Col md={6}>
+                                        <Form.Group className="mb-3" controlId="formBasicCategory">
+                                            <Form.Label>Category<span className='text-danger'>*</span></Form.Label>
+                                            <SelectWithDragDrop
+                                                options={categoryOptions}
+                                                value={categoryOptions.find(option => option.value === values.category)}
+                                                onChange={(option) => {
+                                                    setFieldValue('category', option.value)
+                                                    setFieldTouched('category', true)
+                                                }}
+                                                styles={customStyles}
+                                                classNamePrefix="react-select"
+                                                isDisabled
+                                            />
+                                            {touched.category && errors.category && (
+                                                <div className="invalid-feedback d-block">
+                                                    {errors.category}
+                                                </div>
+                                            )}
+                                        </Form.Group>
+                                    </Col>
+                                    <Col md={6}>
+                                        <Form.Group className="mb-3" controlId="formBasicOrder">
+                                            <Form.Label>Order<span className='text-danger'>*</span></Form.Label>
+                                            <Form.Control
+                                                type="number"
+                                                placeholder="Enter Order"
+                                                name="order"
+                                                value={values.order}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                isInvalid={touched.order && errors.order}
+                                                disabled
+                                            />
+                                            <Form.Control.Feedback type="invalid">
+                                                {errors.order}
+                                            </Form.Control.Feedback>
+                                        </Form.Group>
+                                    </Col>
+                                    <Col md={6}>
+                                        <Form.Group className="mb-3" controlId="formBasicStatus">
+                                            <Form.Label>Status<span className='text-danger'>*</span></Form.Label>
+                                            <SelectWithDragDrop
+                                                options={statusOptions}
+                                                value={statusOptions.find(option => option.value === values.status)}
+                                                onChange={(option) => {
+                                                    setFieldValue('status', option.value)
+                                                    setFieldTouched('status', true)
+                                                }}
+                                                styles={customStyles}
+                                                classNamePrefix="react-select"
+                                                isDisabled
+                                            />
+                                            {touched.status && errors.status && (
+                                                <div className="invalid-feedback d-block">
+                                                    {errors.status}
+                                                </div>
+                                            )}
+                                        </Form.Group>
+                                    </Col>
+                                </Row>
+                                {/* <Row className='justify-content-center mt-3'>
+                                    <Button type="submit" className='w-auto'>
+                                        Submit
+                                    </Button>
+                                </Row> */}
+                            </Form>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+        </>
+    )
+}
