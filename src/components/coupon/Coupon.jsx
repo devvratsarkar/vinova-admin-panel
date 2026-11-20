@@ -5,11 +5,13 @@ import { hasPermission } from "../../commondata/permissions";
 
 import { Link } from "react-router-dom";
 import { CouponData } from "../../commondata/couponDatas";
+import { TrashButton } from "../../components/common/ListFilters";
 
 export default function Coupon() {
   const role = localStorage.getItem("role")
   const permissions = JSON.parse(localStorage.getItem("permissions"))
 
+  const [viewingTrash, setViewingTrash] = useState(false)
   const showAdd = hasPermission(role, permissions, "Coupon", "add")
   const showTrash = hasPermission(role, permissions, "Coupon", "view-trash")
   return (
@@ -24,18 +26,14 @@ export default function Coupon() {
           <Link className="btn btn-success text-white" to={`/add-coupon`}> Add New Coupon </Link>
            )
           }
-          {
-            showTrash && ( 
-          <Link className="btn btn-danger text-white" to={`/trash-coupons`} state={{ name: "Coupon" }} > Coupon Trashed </Link>
-           )
-          } 
+          <TrashButton show={showTrash} viewing={viewingTrash} onToggle={() => setViewingTrash((value) => !value)} label="Coupon Trashed" backLabel="All coupons" />
         </Col>
       </Row>
       <Row>
         <Col>
           <Card>
             <Card.Body className="data_table">
-              <CouponData />
+              <CouponData viewingTrash={viewingTrash} />
             </Card.Body>
           </Card>
         </Col>

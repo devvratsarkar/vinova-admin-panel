@@ -1,16 +1,18 @@
 import { hasPermission } from "../../commondata/permissions";
-import React from 'react'
+import React, { useState } from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
 import PageHeader from '../../layouts/layoutcomponents/pageheader'
 import { Link } from 'react-router-dom'
 import { LensDataTable } from '../../commondata/lensDataTable'
 import { FilterDataTable } from '../../commondata/filterDataTable'
 import { LensThicknessDataTable } from '../../commondata/lensThicknessDataTable'
+import { TrashButton } from '../../components/common/ListFilters'
 
 export default function LensThickness() {
     const role = localStorage.getItem("role")
     const permission = JSON.parse(localStorage.getItem("permissions"))
 
+    const [viewingTrash, setViewingTrash] = useState(false)
     const showAdd = hasPermission(role, permission, "LensSize", "add")
     const showTrash = hasPermission(role, permission, "LensSize", "view-trash")
     return (
@@ -25,18 +27,14 @@ export default function LensThickness() {
                     <Link to="/catalogue/lens-thickness/add" className="btn btn-success text-white me-3" >Add Refractive Index</Link>
                      )
                     }
-                    {
-                        showTrash && ( 
-                    <Link className="btn btn-danger text-white" to={`/catalogue/lens-thickness/deleted-list`}>Trashed Refractive Index</Link>
-                     )
-                    } 
+                    <TrashButton show={showTrash} viewing={viewingTrash} onToggle={() => setViewingTrash((value) => !value)} label="Trashed Refractive Index" backLabel="All indexes" />
                 </Col>
             </Row>
             <Row>
                 <Col>
                     <Card>
                         <Card.Body className="data_table">
-                            <LensThicknessDataTable />
+                            <LensThicknessDataTable viewingTrash={viewingTrash} />
                         </Card.Body>
                     </Card>
                 </Col>

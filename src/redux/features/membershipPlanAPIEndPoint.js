@@ -3,7 +3,7 @@ import { catalogueSlice } from "../services/catalogueSlice";
 export const membershipPlanAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
         getAllMembershipPlans: builder.query({
-            query: () => `/membership-plan`,
+            query: (params) => params?.trash ? { url: `/membership-plan`, params: { trash: true } } : `/membership-plan`,
             providesTags: ["MembershipPlans"],
         }),
         addMembershipPlan: builder.mutation({

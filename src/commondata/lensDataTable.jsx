@@ -7,7 +7,7 @@ import { openModal } from "../redux/slices/allModalSlice";
 import toast from "react-hot-toast";
 import { useGetAllLensQuery, useUpdateLensStatusMutation } from "../redux/features/LensAPIEndPoint";
 import { useGetBrandsSelectQuery } from "../redux/features/BrandAPIEndpoint";
-import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, namedOptions, useListFilters } from "../components/common/ListFilters";
+import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, namedOptions, useListFilters, withTrash, TrashActions } from "../components/common/ListFilters";
 import { allow } from "./permissions";
 import { catalogueSlice } from "../redux/services/catalogueSlice";
 import { exportProps, useExportAction } from "../utils/fileDownload";
@@ -25,11 +25,12 @@ const TYPES = [
   { value: "sunglass", label: "Sunglass" },
 ];
 
-export const LensDataTable = () => {
+export const LensDataTable = ({ viewingTrash = false }) => {
   const dispatch = useDispatch();
   const list = useListFilters(FILTER_KEYS);
+  const query = withTrash(list.query, viewingTrash);
   const { data: brandData } = useGetBrandsSelectQuery();
-  const { data, isLoading, isFetching, refetch } = useGetAllLensQuery(list.query, { skip: list.skip });
+  const { data, isLoading, isFetching, refetch } = useGetAllLensQuery(query, { skip: list.skip });
   const fileExport = useExportAction(catalogueSlice.endpoints.getAllLens, "Lens", "Lenses downloaded");
   const [updateStatus, { isLoading: loadingStatus }] = useUpdateLensStatusMutation();
   const { rows, total } = readLenses(data);
@@ -79,6 +80,7 @@ export const LensDataTable = () => {
       filterable: false,
       render: (row) => (
         <div className="action_icon_wrapper d-flex justify-content-center">
+          <TrashActions viewingTrash={viewingTrash} onRestore={() => dispatch(openModal({ componentName: "RestoreLens", data: row }))} onDelete={() => dispatch(openModal({ componentName: "DeleteLens", data: row, softDelete: false }))}>
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link to={`/catalogue/lens/view/${row?._id}`}><Button className="btn btn-icon btn-primary me-2"><i className="fe fe-eye"></i></Button></Link>
           </OverlayTrigger>
@@ -92,10 +94,11 @@ export const LensDataTable = () => {
             <Button type="button" className="btn btn-icon btn-danger" variant="" onClick={() => dispatch(openModal({ componentName: "DeleteLens", data: row, softDelete: true }))}><i className="fe fe-trash text-white"></i></Button>
           </OverlayTrigger>
 )}
+          </TrashActions>
         </div>
       ),
     },
-  ], [list.currentPage, list.pageSize, dispatch]);
+  ], [list.currentPage, list.pageSize, dispatch, viewingTrash]);
 
   return (
     <>
@@ -104,7 +107,7 @@ export const LensDataTable = () => {
         <ListFilters
           {...boundFilters(list, {
             placeholder: "Name or brand",
-            ...exportProps(fileExport, list.query, list.skip),
+            ...exportProps(fileExport, query, list.skip),
             selects: [
               { label: "Brand", value: list.filters.brand, onChange: (value) => list.setFilter("brand", value), empty: "All brands", options: namedOptions(brandData?.data) },
               { label: "Type", value: list.filters.type, onChange: (value) => list.setFilter("type", value), empty: "All types", options: TYPES },

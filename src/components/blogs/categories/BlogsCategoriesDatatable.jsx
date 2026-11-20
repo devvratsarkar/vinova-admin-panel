@@ -6,7 +6,7 @@ import Loader from "../../../layouts/layoutcomponents/loader";
 import Error from "../../../layouts/layoutcomponents/Error";
 import { useGetAllBlogsCategoryQuery } from "../../../redux/features/getApiSecond";
 import { openModal } from "../../../redux/slices/allModalSlice";
-import { ListFilters, ListTable, boundFilters, indexColumn, useListFilters } from "../../common/ListFilters";
+import { ListFilters, ListTable, TrashActions, boundFilters, indexColumn, useListFilters, withTrash } from "../../common/ListFilters";
 import { allow } from "../../../commondata/permissions";
 import { commonDataSlice } from "../../../redux/slices/commonApiSlice";
 import { exportProps, useExportAction } from "../../../utils/fileDownload";
@@ -38,11 +38,12 @@ function useRefreshAfterBareQuery(bare, refetch) {
   }, [bare?.fulfilledTimeStamp, refetch]);
 }
 
-export const BlogsCategoriesDatatable = () => {
+export const BlogsCategoriesDatatable = ({ viewingTrash = false }) => {
   const dispatch = useDispatch();
   const list = useListFilters();
+  const query = withTrash(list.query, viewingTrash);
   const bare = useGetAllBlogsCategoryQuery();
-  const { data, isError, error, isLoading, isFetching, refetch } = useGetAllBlogsCategoryQuery(list.query, { skip: list.skip });
+  const { data, isError, error, isLoading, isFetching, refetch } = useGetAllBlogsCategoryQuery(query, { skip: list.skip });
   const fileExport = useExportAction(commonDataSlice.endpoints.getAllBlogsCategory, "BlogCategory", "Blog categories downloaded");
   useRefreshAfterBareQuery(bare, refetch);
   const { rows, total } = readCategories(data);
@@ -80,6 +81,7 @@ export const BlogsCategoriesDatatable = () => {
         const rowId = row?._id || row?.id;
         return (
           <div className="action_icon_wrapper d-flex justify-content-center">
+            <TrashActions viewingTrash={viewingTrash} onRestore={() => dispatch(openModal({ componentName: "RestoreBlogCategory", data: row }))} onDelete={() => dispatch(openModal({ componentName: "DeleteBlogCategory", data: row, softDelete: false }))}>
             <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
               <Link to={`/all-blog-category/view-blog-category/${rowId}`} className="btn btn-icon btn-primary"><i className="fe fe-eye"></i></Link>
             </OverlayTrigger>
@@ -95,18 +97,19 @@ export const BlogsCategoriesDatatable = () => {
               </Button>
             </OverlayTrigger>
 )}
+            </TrashActions>
           </div>
         );
       },
     },
-  ], [list.currentPage, list.pageSize, dispatch]);
+  ], [list.currentPage, list.pageSize, dispatch, viewingTrash]);
 
   return (
     <>
       {(isLoading || isFetching) && <Loader />}
       {isError && <Error error_mes={error} />}
       <div className="e-table pb-5">
-        <ListFilters {...boundFilters(list, { placeholder: "Name or slug", ...exportProps(fileExport, list.query, list.skip) })} />
+        <ListFilters {...boundFilters(list, { placeholder: "Name or slug", ...exportProps(fileExport, query, list.skip) })} />
         <ListTable
           columns={columns}
           rows={rows}

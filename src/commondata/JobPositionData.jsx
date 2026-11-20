@@ -9,9 +9,10 @@ import { openModal } from "../redux/slices/allModalSlice";
 import toast from "react-hot-toast";
 import { useChangeJobOpeningStatusMutation, useGetJobOpeningsQuery } from "../redux/features/jobOpeningAPIEndPoint";
 import { hasPermission } from "./permissions";
+import { TrashActions } from "../components/common/ListFilters";
 
 
-export default function JobPositionDataTable() {
+export default function JobPositionDataTable({ viewingTrash = false }) {
 
     const [serialNumber, setSerialNumber] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
@@ -25,7 +26,7 @@ export default function JobPositionDataTable() {
     const showDelete = hasPermission(role, permissions, "JobOpening", "soft-delete")
 
 
-    const { data, isError, error, isLoading, isFetching, isSuccess, refetch } = useGetJobOpeningsQuery()
+    const { data, isError, error, isLoading, isFetching, isSuccess, refetch } = useGetJobOpeningsQuery(viewingTrash ? { trash: true } : undefined)
 
     const [updateStatus, { isLoading: loading }] = useChangeJobOpeningStatusMutation();
 
@@ -131,6 +132,7 @@ export default function JobPositionDataTable() {
                 name: "Action",
                 cell: (row) => (
                     <div className="action_icon_wrapper">
+                        <TrashActions viewingTrash={viewingTrash} onRestore={() => dispatch(openModal({ componentName: "RestoreJobPosition", data: row }))} onDelete={() => dispatch(openModal({ componentName: "DeleteJobPosition", data: row, softDelete: false }))}>
                         <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
                             <Link to={`/cms/view-job-positions/${row?._id}`}><Button className="btn btn-icon btn-primary"><i className="fe fe-eye"></i></Button></Link>
                         </OverlayTrigger>{
@@ -147,6 +149,7 @@ export default function JobPositionDataTable() {
                                 </OverlayTrigger>
                             )
                         }
+                        </TrashActions>
                     </div>
                 ),
             },

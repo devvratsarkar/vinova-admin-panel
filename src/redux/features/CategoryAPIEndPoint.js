@@ -17,7 +17,7 @@ export const CategoryAPIEndPoint = catalogueSlice.injectEndpoints({
         }),
         getAllCategory: builder.query({
             query: (params = {}) => params?.export
-                ? listRequest(`/category`, params, "categories.csv", ["search", "parent_category", "type", "status", "fromDate", "toDate"])
+                ? listRequest(`/category`, params, "categories.csv", ["search", "parent_category", "type", "status", "fromDate", "toDate", "trash"])
                 : ({
                 url: `/category`,
                 params: {
@@ -29,6 +29,7 @@ export const CategoryAPIEndPoint = catalogueSlice.injectEndpoints({
                     ...(params.status && { status: params.status }),
                     ...(params.fromDate && { fromDate: params.fromDate }),
                     ...(params.toDate && { toDate: params.toDate }),
+                    ...(params.trash && { trash: true }),
                 },
             }),
             providesTags: ["Categories"],

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Card, Col, OverlayTrigger, Row, Tooltip } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -7,7 +7,7 @@ import Loader from "../../../layouts/layoutcomponents/loader";
 import Error from "../../../layouts/layoutcomponents/Error";
 import PageHeader from "../../../layouts/layoutcomponents/pageheader";
 import { useGetAllBlogsTagsQuery } from "../../../redux/features/getApiSecond";
-import { ListFilters, ListTable, boundFilters, indexColumn, useListFilters } from "../../common/ListFilters";
+import { ListFilters, ListTable, TrashActions, TrashButton, boundFilters, indexColumn, useListFilters, withTrash } from "../../common/ListFilters";
 import { allow } from "../../../commondata/permissions";
 import { commonDataSlice } from "../../../redux/slices/commonApiSlice";
 import { exportProps, useExportAction } from "../../../utils/fileDownload";
@@ -37,9 +37,11 @@ function useRefreshAfterBareQuery(bare, refetch) {
 
 export default function BlogTags() {
   const dispatch = useDispatch();
+  const [viewingTrash, setViewingTrash] = useState(false)
   const list = useListFilters();
+  const query = withTrash(list.query, viewingTrash);
   const bare = useGetAllBlogsTagsQuery();
-  const { data, isError, error, isLoading, isFetching, refetch } = useGetAllBlogsTagsQuery(list.query, { skip: list.skip });
+  const { data, isError, error, isLoading, isFetching, refetch } = useGetAllBlogsTagsQuery(query, { skip: list.skip });
   const fileExport = useExportAction(commonDataSlice.endpoints.getAllBlogsTags, "BlogTag", "Blog tags downloaded");
   useRefreshAfterBareQuery(bare, refetch);
   const { rows, total } = readTags(data);
@@ -57,6 +59,7 @@ export default function BlogTags() {
       filterable: false,
       render: (row) => (
         <div className="action_icon_wrapper d-flex justify-content-center">
+          <TrashActions viewingTrash={viewingTrash} onRestore={() => dispatch(openModal({ componentName: "RestoreBlogTags", data: row }))} onDelete={() => dispatch(openModal({ componentName: "BlogTagsDelete", data: row, softDelete: false }))}>
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Button type="button" className="btn btn-icon btn-primary" variant="" onClick={() => dispatch(openModal({ componentName: "ViewBlogTag", data: row }))}><i className="fe fe-eye"></i></Button>
           </OverlayTrigger>
@@ -70,10 +73,11 @@ export default function BlogTags() {
             <Button type="button" className="btn btn-icon btn-danger" onClick={() => dispatch(openModal({ componentName: "BlogTagsDelete", data: row, softDelete: true }))}><i className="fe fe-trash"></i></Button>
           </OverlayTrigger>
 )}
+          </TrashActions>
         </div>
       ),
     },
-  ], [list.currentPage, list.pageSize, dispatch]);
+  ], [list.currentPage, list.pageSize, dispatch, viewingTrash]);
 
   return (
     <>
@@ -83,7 +87,7 @@ export default function BlogTags() {
         </Col>
         <Col className="text-end">
           {allow("BlogTag", "add") && <Button className="btn btn-success me-3" variant="" onClick={() => dispatch(openModal({ componentName: "AddBlogTags" }))}>Add New Blog Tag</Button>}
-          {allow("BlogTag", "view-trash") && <Link to="/all-blog-tags/trash" className="btn btn-danger">Trash</Link>}
+          <TrashButton show={allow("BlogTag", "view-trash")} viewing={viewingTrash} onToggle={() => setViewingTrash((value) => !value)} label="Trash" backLabel="All tags" />
         </Col>
       </Row>
       <Row>
@@ -93,7 +97,7 @@ export default function BlogTags() {
               {(isLoading || isFetching) && <Loader />}
               {isError && <Error error_mes={error} />}
               <div className="e-table pb-5">
-                <ListFilters {...boundFilters(list, { placeholder: "Name", ...exportProps(fileExport, list.query, list.skip) })} />
+                <ListFilters {...boundFilters(list, { placeholder: "Name", ...exportProps(fileExport, query, list.skip) })} />
                 <ListTable
                   columns={columns}
                   rows={rows}

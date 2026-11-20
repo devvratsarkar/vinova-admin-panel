@@ -50,7 +50,7 @@ export const shippingZoneEndPoints = catalogueSlice.injectEndpoints({
             }),
         }),
         getAllCarrier: builder.query({
-            query: () => `/get-carrier`,
+            query: (params) => params?.trash ? { url: `/get-carrier`, params: { trash: true } } : `/get-carrier`,
         }),
         getDeletedCarrier: builder.query({
             query: () => `/get-carrier-trash`,

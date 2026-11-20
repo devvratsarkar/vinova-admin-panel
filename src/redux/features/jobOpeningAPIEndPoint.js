@@ -11,7 +11,7 @@ export const JobOpeningAPIEndPoint = catalogueSlice.injectEndpoints({
         }),
 
         getJobOpenings: builder.query({
-            query: () => `/job-opening`,
+            query: (params) => params?.trash ? { url: `/job-opening`, params: { trash: true } } : `/job-opening`,
         }),
 
         getTrashedJobOpenings: builder.query({

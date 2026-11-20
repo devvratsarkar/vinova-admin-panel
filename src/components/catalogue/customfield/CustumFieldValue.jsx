@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Button, Card, Col, OverlayTrigger, Row, Tooltip } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -6,9 +6,8 @@ import PageHeader from "../../../layouts/layoutcomponents/pageheader";
 import { openModal } from "../../../redux/slices/allModalSlice";
 import Loader from "../../../layouts/layoutcomponents/loader";
 import Error from "../../../layouts/layoutcomponents/Error";
-import { getCustomFieldValueTrashPage } from "../../../utils/routes";
 import { useGetAllCustomFieldValuesQuery } from "../../../redux/features/customFieldValueAPIEndPoint";
-import { ListFilters, ListTable, boundFilters, indexColumn, useListFilters } from "../../common/ListFilters";
+import { ListFilters, ListTable, TrashActions, TrashButton, boundFilters, indexColumn, useListFilters, withTrash } from "../../common/ListFilters";
 import { hasPermission } from "../../../commondata/permissions";
 import { catalogueSlice } from "../../../redux/services/catalogueSlice";
 import { exportProps, useExportAction } from "../../../utils/fileDownload";
@@ -23,8 +22,9 @@ function readCustomFieldValues(response) {
 export default function CustumFieldValue() {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const [viewingTrash, setViewingTrash] = useState(false);
   const list = useListFilters();
-  const valueQuery = { id, ...list.query };
+  const valueQuery = withTrash({ id, ...list.query }, viewingTrash);
   const { data, isError, error, isLoading, isFetching } = useGetAllCustomFieldValuesQuery(
     valueQuery,
     { skip: !id || list.skip },
@@ -60,6 +60,7 @@ export default function CustumFieldValue() {
       filterable: false,
       render: (row) => (
         <div className="action_icon_wrapper d-flex justify-content-center">
+          <TrashActions viewingTrash={viewingTrash} onRestore={() => dispatch(openModal({ componentName: "CustomFieldValueRestore", data: { row, id } }))} onDelete={() => dispatch(openModal({ componentName: "DeleteFieldValue", data: { row, id }, softDelete: false }))}>
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Button onClick={() => { dispatch(openModal({ componentName: "ViewCustumFieldValue", data: { row, data } })); }} className="btn btn-icon btn-primary"><i className="fe fe-eye"></i></Button>
           </OverlayTrigger>
@@ -69,10 +70,11 @@ export default function CustumFieldValue() {
           <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
             <Button className="btn btn-icon btn-danger border-danger" onClick={() => dispatch(openModal({ componentName: "DeleteFieldValue", softDelete: true, data: { row, id } }))}><i className="fe fe-trash"></i></Button>
           </OverlayTrigger>
+          </TrashActions>
         </div>
       ),
     },
-  ], [list.currentPage, list.pageSize, dispatch, data, id]);
+  ], [list.currentPage, list.pageSize, dispatch, data, id, viewingTrash]);
 
   return (
     <>
@@ -85,9 +87,7 @@ export default function CustumFieldValue() {
           {showAdd && (
             <Button onClick={() => { dispatch(openModal({ componentName: "AddCustumFieldValue", data })); }} className="btn btn-success" variant="success">Add Custom Field Value</Button>
           )}
-          {showTrash && (
-            <Link className="btn btn-danger text-white" to={`${getCustomFieldValueTrashPage()}/${customField?._id}`} state={{ name: "Custom-Field-Value" }}>Cuatom Field Value Trash</Link>
-          )}
+          <TrashButton show={showTrash} viewing={viewingTrash} onToggle={() => setViewingTrash((value) => !value)} label="Custom Field Value Trash" backLabel="All values" />
         </Col>
       </Row>
       <Row>

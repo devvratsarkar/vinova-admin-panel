@@ -11,6 +11,7 @@ import useDebounce from "../hooks/useDebounce";
 import MuiDataTable from "../components/common/MuiDataTable";
 import DateRangeFields from "../components/common/DateRangeFields";
 import { allow } from "./permissions";
+import { TrashActions } from "../components/common/ListFilters";
 import { catalogueSlice } from "../redux/services/catalogueSlice";
 import { useExportAction } from "../utils/fileDownload";
 
@@ -92,7 +93,7 @@ function CategoryStatusSwitch({ row, updateStatus, onSuccess }) {
   );
 }
 
-export const CategoryDataTable = () => {
+export const CategoryDataTable = ({ viewingTrash = false }) => {
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -117,6 +118,7 @@ export const CategoryDataTable = () => {
     ...(status && { status }),
     ...(datesReady && { fromDate, toDate }),
     ...(debouncedSearch.trim() && { search: debouncedSearch.trim() }),
+    ...(viewingTrash && { trash: true }),
   };
   const { data, isLoading, isFetching, refetch } = useGetAllCategoryQuery(apiQuery, { skip: Boolean(dateError) });
   const { onExport, exporting } = useExportAction(catalogueSlice.endpoints.getAllCategory, "Category", "Categories downloaded");
@@ -208,6 +210,7 @@ export const CategoryDataTable = () => {
       filterable: false,
       render: (row) => (
         <div className="action_icon_wrapper d-flex justify-content-center">
+          <TrashActions viewingTrash={viewingTrash} onRestore={() => dispatch(openModal({ componentName: "CategoryRestore", data: row }))} onDelete={() => dispatch(openModal({ componentName: "DeleteCategory", data: row, softDelete: false }))}>
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link to={`/catalogue/category/${row?._id}`}>
               <Button className="btn btn-icon btn-primary me-2"><i className="fe fe-eye"></i></Button>
@@ -236,10 +239,11 @@ export const CategoryDataTable = () => {
 )}
             </>
           )}
+          </TrashActions>
         </div>
       ),
     },
-  ], [currentPage, pageSize, dispatch, refetch, updateStatus]);
+  ], [currentPage, pageSize, dispatch, refetch, updateStatus, viewingTrash]);
 
   return (
     <>

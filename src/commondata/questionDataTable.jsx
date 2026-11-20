@@ -6,7 +6,7 @@ import Loader from "../layouts/layoutcomponents/loader";
 import { openModal } from "../redux/slices/allModalSlice";
 import toast from "react-hot-toast";
 import { useGetAllQuestionsQuery, useUpdateQuestionStatusMutation } from "../redux/features/questionsAPIEndPoint";
-import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, useListFilters } from "../components/common/ListFilters";
+import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, useListFilters, withTrash, TrashActions } from "../components/common/ListFilters";
 import { allow } from "./permissions";
 import { catalogueSlice } from "../redux/services/catalogueSlice";
 import { exportProps, useExportAction } from "../utils/fileDownload";
@@ -25,10 +25,11 @@ function readQuestions(response) {
   return { rows, total: Number.isFinite(total) ? total : rows.length };
 }
 
-export const QuestionDataTable = () => {
+export const QuestionDataTable = ({ viewingTrash = false }) => {
   const dispatch = useDispatch();
   const list = useListFilters(FILTER_KEYS);
-  const { data, isLoading, isFetching, refetch } = useGetAllQuestionsQuery(list.query, { skip: list.skip });
+  const query = withTrash(list.query, viewingTrash);
+  const { data, isLoading, isFetching, refetch } = useGetAllQuestionsQuery(query, { skip: list.skip });
   const fileExport = useExportAction(catalogueSlice.endpoints.getAllQuestions, "Question", "Questions downloaded");
   const [updateStatus, { isLoading: loadingStatus }] = useUpdateQuestionStatusMutation();
   const { rows, total } = readQuestions(data);
@@ -69,6 +70,7 @@ export const QuestionDataTable = () => {
       filterable: false,
       render: (row) => (
         <div className="action_icon_wrapper d-flex justify-content-center">
+          <TrashActions viewingTrash={viewingTrash} onRestore={() => dispatch(openModal({ componentName: "RestoreQuestion", data: row }))} onDelete={() => dispatch(openModal({ componentName: "DeleteQuestion", data: row, softDelete: false }))}>
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link to={`/question/view/${row?.id}`}><Button className="btn btn-icon btn-primary me-2"><i className="fe fe-eye"></i></Button></Link>
           </OverlayTrigger>
@@ -82,10 +84,11 @@ export const QuestionDataTable = () => {
             <Button type="button" className="btn btn-icon btn-danger" variant="" onClick={() => dispatch(openModal({ componentName: "DeleteQuestion", data: row, softDelete: true }))}><i className="fe fe-trash text-white"></i></Button>
           </OverlayTrigger>
 )}
+          </TrashActions>
         </div>
       ),
     },
-  ], [list.currentPage, list.pageSize, dispatch]);
+  ], [list.currentPage, list.pageSize, dispatch, viewingTrash]);
 
   return (
     <>
@@ -94,7 +97,7 @@ export const QuestionDataTable = () => {
         <ListFilters
           {...boundFilters(list, {
             placeholder: "Category or text",
-            ...exportProps(fileExport, list.query, list.skip),
+            ...exportProps(fileExport, query, list.skip),
             selects: [
               { label: "Category", value: list.filters.category, onChange: (value) => list.setFilter("category", value), empty: "All categories", options: CATEGORIES },
               { label: "Status", value: list.filters.status, onChange: (value) => list.setFilter("status", value), options: STATUS_FILTERS },

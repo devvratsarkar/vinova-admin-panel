@@ -8,6 +8,7 @@ import DataTable from '../components/common/DataTable'
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { hasPermission } from "./permissions";
+import { TrashActions } from "../components/common/ListFilters";
 // import { useGetAllNotificationQuery, useGetAllPushNotificationQuery } from "../redux/features/supportDeskEndPoint";
 
 const dummyData = [
@@ -83,7 +84,7 @@ const dummyData = [
   }
 ];
 
-export const PushNotificationDataTable = () => {
+export const PushNotificationDataTable = ({ viewingTrash = false }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
@@ -134,6 +135,7 @@ export const PushNotificationDataTable = () => {
       name: "Action",
       cell: (row) => (
         <div className="action_icon_wrapper">
+          <TrashActions viewingTrash={viewingTrash} onRestore={() => dispatch(openModal({ componentName: "RestorePushNotification", data: row }))} onDelete={() => dispatch(openModal({ componentName: "DeletedPushNotification", data: row, softDelete: false }))}>
           {
             showEdit && (
               <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
@@ -148,6 +150,7 @@ export const PushNotificationDataTable = () => {
               </OverlayTrigger>
             )
           }
+          </TrashActions>
         </div>
       ),
     },

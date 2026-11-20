@@ -9,15 +9,16 @@ import toast from "react-hot-toast";
 import moment from "moment";
 import { useGetAllOptometristStoreDataQuery } from "../redux/features/optometristAPIEndPoint";
 import { hasPermission } from "./permissions";
+import { TrashActions } from "../components/common/ListFilters";
 
 
-export const OptometristDataTable = () => {
+export const OptometristDataTable = ({ viewingTrash = false }) => {
     const [serialNumberm, setSerialNUmber] = useState(1)
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [searchTerm, setSearchTerm] = useState("");
     const dispatch = useDispatch();
-    const { data, isError, error, isLoading, isFetching, isSuccess, refetch } = useGetAllOptometristStoreDataQuery()
+    const { data, isError, error, isLoading, isFetching, isSuccess, refetch } = useGetAllOptometristStoreDataQuery(viewingTrash ? { trash: true } : undefined)
     // const [updateStatus, { isLoading: loadingStatusChange }] = useUpdateStatusFrameMutation()
 
     const handleStatusChange = async (id) => {
@@ -116,6 +117,7 @@ export const OptometristDataTable = () => {
                 name: "Action",
                 cell: (row) => (
                     <div className="action_icon_wrapper">
+                        <TrashActions viewingTrash={viewingTrash} onRestore={() => dispatch(openModal({ componentName: "RestoreOptometristStore", data: row }))} onDelete={() => dispatch(openModal({ componentName: "DeleteOptometristStore", data: row, softDelete: false }))}>
                         <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
                             <Link to={`/optometrist/store/view/${row?._id}`}><Button className="btn btn-icon btn-primary"><i className="fe fe-eye"></i></Button></Link>
                         </OverlayTrigger>
@@ -133,6 +135,7 @@ export const OptometristDataTable = () => {
                         </OverlayTrigger>
                          )
                         } 
+                        </TrashActions>
                     </div>
                 ),
             },

@@ -8,15 +8,16 @@ import Loader from "../layouts/layoutcomponents/loader";
 import Error from "../layouts/layoutcomponents/Error";
 import DataTable from '../components/common/DataTable'
 import { Link } from "react-router-dom";
+import { TrashActions } from "../components/common/ListFilters";
 import { useEditCarrierMutation, useGetAllCarrierQuery, useUpdateCarrierStatusMutation } from "../redux/features/shippingZoneEndPoints";
 import toast from "react-hot-toast";
 
-export const CarrierDatas = () => {
+export const CarrierDatas = ({ viewingTrash = false }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const dispatch = useDispatch();
-  const { data, isError, error, isLoading, isFetching, refetch } = useGetAllCarrierQuery();
+  const { data, isError, error, isLoading, isFetching, refetch } = useGetAllCarrierQuery(viewingTrash ? { trash: true } : undefined);
 
   const [updateStatus, { isLoading: statusUpdateLoading }] = useUpdateCarrierStatusMutation()
 
@@ -110,6 +111,7 @@ export const CarrierDatas = () => {
       name: "Action",
       cell: (row) => (
         <div className="d-flex align-items-center justify-content-center gap-1 flex-nowrap">
+          <TrashActions viewingTrash={viewingTrash} onRestore={() => dispatch(openModal({ componentName: "RestoreCarrier", data: row }))} onDelete={() => dispatch(openModal({ componentName: "DeleteCarrier", data: row, softDelete: false }))}>
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link className="btn btn-icon btn-primary" to={`/shipping/carrier/view-carrier/${row?.id}`}>
               <i className="fe fe-eye"></i>
@@ -139,6 +141,7 @@ export const CarrierDatas = () => {
           </OverlayTrigger>
            )
           } 
+          </TrashActions>
         </div>
       ),
       width: "150px",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PageHeader from "../../layouts/layoutcomponents/pageheader";
 import {
   Row,
@@ -7,14 +7,15 @@ import {
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { BrandDataTable } from "../../commondata/brandData";
-import { getBrandDeletedItem } from "../../utils/routes";
 import { hasPermission } from "../../commondata/permissions";
+import { TrashButton } from "../../components/common/ListFilters";
 
 export default function Brand() {
 
   const role = localStorage.getItem("role")
   const permissions = JSON.parse(localStorage.getItem("permissions"))
 
+  const [viewingTrash, setViewingTrash] = useState(false)
   const showAdd = hasPermission(role, permissions, "Brand", "add")
   const showTrash = hasPermission(role, permissions, "Brand", "view-trash")
   return (
@@ -29,18 +30,14 @@ export default function Brand() {
           <Link to="/add-brand" className="btn btn-success text-white me-3">Add Brand</Link>
            )
           }
-          { 
-           showTrash && ( 
-          <Link className="btn btn-danger text-white" to={`${getBrandDeletedItem()}`}>Brand Trashed</Link>
-           )
-          } 
+          <TrashButton show={showTrash} viewing={viewingTrash} onToggle={() => setViewingTrash((value) => !value)} label="Brand Trashed" backLabel="All brands" />
         </Col>
       </Row>
       <Row>
         <Col>
           <Card>
             <Card.Body className="data_table">
-              <BrandDataTable />
+              <BrandDataTable viewingTrash={viewingTrash} />
             </Card.Body>
           </Card>
         </Col>

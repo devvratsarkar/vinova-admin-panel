@@ -26,6 +26,7 @@ export const BrandAPIEndPoint = catalogueSlice.injectEndpoints({
                         ...(params.type && { type: params.type }),
                         ...(params.fromDate && { fromDate: params.fromDate }),
                         ...(params.toDate && { toDate: params.toDate }),
+                        ...(params.trash && { trash: true }),
                     },
                 }),
             providesTags: ["Frames"],

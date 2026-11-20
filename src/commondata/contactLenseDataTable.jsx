@@ -6,7 +6,7 @@ import Loader from "../layouts/layoutcomponents/loader";
 import { openModal } from "../redux/slices/allModalSlice";
 import { useGetAllContactLensDataQuery } from "../redux/features/framesAPIEndPoint";
 import { useGetBrandsSelectQuery } from "../redux/features/BrandAPIEndpoint";
-import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, namedOptions, useListFilters } from "../components/common/ListFilters";
+import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, namedOptions, useListFilters, withTrash, TrashActions } from "../components/common/ListFilters";
 import { allow } from "./permissions";
 import { catalogueSlice } from "../redux/services/catalogueSlice";
 import { exportProps, useExportAction } from "../utils/fileDownload";
@@ -26,11 +26,12 @@ const TYPES = [
   { value: "yearly", label: "Yearly" },
 ];
 
-export const ContactLenseDataTable = () => {
+export const ContactLenseDataTable = ({ viewingTrash = false }) => {
   const dispatch = useDispatch();
   const list = useListFilters(FILTER_KEYS);
+  const query = withTrash(list.query, viewingTrash);
   const { data: brandData } = useGetBrandsSelectQuery();
-  const { data, isLoading, isFetching } = useGetAllContactLensDataQuery(list.query, { skip: list.skip });
+  const { data, isLoading, isFetching } = useGetAllContactLensDataQuery(query, { skip: list.skip });
   const fileExport = useExportAction(catalogueSlice.endpoints.getAllContactLensData, "ContactLens", "Contact lenses downloaded");
   const { rows, total } = readContactLenses(data);
 
@@ -65,6 +66,7 @@ export const ContactLenseDataTable = () => {
       filterable: false,
       render: (row) => (
         <div className="action_icon_wrapper d-flex justify-content-center">
+          <TrashActions viewingTrash={viewingTrash} onRestore={() => dispatch(openModal({ componentName: "RestoreContactLense", data: row }))} onDelete={() => dispatch(openModal({ componentName: "DeteteContactLens", data: row, softDelete: false }))}>
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link to={`/catalogue/contact-lenses/view/${row?._id}`}><Button className="btn btn-icon btn-primary me-2"><i className="fe fe-eye"></i></Button></Link>
           </OverlayTrigger>
@@ -78,10 +80,11 @@ export const ContactLenseDataTable = () => {
             <Button type="button" className="btn btn-icon btn-danger" variant="" onClick={() => dispatch(openModal({ componentName: "DeteteContactLens", data: row, softDelete: true }))}><i className="fe fe-trash text-white"></i></Button>
           </OverlayTrigger>
 )}
+          </TrashActions>
         </div>
       ),
     },
-  ], [list.currentPage, list.pageSize, dispatch]);
+  ], [list.currentPage, list.pageSize, dispatch, viewingTrash]);
 
   return (
     <>
@@ -90,7 +93,7 @@ export const ContactLenseDataTable = () => {
         <ListFilters
           {...boundFilters(list, {
             placeholder: "Name or brand",
-            ...exportProps(fileExport, list.query, list.skip),
+            ...exportProps(fileExport, query, list.skip),
             selects: [
               { label: "Brand", value: list.filters.brand, onChange: (value) => list.setFilter("brand", value), empty: "All brands", options: namedOptions(brandData?.data) },
               { label: "Type", value: list.filters.type, onChange: (value) => list.setFilter("type", value), empty: "All types", options: TYPES },

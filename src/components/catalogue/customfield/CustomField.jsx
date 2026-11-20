@@ -6,14 +6,15 @@ import AddCustomField from "./AddCustomField";
 import { CustomFieldDataTable } from "../../../commondata/customfielddata";
 import { useDispatch } from "react-redux";
 import { openModal } from "../../../redux/slices/allModalSlice";
-import { getCustomFieldTrashPage } from "../../../utils/routes";
 import { hasPermission } from "../../../commondata/permissions";
+import { TrashButton } from "../../common/ListFilters";
 
 export default function CustomField() {
     const dispatch = useDispatch();
     const role = localStorage.getItem("role")
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
+    const [viewingTrash, setViewingTrash] = useState(false)
     const showAdd = hasPermission(role, permissions, "CustomField", "add")
     const showTrash = hasPermission(role, permissions, "CustomField", "view-trash")
     return (
@@ -28,11 +29,7 @@ export default function CustomField() {
                     <Button onClick={() => { dispatch(openModal({ componentName: 'AddCustomField', })) }} className="btn btn-success" variant="success" > Add Custom Fields </Button>
                      )
                     }
-                    {
-                        showTrash && ( 
-                    <Link className="btn btn-danger text-white" to={getCustomFieldTrashPage()} state={{ name: "Custom-Field" }} >Custom Field Trashed</Link>
-                     )
-                    } 
+                    <TrashButton show={showTrash} viewing={viewingTrash} onToggle={() => setViewingTrash((value) => !value)} label="Custom Field Trashed" backLabel="All fields" />
                 </Col>
             </Row>
 
@@ -40,7 +37,7 @@ export default function CustomField() {
                 <Col>
                     <Card>
                         <Card.Body className="data_table">
-                            <CustomFieldDataTable />
+                            <CustomFieldDataTable viewingTrash={viewingTrash} />
                         </Card.Body>
                     </Card>
                 </Col>

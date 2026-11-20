@@ -6,7 +6,7 @@ import { openModal } from "../redux/slices/allModalSlice";
 import Loader from "../layouts/layoutcomponents/loader";
 import Error from "../layouts/layoutcomponents/Error";
 import { useGetAllInventoryWithoutVariantQuery } from "../redux/features/inventory";
-import { ListFilters, ListTable, boundFilters, formatDate, indexColumn, useListFilters } from "../components/common/ListFilters";
+import { ListFilters, ListTable, TrashActions, boundFilters, formatDate, indexColumn, useListFilters, withTrash } from "../components/common/ListFilters";
 import { allow } from "./permissions";
 import { catalogueSlice } from "../redux/services/catalogueSlice";
 import { exportProps, useExportAction } from "../utils/fileDownload";
@@ -23,10 +23,11 @@ function sellingPrice(value) {
   return Number.isFinite(price) ? price : "";
 }
 
-export const InventoryWithoutVariantDataTable = () => {
+export const InventoryWithoutVariantDataTable = ({ viewingTrash = false }) => {
   const dispatch = useDispatch();
   const list = useListFilters();
-  const { data, isError, error, isLoading, isFetching } = useGetAllInventoryWithoutVariantQuery(list.query, { skip: list.skip });
+  const query = withTrash(list.query, viewingTrash);
+  const { data, isError, error, isLoading, isFetching } = useGetAllInventoryWithoutVariantQuery(query, { skip: list.skip });
   const fileExport = useExportAction(catalogueSlice.endpoints.getAllInventoryWithoutVariant, "InventoryWithOutVariant", "Inventory downloaded");
   const { rows, total } = readInventory(data);
 
@@ -54,6 +55,7 @@ export const InventoryWithoutVariantDataTable = () => {
       filterable: false,
       render: (row) => (
         <div className="action_icon_wrapper d-flex justify-content-center">
+          <TrashActions viewingTrash={viewingTrash} onRestore={() => dispatch(openModal({ componentName: "RestoreInventoryWithoutVariant", data: row }))} onDelete={() => dispatch(openModal({ componentName: "DeleteInventoryWithoutVariant", data: row, softDelete: false }))}>
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link to={`/inventory/view-invertory-without-variant/${row._id}`}><Button type="button" className="btn btn-icon btn-primary" variant=""><i className="fe fe-eye"></i></Button></Link>
           </OverlayTrigger>
@@ -67,17 +69,18 @@ export const InventoryWithoutVariantDataTable = () => {
             <Button type="button" className="btn btn-icon btn-danger" variant="" onClick={() => dispatch(openModal({ componentName: "DeleteInventoryWithoutVariant", data: row, softDelete: true }))}><i className="fe fe-trash text-white"></i></Button>
           </OverlayTrigger>
 )}
+          </TrashActions>
         </div>
       ),
     },
-  ], [list.currentPage, list.pageSize, dispatch]);
+  ], [list.currentPage, list.pageSize, dispatch, viewingTrash]);
 
   return (
     <>
       {(isLoading || isFetching) && <Loader />}
       {isError && <Error error_mes={error} />}
       <div className="e-table pb-5">
-        <ListFilters {...boundFilters(list, { placeholder: "Name, SKU, or price", ...exportProps(fileExport, list.query, list.skip) })} />
+        <ListFilters {...boundFilters(list, { placeholder: "Name, SKU, or price", ...exportProps(fileExport, query, list.skip) })} />
         <ListTable
           columns={columns}
           rows={rows}

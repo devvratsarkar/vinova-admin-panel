@@ -18,38 +18,28 @@ const AddBrand = lazy(() => import("../components/brand/AddBrand"));
 const EditBrand = lazy(() => import("../components/brand/EditBrand"));
 const ViewBrand = lazy(() => import("../components/brand/ViewBrand"));
 const UserProfile = lazy(() => import("../components/user-profile/UserProfile"));
-const BrandDeletedItem = lazy(() => import("../components/brand/BrandDeletedItem").then((m) => ({ default: m.BrandDeletedItem })));
-const CategoryDeletedItems = lazy(() => import("../components/catalogue/category/CategoryDeletedItems").then((m) => ({ default: m.CategoryDeletedItems })));
-const CustomFieldTrash = lazy(() => import("../components/catalogue/customfield/CustomFieldTrash").then((m) => ({ default: m.CustomFieldTrash })));
-const CustomFieldValueTrash = lazy(() => import("../components/catalogue/customfield/CustomFieldValueTrash"));
-const InventoryWithVariantTrash = lazy(() => import("../components/inventory-with-variant/InventoryWithVariantTrash").then((m) => ({ default: m.InventoryWithVariantTrash })));
 const EditInventoryWithVariant = lazy(() => import("../components/inventory-with-variant/EditInventoryWithVariant"));
 const Frame = lazy(() => import("../components/frames/Frames"));
 const AddNewFrame = lazy(() => import("../components/frames/AddNewFrame"));
 const EditFrame = lazy(() => import("../components/frames/EditFrame"));
 const ViewFrame = lazy(() => import("../components/frames/ViewFrame"));
-const DeletedFrames = lazy(() => import("../components/frames/DeletedFrames").then((m) => ({ default: m.DeletedFrames })));
 const Lens = lazy(() => import("../components/lens/Lens"));
 const AddLens = lazy(() => import("../components/lens/AddLens"));
 const ViewLens = lazy(() => import("../components/lens/ViewLens"));
 const EditLens = lazy(() => import("../components/lens/EditLens"));
-const DeletedLenses = lazy(() => import("../components/lens/DeletedLenses"));
 const Filter = lazy(() => import("../components/filter/Filter"));
 const AddFilter = lazy(() => import("../components/filter/AddFilter"));
 const EditFilter = lazy(() => import("../components/filter/EditFilter"));
 const ViewFilter = lazy(() => import("../components/filter/ViewFilter"));
-const DeletedFilter = lazy(() => import("../components/filter/DeletedFilter"));
 const LensThickness = lazy(() => import("../components/lens-thickness/LensThickness"));
 const AddLensThickness = lazy(() => import("../components/lens-thickness/AddLensThickness"));
 const EditLensThickness = lazy(() => import("../components/lens-thickness/EditLensThickness"));
 const ViewLensThickness = lazy(() => import("../components/lens-thickness/ViewLensThickness"));
-const DeletedLensThickness = lazy(() => import("../components/lens-thickness/DeletedLensThickness"));
 const InventorySizes = lazy(() => import("../components/inventory-with-variant/InventorySizes"));
 const LensColor = lazy(() => import("../components/lens-color/LensColor"));
 const AddLensColor = lazy(() => import("../components/lens-color/AddLensColor"));
 const EditLensColor = lazy(() => import("../components/lens-color/EditLensColor"));
 const ViewLensColor = lazy(() => import("../components/lens-color/ViewLensColor"));
-const DeletedLensColor = lazy(() => import("../components/lens-color/DeletedLensColor"));
 const ContactLensType = lazy(() => import("../components/contact-lens-type/ContactLensType"));
 const AddContactLensType = lazy(() => import("../components/contact-lens-type/AddContactLensType"));
 const EditContactLensType = lazy(() => import("../components/contact-lens-type/EditContactLensType"));
@@ -63,10 +53,8 @@ const AddQuestion = lazy(() => import("../components/questions/AddQuestions"));
 const EditQuestion = lazy(() => import("../components/questions/EditQuestion"));
 const ViewQuestion = lazy(() => import("../components/questions/ViewQuestion"));
 const DeleteQuestion = lazy(() => import("../components/questions/DeleteQuestion"));
-const DeletedQuestion = lazy(() => import("../components/questions/DeletedQuestion"));
 const Carrier = lazy(() => import("../components/shipping/carrier/Carrier"));
 const ShippingZone = lazy(() => import("../components/shipping/shipping-zone/ShippingZone"));
-const CarrierTrash = lazy(() => import("../components/shipping/carrier/CarrierTrash").then((m) => ({ default: m.CarrierTrash })));
 const AddNewCarrier = lazy(() => import("../components/shipping/carrier/AddNewCarrier"));
 const ViewCarrier = lazy(() => import("../components/shipping/carrier/ViewCarrier"));
 const EditCarrier = lazy(() => import("../components/shipping/carrier/EditCarrier"));
@@ -79,7 +67,6 @@ const Currency = lazy(() => import("../components/currency/Currecy"));
 const AddCurrency = lazy(() => import("../components/currency/AddCurrency"));
 const EditCurrency = lazy(() => import("../components/currency/EditCurrency"));
 const ViewCurrency = lazy(() => import("../components/currency/ViewCurrency"));
-const DeletedCurrency = lazy(() => import("../components/currency/DeletedCurrency"));
 const CurrencyExchangeRate = lazy(() => import("../components/exchanage-rate/CurrecyExchangeRate"));
 const AddCurrencyExchangeRate = lazy(() => import("../components/exchanage-rate/AddCurrencyExchangeRate"));
 const ViewCurrencyExchangeRate = lazy(() => import("../components/exchanage-rate/ViewCurrencyExchangeRate"));
@@ -90,12 +77,10 @@ const Coupon = lazy(() => import("../components/coupon/Coupon"));
 const AddCoupon = lazy(() => import("../components/coupon/AddCoupon"));
 const EditCoupon = lazy(() => import("../components/coupon/EditCoupon"));
 const ViewCoupon = lazy(() => import("../components/coupon/ViewCoupon"));
-const CouponDeletedItems = lazy(() => import("../components/coupon/CouponDeletedItems").then((m) => ({ default: m.CouponDeletedItems })));
 const JobPosition = lazy(() => import("../components/job-position/JobPosition"));
 const AddJobPosition = lazy(() => import("../components/job-position/AddJobPosition"));
 const EditJobPosition = lazy(() => import("../components/job-position/EditJobPosition"));
 const ViewJobPosition = lazy(() => import("../components/job-position/ViewJobPosition"));
-const TrashJobPosition = lazy(() => import("../components/job-position/TrashJobPosition"));
 const Career = lazy(() => import("../components/career/Career"));
 const AboutUs = lazy(() => import("../components/cms/about-us/AboutUs"));
 const Orders = lazy(() => import("../components/orders/Orders"));
@@ -107,7 +92,6 @@ const WithdrawalRequest = lazy(() => import("../components/affiliate/withdrawal/
 const CouponRequest = lazy(() => import("../components/affiliate/coupon/CouponRequest"));
 const AddNewContactLens = lazy(() => import("../components/contact-lens/AddNewContactLens"));
 const AllContactLens = lazy(() => import("../components/contact-lens/AllContactLens"));
-const DeletedContactLens = lazy(() => import("../components/contact-lens/DeletedContactLens").then((m) => ({ default: m.DeletedContactLens })));
 const EditContactLens = lazy(() => import("../components/contact-lens/EditContactLens"));
 const ViewContactLens = lazy(() => import("../components/contact-lens/ViewContactLens"));
 const ContactUsPage = lazy(() => import("../components/cms/contact-us/ContactUsPage"));
@@ -115,7 +99,6 @@ const AllAccessories = lazy(() => import("../components/accessories/AllAccessori
 const AddAccessories = lazy(() => import("../components/accessories/AddAccessories"));
 const EditAccessories = lazy(() => import("../components/accessories/EditAccessories"));
 const ViewAccessories = lazy(() => import("../components/accessories/ViewAccessories"));
-const DeletedAccessories = lazy(() => import("../components/accessories/DeletedAccessories").then((m) => ({ default: m.DeletedAccessories })));
 const AffiliatePage = lazy(() => import("../components/cms/affiliate-page/AffiliatePage"));
 const HomeTryOn = lazy(() => import("../components/cms/hometryon/HomeTryOn"));
 const OptometristNetwork = lazy(() => import("../components/optometrist/optometrist-network/OptometristNetwork"));
@@ -123,11 +106,9 @@ const AllOptometristStore = lazy(() => import("../components/optometrist/AllOpto
 const AddOptometristStore = lazy(() => import("../components/optometrist/AddOptometristStore"));
 const ViewOptometristStore = lazy(() => import("../components/optometrist/ViewOptometristStore"));
 const EditOptometristStore = lazy(() => import("../components/optometrist/EditOptometristStore"));
-const DeletedOptometristStore = lazy(() => import("../components/optometrist/DeletedOptometristStore"));
 const InventoryWithoutVariant = lazy(() => import("../components/stocks/inventory-without-variant/InventoryWithoutVariant"));
 const AddInventoryWithoutVariant = lazy(() => import("../components/stocks/inventory-without-variant/AddInventoryWithoutVariant"));
 const EditInventoryWithoutVariant = lazy(() => import("../components/stocks/inventory-without-variant/EditInventoryWithoutVariant"));
-const InventoryWithoutVariantTrash = lazy(() => import("../components/stocks/inventory-without-variant/InventoryWithoutVariantTrash"));
 const ViewInventoryWithoutVariant = lazy(() => import("../components/stocks/inventory-without-variant/ViewInventoryWithoutVariant"));
 const LocalizationFA = lazy(() => import("../components/localization/fa/LocalizationFA"));
 const LocalizationAR = lazy(() => import("../components/localization/ar/LocalizationAR"));
@@ -136,14 +117,11 @@ const AllPosts = lazy(() => import("../components/blogs/AllPosts"));
 const AddNewPost = lazy(() => import("../components/blogs/AddNewPost"));
 const EditPost = lazy(() => import("../components/blogs/EditPost"));
 const ViewPost = lazy(() => import("../components/blogs/ViewPost"));
-const PostTrash = lazy(() => import("../components/blogs/PostTrash").then((m) => ({ default: m.PostTrash })));
 const BlogCategories = lazy(() => import("../components/blogs/categories/BlogCategories"));
-const BlogCategoryTrash = lazy(() => import("../components/blogs/categories/BlogCategoryTrash"));
 const AddNewBlogCategory = lazy(() => import("../components/blogs/categories/AddNewBlogCategory"));
 const EditBlogCategory = lazy(() => import("../components/blogs/categories/EditBlogCategory"));
 const ViewBlogCategory = lazy(() => import("../components/blogs/categories/ViewBlogCategory"));
 const BlogTags = lazy(() => import("../components/blogs/tags/BlogTags"));
-const BlogTagsTrash = lazy(() => import("../components/blogs/tags/BlogTagsTrash"));
 const Comments = lazy(() => import("../components/blogs/comments/Comments"));
 const Customer = lazy(() => import("../components/customer-data/customer/Customer"));
 const ContactEnquiries = lazy(() => import("../components/customer-data/contact-enquiries/ContactEnquiries"));
@@ -166,11 +144,9 @@ const StaffPermission = lazy(() => import("../components/staff-permissions/Staff
 const StaffUsers = lazy(() => import("../components/staff-permissions/StaffUsers"));
 const StaffLogin = lazy(() => import("../components/staff-login/StaffLogin"));
 const Notification = lazy(() => import("../components/support desk/notification/Notification"));
-const NotificationTrash = lazy(() => import("../components/support desk/notification/NotificationTrash").then((m) => ({ default: m.NotificationTrash })));
 const AddNewNotification = lazy(() => import("../components/support desk/notification/AddNewNotification"));
 const EditNotification = lazy(() => import("../components/support desk/notification/EditNotification"));
 const PushNotification = lazy(() => import("../components/support desk/push-notification/PushNotification"));
-const PushNotificationTrash = lazy(() => import("../components/support desk/push-notification/PushNotificationTrash").then((m) => ({ default: m.PushNotificationTrash })));
 const AddNewPushNotification = lazy(() => import("../components/support desk/push-notification/AddNewPushNotification"));
 const EditPushNotification = lazy(() => import("../components/support desk/push-notification/EditPushNotification"));
 const BecomeAnOptometrist = lazy(() => import("../components/optometrist/optometrist-enquiry/BecomeAnOptometrist"));
@@ -178,7 +154,6 @@ const AllOptometristEnquiries = lazy(() => import("../components/optometrist/opt
 const OptometristWithdrawalRequests = lazy(() => import("../components/optometrist/withdrawal/WithdrawalRequests"));
 const ViewOptometristEnquiry = lazy(() => import("../components/optometrist/optometrist-enquiry/ViewOptometristEnquiry"));
 const AllOptometristMembershipsPlans = lazy(() => import("../components/optometrist/membership/AllOptometristMembershipsPlans"));
-const TrashedMembershipPlans = lazy(() => import("../components/optometrist/membership/TrashedMembershipPlans"));
 const PlaceholderPage = lazy(() => import("../components/optometrist-dashboard/PlaceholderPage"));
 const Services = lazy(() => import("../components/optometrist-dashboard/services/Services"));
 const WorkingRule = lazy(() => import("../components/optometrist-dashboard/working-rule/WorkingRule"));
@@ -229,10 +204,6 @@ export const RouterData = [
     path: `${import.meta.env.BASE_URL}/catalogue/edit-category/:id`,
     element: <RouteGuard requiredPermissions={[{ category: "Category", action: "edit" }]}><EditCategory /></RouteGuard>,
   },
-  {
-    path: `${import.meta.env.BASE_URL}/catalogue/category-deleted-items`,
-    element: <RouteGuard requiredPermissions={[{ category: "Category", action: "view-trash" }]}><CategoryDeletedItems /></RouteGuard>,
-  },
   // Brand
   {
     path: `${import.meta.env.BASE_URL}/brand`,
@@ -249,10 +220,6 @@ export const RouterData = [
   {
     path: `${import.meta.env.BASE_URL}/view-brand/:id`,
     element: <RouteGuard requiredPermissions={[{ category: "Brand", action: "view" }]}><ViewBrand /></RouteGuard>,
-  },
-  {
-    path: `${import.meta.env.BASE_URL}/brand-deleted-items`,
-    element: <RouteGuard requiredPermissions={[{ category: "Brand", action: "view-trash" }]}><BrandDeletedItem /></RouteGuard>,
   },
   // Frame
   {
@@ -271,10 +238,6 @@ export const RouterData = [
     path: `${import.meta.env.BASE_URL}/catalogue/frames/view/:id`,
     element: <RouteGuard requiredPermissions={[{ category: "Frame", action: "view" }]}><ViewFrame /></RouteGuard>,
   },
-  {
-    path: `${import.meta.env.BASE_URL}/catalogue/frames/deleted`,
-    element: <RouteGuard requiredPermissions={[{ category: "Frame", action: "view-trash" }]}><DeletedFrames /></RouteGuard>,
-  },
   // contact lens
   {
     path: `${import.meta.env.BASE_URL}/catalogue/contact-lenses`,
@@ -291,10 +254,6 @@ export const RouterData = [
   {
     path: `${import.meta.env.BASE_URL}/catalogue/contact-lenses/view/:id`,
     element: <RouteGuard requiredPermissions={[{ category: "ContactLens", action: "view" }]}><ViewContactLens /></RouteGuard>,
-  },
-  {
-    path: `${import.meta.env.BASE_URL}/catalogue/contact-lenses/deleted`,
-    element: <RouteGuard requiredPermissions={[{ category: "ContactLens", action: "view-trash" }]}><DeletedContactLens /></RouteGuard>,
   },
 
   // Accessories 
@@ -314,10 +273,6 @@ export const RouterData = [
     path: `${import.meta.env.BASE_URL}/catalogue/accessories/view/:id`,
     element: <RouteGuard requiredPermissions={[{ category: "Accessories", action: "view" }]}><ViewAccessories /></RouteGuard>,
   },
-  {
-    path: `${import.meta.env.BASE_URL}/catalogue/accessories/deleted`,
-    element: <RouteGuard requiredPermissions={[{ category: "Accessories", action: "view-trash" }]}><DeletedAccessories /></RouteGuard>,
-  },
 
   // Lens
   {
@@ -336,10 +291,6 @@ export const RouterData = [
     path: `${import.meta.env.BASE_URL}/catalogue/lens/view/:id`,
     element: <RouteGuard requiredPermissions={[{ category: "Lens", action: "view" }]}><ViewLens /></RouteGuard>,
   },
-  {
-    path: `${import.meta.env.BASE_URL}/catalogue/lens/deleted`,
-    element: <RouteGuard requiredPermissions={[{ category: "Lens", action: "view-trash" }]}><DeletedLenses /></RouteGuard>,
-  },
   // Lens Type
   {
     path: `${import.meta.env.BASE_URL}/catalogue/lens-type`,
@@ -356,10 +307,6 @@ export const RouterData = [
   {
     path: `${import.meta.env.BASE_URL}/catalogue/lens-type/view/:id`,
     element: <RouteGuard requiredPermissions={[{ category: "LensType", action: "view" }]}><ViewFilter /></RouteGuard>,
-  },
-  {
-    path: `${import.meta.env.BASE_URL}/catalogue/lens-type/deleted-list`,
-    element: <RouteGuard requiredPermissions={[{ category: "LensType", action: "view-trash" }]}><DeletedFilter /></RouteGuard>,
   },
   // Lens Thickness
   {
@@ -378,10 +325,6 @@ export const RouterData = [
     path: `${import.meta.env.BASE_URL}/catalogue/lens-thickness/view/:id`,
     element: <RouteGuard requiredPermissions={[{ category: "LensSize", action: "view" }]}><ViewLensThickness /></RouteGuard>,
   },
-  {
-    path: `${import.meta.env.BASE_URL}/catalogue/lens-thickness/deleted-list`,
-    element: <RouteGuard requiredPermissions={[{ category: "LensSize", action: "view-trash" }]}><DeletedLensThickness /></RouteGuard>,
-  },
   // Lens Color
   {
     path: `${import.meta.env.BASE_URL}/catalogue/lens-color`,
@@ -398,10 +341,6 @@ export const RouterData = [
   {
     path: `${import.meta.env.BASE_URL}/catalogue/lens-color/view/:id`,
     element: <RouteGuard requiredPermissions={[{ category: "LensColor", action: "view" }]}><ViewLensColor /></RouteGuard>,
-  },
-  {
-    path: `${import.meta.env.BASE_URL}/catalogue/lens-color/deleted-items`,
-    element: <RouteGuard requiredPermissions={[{ category: "LensColor", action: "view-trash" }]}><DeletedLensColor /></RouteGuard>,
   },
   // Contact Lens Type
   {
@@ -454,22 +393,10 @@ export const RouterData = [
     path: `${import.meta.env.BASE_URL}/question/view/:id`,
     element: <RouteGuard requiredPermissions={[{ category: "Question", action: "view" }]}><ViewQuestion /></RouteGuard>,
   },
-  {
-    path: `${import.meta.env.BASE_URL}/questions/deleted-items`,
-    element: <RouteGuard requiredPermissions={[{ category: "Question", action: "view-trash" }]}><DeletedQuestion /></RouteGuard>,
-  },
   // Custom Field
   {
     path: `${import.meta.env.BASE_URL}/catalogue/custom-field`,
     element: <RouteGuard requiredPermissions={[{ category: "CustomField", action: "view" }]}><CustomField /></RouteGuard>,
-  },
-  {
-    path: `${import.meta.env.BASE_URL}/catalogue/custom-field-deleted-items`,
-    element: <RouteGuard requiredPermissions={[{ category: "CustomField", action: "view-trash" }]}><CustomFieldTrash /></RouteGuard>,
-  },
-  {
-    path: `${import.meta.env.BASE_URL}/catalogue/custom-field-value-deleted-items/:id`,
-    element: <RouteGuard requiredPermissions={[{ category: "CustomFieldValue", action: "view-trash" }]}><CustomFieldValueTrash /></RouteGuard>,
   },
   {
     path: `${import.meta.env.BASE_URL}/catalogue/custom-field-value/:id`,
@@ -479,10 +406,6 @@ export const RouterData = [
   {
     path: `${import.meta.env.BASE_URL}/stocks/inventory`,
     element: <RouteGuard requiredPermissions={[{ category: "InventoryWithoutVariant", action: "view" }]}><Inventory /></RouteGuard>,
-  },
-  {
-    path: `${import.meta.env.BASE_URL}/stocks/inventory-with-variant-delete-items`,
-    element: <RouteGuard requiredPermissions={[{ category: "InventoryWithVariant", action: "view-trash" }]}><InventoryWithVariantTrash /></RouteGuard>,
   },
   {
     path: `${import.meta.env.BASE_URL}/stocks/inventory-variant-sizes/:id`,
@@ -507,10 +430,6 @@ export const RouterData = [
     element: <RouteGuard requiredPermissions={[{ category: "InventoryWithoutVariant", action: "view" }]}><InventoryWithoutVariant /></RouteGuard>,
   },
   {
-    path: `${import.meta.env.BASE_URL}/stocks/inventory-without-variant-trash`,
-    element: <RouteGuard requiredPermissions={[{ category: "InventoryWithoutVariant", action: "view" }]}><InventoryWithoutVariantTrash /></RouteGuard>,
-  },
-  {
     path: `${import.meta.env.BASE_URL}/inventory/add-invertory-without-variant`,
     element: <RouteGuard requiredPermissions={[{ category: "InventoryWithVariant", action: "add" }]}><AddInventoryWithoutVariant /></RouteGuard>,
   },
@@ -531,10 +450,6 @@ export const RouterData = [
   {
     path: `${import.meta.env.BASE_URL}/shipping/carrier`,
     element: <RouteGuard requiredPermissions={[{ category: "Carrier", action: "view" }]}><Carrier /></RouteGuard>,
-  },
-  {
-    path: `${import.meta.env.BASE_URL}/shipping/carrier-deleted-items`,
-    element: <RouteGuard requiredPermissions={[{ category: "Carrier", action: "view-trash" }]}><CarrierTrash /></RouteGuard>,
   },
   {
     path: `${import.meta.env.BASE_URL}/shipping/shipping-zone`,
@@ -586,10 +501,6 @@ export const RouterData = [
     path: `${import.meta.env.BASE_URL}/view-currency/:id`,
     element: <RouteGuard requiredPermissions={[{ category: "Currency", action: "view" }]}><ViewCurrency /></RouteGuard>,
   },
-  {
-    path: `${import.meta.env.BASE_URL}/trash-currency`,
-    element: <RouteGuard requiredPermissions={[{ category: "Currency", action: "view-trash" }]}><DeletedCurrency /></RouteGuard>,
-  },
   // Currency Exchange Rate
   {
     path: `${import.meta.env.BASE_URL}/currency-exchange-rate-list`,
@@ -639,10 +550,6 @@ export const RouterData = [
     path: `${import.meta.env.BASE_URL}/view-coupon/:id`,
     element: <RouteGuard requiredPermissions={[{ category: "Coupon", action: "view" }]}><ViewCoupon /></RouteGuard>,
   },
-  {
-    path: `${import.meta.env.BASE_URL}/trash-coupons`,
-    element: <RouteGuard requiredPermissions={[{ category: "Coupon", action: "view-trash" }]}><CouponDeletedItems /></RouteGuard>,
-  },
   // Job Position
   {
     path: `${import.meta.env.BASE_URL}/cms/job-positions`,
@@ -659,10 +566,6 @@ export const RouterData = [
   {
     path: `${import.meta.env.BASE_URL}/cms/view-job-positions/:id`,
     element: <RouteGuard requiredPermissions={[{ category: "JobOpening", action: "view" }]}><ViewJobPosition /></RouteGuard>,
-  },
-  {
-    path: `${import.meta.env.BASE_URL}/cms/trash-job-positions`,
-    element: <RouteGuard requiredPermissions={[{ category: "JobOpening", action: "view-trash" }]}><TrashJobPosition /></RouteGuard>,
   },
   // Career Page
   {
@@ -752,10 +655,6 @@ export const RouterData = [
     path: `${import.meta.env.BASE_URL}/optometrist/memberships-plans`,
     element: <RouteGuard requiredPermissions={[{ category: "OptometristMembership", action: "view" }]}><AllOptometristMembershipsPlans /></RouteGuard>,
   },
-  {
-    path: `${import.meta.env.BASE_URL}/optometrist/memberships-plans/trashed`,
-    element: <RouteGuard requiredPermissions={[{ category: "OptometristMembership", action: "view" }]}><TrashedMembershipPlans /></RouteGuard>,
-  },
   // {
   //   path: `${import.meta.env.BASE_URL}/optometrist/all-stores`,
   //   element: <RouteGuard requiredPermissions={[{ category: "optometrist", action: "view" }]}><AllOptometristStore /></RouteGuard>,
@@ -828,10 +727,6 @@ export const RouterData = [
     path: `${import.meta.env.BASE_URL}/optometrist/store/view/:id`,
     element: <RouteGuard requiredPermissions={[{ category: "Accessories", action: "view" }]}><ViewOptometristStore /></RouteGuard>,
   },
-  {
-    path: `${import.meta.env.BASE_URL}/optometrist/store/deleted`,
-    element: <RouteGuard requiredPermissions={[{ category: "Accessories", action: "view-trash" }]}><DeletedOptometristStore /></RouteGuard>,
-  },
 
   {
     path: `${import.meta.env.BASE_URL}/optometrist/become-an-optometrist`,
@@ -895,14 +790,6 @@ export const RouterData = [
       </RouteGuard>
     ),
   },
-  {
-    path: `${import.meta.env.BASE_URL}/all-posts/trash`,
-    element: (
-      <RouteGuard requiredPermissions={[{ category: "BlogPost", action: "view-trash" }]}>
-        <PostTrash />
-      </RouteGuard>
-    ),
-  },
 
 
   // Blog Categories
@@ -911,14 +798,6 @@ export const RouterData = [
     element: (
       <RouteGuard requiredPermissions={[{ category: "BlogCategory", action: "view" }]}>
         <BlogCategories />
-      </RouteGuard>
-    ),
-  },
-  {
-    path: `${import.meta.env.BASE_URL}/all-blog-categories/trash`,
-    element: (
-      <RouteGuard requiredPermissions={[{ category: "BlogCategory", action: "view-trash" }]}>
-        <BlogCategoryTrash />
       </RouteGuard>
     ),
   },
@@ -954,14 +833,6 @@ export const RouterData = [
     element: (
       <RouteGuard requiredPermissions={[{ category: "BlogTag", action: "view" }]}>
         <BlogTags />
-      </RouteGuard>
-    ),
-  },
-  {
-    path: `${import.meta.env.BASE_URL}/all-blog-tags/trash`,
-    element: (
-      <RouteGuard requiredPermissions={[{ category: "BlogTag", action: "view-trash" }]}>
-        <BlogTagsTrash />
       </RouteGuard>
     ),
   },
@@ -1136,10 +1007,8 @@ export const RouterData = [
   { path: `${import.meta.env.BASE_URL}/support-desk/notification`, element: (<RouteGuard requiredRoles={["Admin", "Staff"]} requiredPermissions={[{ category: "Notification", action: "View" }]}><Notification /></RouteGuard>) },
   { path: `${import.meta.env.BASE_URL}/support-desk/notification/add-notification`, element: (<RouteGuard requiredRoles={["Admin", "Staff"]} requiredPermissions={[{ category: "Notification", action: "add" }]}><AddNewNotification /></RouteGuard>) },
   { path: `${import.meta.env.BASE_URL}/support-desk/notification/edit-notification/:id`, element: (<RouteGuard requiredRoles={["Admin", "Staff"]} requiredPermissions={[{ category: "Notification", action: "edit" }]}><EditNotification /></RouteGuard>) },
-  { path: `${import.meta.env.BASE_URL}/support-desk/notification-deleted-items`, element: (<RouteGuard requiredRoles={["Admin", "Staff"]} requiredPermissions={[{ category: "Notification", action: "view-trash" }]}><NotificationTrash /></RouteGuard>) },
 
   { path: `${import.meta.env.BASE_URL}/push-notification`, element: (<RouteGuard requiredRoles={["Admin", "Staff"]} requiredPermissions={[{ category: "PushNotification", action: "view" }]}><PushNotification /></RouteGuard>) },
-  { path: `${import.meta.env.BASE_URL}/push-notification-deleted-items`, element: (<RouteGuard requiredRoles={["Admin", "Staff"]} requiredPermissions={[{ category: "PushNotification", action: "view-trash" }]}><PushNotificationTrash /></RouteGuard>) },
   { path: `${import.meta.env.BASE_URL}/push-notification/add-push-notification`, element: (<RouteGuard requiredRoles={["Admin", "Staff"]} requiredPermissions={[{ category: "PushNotification", action: "add" }]}><AddNewPushNotification /></RouteGuard>) },
   { path: `${import.meta.env.BASE_URL}/push-notification/edit-push-notification/:id`, element: (<RouteGuard requiredRoles={["Admin", "Staff"]} requiredPermissions={[{ category: "PushNotification", action: "edit" }]}><EditPushNotification /></RouteGuard>) },
 

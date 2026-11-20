@@ -8,7 +8,7 @@ import { useGetAllBlogsQuery } from "../../redux/features/getApiSecond";
 import { openModal } from "../../redux/slices/allModalSlice";
 import { USER_BASE_URL } from "../../utils/config";
 import { useEditBlogMutation } from "../../redux/features/postApiSecond";
-import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, useListFilters } from "../common/ListFilters";
+import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, TrashActions, boundFilters, formatDate, indexColumn, useListFilters, withTrash } from "../common/ListFilters";
 import { allow } from "../../commondata/permissions";
 import { commonDataSlice } from "../../redux/slices/commonApiSlice";
 import { exportProps, useExportAction } from "../../utils/fileDownload";
@@ -61,11 +61,12 @@ function BlogStatusSwitch({ row, editBlog, onSuccess }) {
   return <StatusSwitch disabled={!allow("BlogPost", "edit")}  checked={checked} onChange={handleChange} />;
 }
 
-export const BlogsDataTable = () => {
+export const BlogsDataTable = ({ viewingTrash = false }) => {
   const dispatch = useDispatch();
   const list = useListFilters(FILTER_KEYS);
+  const query = withTrash(list.query, viewingTrash);
   const bare = useGetAllBlogsQuery();
-  const { data, isError, error, isLoading, isFetching, refetch } = useGetAllBlogsQuery(list.query, { skip: list.skip });
+  const { data, isError, error, isLoading, isFetching, refetch } = useGetAllBlogsQuery(query, { skip: list.skip });
   const fileExport = useExportAction(commonDataSlice.endpoints.getAllBlogs, "BlogPost", "Posts downloaded");
   useRefreshAfterBareQuery(bare, refetch);
   const [editBlog, { isLoading: updating }] = useEditBlogMutation();
@@ -123,6 +124,7 @@ export const BlogsDataTable = () => {
         const rowId = row?._id || row?.id;
         return (
           <div className="action_icon_wrapper d-flex justify-content-center" onClick={(event) => event.stopPropagation()}>
+            <TrashActions viewingTrash={viewingTrash} onRestore={() => dispatch(openModal({ componentName: "RestorePost", data: row }))} onDelete={() => dispatch(openModal({ componentName: "DeletePost", data: row, softDelete: false }))}>
             <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
               <Link to={`/all-posts/view-post/${rowId}`} className="btn btn-icon btn-primary"><i className="fe fe-eye"></i></Link>
             </OverlayTrigger>
@@ -138,11 +140,12 @@ export const BlogsDataTable = () => {
               </Button>
             </OverlayTrigger>
 )}
+            </TrashActions>
           </div>
         );
       },
     },
-  ], [list.currentPage, list.pageSize, dispatch, editBlog, refetch]);
+  ], [list.currentPage, list.pageSize, dispatch, editBlog, refetch, viewingTrash]);
 
   const deleteSelected = () => {
     const ids = rows.filter((row) => selected.includes(row?._id || row?.id)).map((row) => row?.id ?? row?._id);
@@ -155,7 +158,7 @@ export const BlogsDataTable = () => {
       {isError && <Error error_mes={error} />}
       <div className="e-table pb-5">
         <ListFilters
-          {...boundFilters(list, { placeholder: "Title", ...exportProps(fileExport, list.query, list.skip) })}
+          {...boundFilters(list, { placeholder: "Title", ...exportProps(fileExport, query, list.skip) })}
           selects={[{ label: "Status", value: list.filters.status, onChange: (value) => list.setFilter("status", value), options: STATUS_FILTERS }]}
         />
         {selected.length > 0 && (

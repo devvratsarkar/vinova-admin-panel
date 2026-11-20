@@ -15,6 +15,7 @@ import useDebounce from "../hooks/useDebounce";
 import MuiDataTable from "../components/common/MuiDataTable";
 import DateRangeFields from "../components/common/DateRangeFields";
 import { allow } from "./permissions";
+import { TrashActions } from "../components/common/ListFilters";
 
 const fieldStyle = { borderColor: '#e8edf3', borderRadius: 10, fontSize: 13, backgroundColor: '#fff' }
 const TYPES = [
@@ -40,7 +41,7 @@ function readFrames(response) {
   return { rows, total: Number.isFinite(total) ? total : rows.length };
 }
 
-export const FrameDataTable = () => {
+export const FrameDataTable = ({ viewingTrash = false }) => {
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -69,6 +70,7 @@ export const FrameDataTable = () => {
     ...(type && { type }),
     ...(datesReady && { fromDate, toDate }),
     ...(debouncedSearch.trim() && { search: debouncedSearch.trim() }),
+    ...(viewingTrash && { trash: true }),
   };
   const { data, isLoading, isFetching, refetch } = useGetFramesQuery(apiQuery, { skip: Boolean(dateError) });
   const { onExport, exporting } = useExportAction(catalogueSlice.endpoints.getFrames, "Frame", "Frames downloaded");
@@ -178,6 +180,7 @@ export const FrameDataTable = () => {
       filterable: false,
       render: (row) => (
         <div className="action_icon_wrapper d-flex justify-content-center">
+          <TrashActions viewingTrash={viewingTrash} onRestore={() => dispatch(openModal({ componentName: "FrameRestore", data: row }))} onDelete={() => dispatch(openModal({ componentName: "DeleteFrame", data: row, softDelete: false }))}>
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link to={`/catalogue/frames/view/${row?._id}`}>
               <Button className="btn btn-icon btn-primary me-2"><i className="fe fe-eye"></i></Button>
@@ -197,10 +200,11 @@ export const FrameDataTable = () => {
             </Button>
           </OverlayTrigger>
 )}
+          </TrashActions>
         </div>
       ),
     },
-  ], [currentPage, pageSize, dispatch]);
+  ], [currentPage, pageSize, dispatch, viewingTrash]);
 
   return (
     <>

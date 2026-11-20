@@ -7,7 +7,7 @@ import { openModal } from "../redux/slices/allModalSlice";
 import toast from "react-hot-toast";
 import moment from "moment";
 import { useGetAllCouponsQuery, useUpdateCouponStatusMutation } from "../redux/features/couponAPIEndPoint";
-import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, useListFilters } from "../components/common/ListFilters";
+import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, useListFilters, withTrash, TrashActions } from "../components/common/ListFilters";
 import { allow } from "./permissions";
 import { catalogueSlice } from "../redux/services/catalogueSlice";
 import { exportProps, useExportAction } from "../utils/fileDownload";
@@ -25,10 +25,11 @@ function readCoupons(response) {
   return { rows, total: Number.isFinite(total) ? total : rows.length };
 }
 
-export const CouponData = () => {
+export const CouponData = ({ viewingTrash = false }) => {
   const dispatch = useDispatch();
   const list = useListFilters(FILTER_KEYS);
-  const { data, isLoading, isFetching, refetch } = useGetAllCouponsQuery(list.query, { skip: list.skip });
+  const query = withTrash(list.query, viewingTrash);
+  const { data, isLoading, isFetching, refetch } = useGetAllCouponsQuery(query, { skip: list.skip });
   const fileExport = useExportAction(catalogueSlice.endpoints.getAllCoupons, "Coupon", "Coupons downloaded");
   const [updateStatus, { isLoading: loadingStatus }] = useUpdateCouponStatusMutation();
   const { rows, total } = readCoupons(data);
@@ -78,6 +79,7 @@ export const CouponData = () => {
       filterable: false,
       render: (row) => (
         <div className="action_icon_wrapper d-flex justify-content-center">
+          <TrashActions viewingTrash={viewingTrash} onRestore={() => dispatch(openModal({ componentName: "RestoreCoupon", data: row }))} onDelete={() => dispatch(openModal({ componentName: "DeleteCoupon", data: row, softDelete: false }))}>
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link to={`/view-coupon/${row?._id}`}><Button className="btn btn-icon btn-primary me-2"><i className="fe fe-eye"></i></Button></Link>
           </OverlayTrigger>
@@ -91,10 +93,11 @@ export const CouponData = () => {
             <Button className="btn btn-icon btn-danger" variant="" onClick={() => dispatch(openModal({ componentName: "DeleteCoupon", data: row, softDelete: true }))}><i className="fe fe-trash text-white"></i></Button>
           </OverlayTrigger>
 )}
+          </TrashActions>
         </div>
       ),
     },
-  ], [list.currentPage, list.pageSize, dispatch]);
+  ], [list.currentPage, list.pageSize, dispatch, viewingTrash]);
 
   return (
     <>
@@ -103,7 +106,7 @@ export const CouponData = () => {
         <ListFilters
           {...boundFilters(list, {
             placeholder: "Coupon code",
-            ...exportProps(fileExport, list.query, list.skip),
+            ...exportProps(fileExport, query, list.skip),
             selects: [
               { label: "Coupon type", value: list.filters.coupon_type, onChange: (value) => list.setFilter("coupon_type", value), empty: "All types", options: TYPES },
               { label: "Status", value: list.filters.status, onChange: (value) => list.setFilter("status", value), options: STATUS_FILTERS },

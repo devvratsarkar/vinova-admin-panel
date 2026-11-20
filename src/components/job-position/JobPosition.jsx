@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import PageHeader from "../../layouts/layoutcomponents/pageheader";
 import { Nav, TabContainer, Tabs, Tab, Row, Card, Col, Button, } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import JobPositionDataTable from "../../commondata/JobPositionData";
 import { hasPermission } from "../../commondata/permissions";
+import { TrashButton } from "../common/ListFilters";
 
 export default function JobPosition() {
     const role = localStorage.getItem("role")
     const permissions = JSON.parse(localStorage.getItem("permissions"))
 
+    const [viewingTrash, setViewingTrash] = useState(false)
     const showAdd = hasPermission(role, permissions, "JobOpening", "add")
     const showView = hasPermission(role, permissions, "JobOpening", "add")
     return (
@@ -23,18 +25,14 @@ export default function JobPosition() {
                             <Link to='/cms/add-job-positions' className="btn btn-success text-white me-3" >Add Job Position</Link>
                         )
                     }
-                    {
-                        hasPermission(role, permissions, "JobOpening", "view-trash") && (
-                            <Link to='/cms/trash-job-positions' className="btn btn-danger text-white me-3" >Trash</Link>
-                        )
-                    }
+                    <TrashButton show={hasPermission(role, permissions, "JobOpening", "view-trash")} viewing={viewingTrash} onToggle={() => setViewingTrash((value) => !value)} label="Trash" backLabel="All positions" />
                 </Col>
             </Row>
             <Row>
                 <Col>
                     <Card>
                         <Card.Body className="data_table">
-                            <JobPositionDataTable />
+                            <JobPositionDataTable viewingTrash={viewingTrash} />
                         </Card.Body>
                     </Card>
                 </Col>

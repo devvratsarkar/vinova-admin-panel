@@ -9,7 +9,7 @@ import moment from "moment";
 import { useGetAllFiltersQuery } from "../redux/features/FiltersAPIEndPoint";
 import { useGetAllLensThicknessQuery, useUpdateLensThicknessStatusMutation } from "../redux/features/lensThicknessAPIEndPoint";
 import { useGetAllLensQuery } from "../redux/features/LensAPIEndPoint";
-import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, indexColumn, namedOptions, useListFilters } from "../components/common/ListFilters";
+import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, indexColumn, namedOptions, useListFilters, withTrash, TrashActions } from "../components/common/ListFilters";
 import { allow } from "./permissions";
 import { catalogueSlice } from "../redux/services/catalogueSlice";
 import { exportProps, useExportAction } from "../utils/fileDownload";
@@ -64,12 +64,13 @@ function ChipList({ items, limit = 2 }) {
   );
 }
 
-export const LensThicknessDataTable = () => {
+export const LensThicknessDataTable = ({ viewingTrash = false }) => {
   const dispatch = useDispatch();
   const list = useListFilters(FILTER_KEYS);
+  const query = withTrash(list.query, viewingTrash);
   const { data: lensData } = useGetAllLensQuery();
   const { data: coatingData } = useGetAllFiltersQuery();
-  const { data, isLoading, isFetching, refetch } = useGetAllLensThicknessQuery(list.query, { skip: list.skip });
+  const { data, isLoading, isFetching, refetch } = useGetAllLensThicknessQuery(query, { skip: list.skip });
   const fileExport = useExportAction(catalogueSlice.endpoints.getAllLensThickness, "LensSize", "Lens sizes downloaded");
   const [updateStatus, { isLoading: loadingStatus }] = useUpdateLensThicknessStatusMutation();
   const { rows, total } = readThickness(data);
@@ -148,6 +149,7 @@ export const LensThicknessDataTable = () => {
       filterable: false,
       render: (row) => (
         <div className="action_icon_wrapper d-flex justify-content-center">
+          <TrashActions viewingTrash={viewingTrash} onRestore={() => dispatch(openModal({ componentName: "RestoreLensThickness", data: row }))} onDelete={() => dispatch(openModal({ componentName: "DeleteLensThickness", data: row, softDelete: false }))}>
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link to={`/catalogue/lens-thickness/view/${row?._id}`}><Button className="btn btn-icon btn-primary me-2"><i className="fe fe-eye"></i></Button></Link>
           </OverlayTrigger>
@@ -161,10 +163,11 @@ export const LensThicknessDataTable = () => {
             <Button type="button" className="btn btn-icon btn-danger" variant="" onClick={() => dispatch(openModal({ componentName: "DeleteLensThickness", data: row, softDelete: true }))}><i className="fe fe-trash text-white"></i></Button>
           </OverlayTrigger>
 )}
+          </TrashActions>
         </div>
       ),
     },
-  ], [list.currentPage, list.pageSize, dispatch]);
+  ], [list.currentPage, list.pageSize, dispatch, viewingTrash]);
 
   return (
     <>
@@ -173,7 +176,7 @@ export const LensThicknessDataTable = () => {
         <ListFilters
           {...boundFilters(list, {
             placeholder: "Name",
-            ...exportProps(fileExport, list.query, list.skip),
+            ...exportProps(fileExport, query, list.skip),
             selects: [
               { label: "Lens quality category", value: list.filters.lens, onChange: (value) => list.setFilter("lens", value), empty: "All categories", options: namedOptions(lensData?.data) },
               { label: "Coating", value: list.filters.lensFilters, onChange: (value) => list.setFilter("lensFilters", value), empty: "All coatings", options: namedOptions(coatingData?.data) },

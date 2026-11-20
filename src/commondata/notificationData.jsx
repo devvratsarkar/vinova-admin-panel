@@ -8,6 +8,7 @@ import DataTable from '../components/common/DataTable'
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { hasPermission } from "./permissions";
+import { TrashActions } from "../components/common/ListFilters";
 // import { useGetAllNotificationQuery } from "../redux/features/supportDeskEndPoint";
 
 
@@ -84,7 +85,7 @@ const dummyNotificationData = [
   },
 ];
 
-export const NotificationDataTable = () => {
+export const NotificationDataTable = ({ viewingTrash = false }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
@@ -137,6 +138,7 @@ export const NotificationDataTable = () => {
       name: "Action",
       cell: (row) => (
         <div className="action_icon_wrapper">
+          <TrashActions viewingTrash={viewingTrash} onRestore={() => dispatch(openModal({ componentName: "RestoreNotification", data: row }))} onDelete={() => dispatch(openModal({ componentName: "DeleteNotifiation", data: row, softDelete: false }))}>
           {
             showRestore && (
               <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
@@ -150,6 +152,7 @@ export const NotificationDataTable = () => {
                 <Button className="btn btn-icon btn-danger" variant="" onClick={() => { dispatch(openModal({ componentName: 'DeleteNotifiation', data: row, softDelete: true })) }}> <i className="fe fe-trash text-light"></i> </Button>
               </OverlayTrigger>
             )}
+          </TrashActions>
         </div>
       ),
     },

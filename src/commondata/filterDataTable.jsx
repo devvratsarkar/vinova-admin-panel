@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { useGetAllFiltersQuery, useUpdateLensTypeStatusMutation } from "../redux/features/FiltersAPIEndPoint";
 import { useGetAllLensQuery } from "../redux/features/LensAPIEndPoint";
 import { useGetLensColorQuery } from "../redux/features/lensColorAPIEndPoint";
-import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, namedOptions, useListFilters } from "../components/common/ListFilters";
+import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, formatDate, indexColumn, namedOptions, useListFilters, withTrash, TrashActions } from "../components/common/ListFilters";
 import { allow } from "./permissions";
 import { catalogueSlice } from "../redux/services/catalogueSlice";
 import { exportProps, useExportAction } from "../utils/fileDownload";
@@ -26,12 +26,13 @@ const TYPES = [
   { value: "sunglass", label: "Sunglass" },
 ];
 
-export const FilterDataTable = () => {
+export const FilterDataTable = ({ viewingTrash = false }) => {
   const dispatch = useDispatch();
   const list = useListFilters(FILTER_KEYS);
+  const query = withTrash(list.query, viewingTrash);
   const { data: lensData } = useGetAllLensQuery();
   const { data: colorData } = useGetLensColorQuery();
-  const { data, isLoading, isFetching, refetch } = useGetAllFiltersQuery(list.query, { skip: list.skip });
+  const { data, isLoading, isFetching, refetch } = useGetAllFiltersQuery(query, { skip: list.skip });
   const fileExport = useExportAction(catalogueSlice.endpoints.getAllFilters, "LensType", "Filters downloaded");
   const [updateStatus, { isLoading: loadingStatus }] = useUpdateLensTypeStatusMutation();
   const { rows, total } = readCoatings(data);
@@ -86,6 +87,7 @@ export const FilterDataTable = () => {
       filterable: false,
       render: (row) => (
         <div className="action_icon_wrapper d-flex justify-content-center">
+          <TrashActions viewingTrash={viewingTrash} onRestore={() => dispatch(openModal({ componentName: "RestoreFilter", data: row }))} onDelete={() => dispatch(openModal({ componentName: "DeleteFilter", data: row, softDelete: false }))}>
           <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
             <Link to={`/catalogue/lens-type/view/${row?._id}`}><Button className="btn btn-icon btn-primary me-2"><i className="fe fe-eye"></i></Button></Link>
           </OverlayTrigger>
@@ -99,10 +101,11 @@ export const FilterDataTable = () => {
             <Button type="button" className="btn btn-icon btn-danger" variant="" onClick={() => dispatch(openModal({ componentName: "DeleteFilter", data: row, softDelete: true }))}><i className="fe fe-trash text-white"></i></Button>
           </OverlayTrigger>
 )}
+          </TrashActions>
         </div>
       ),
     },
-  ], [list.currentPage, list.pageSize, dispatch]);
+  ], [list.currentPage, list.pageSize, dispatch, viewingTrash]);
 
   return (
     <>
@@ -111,7 +114,7 @@ export const FilterDataTable = () => {
         <ListFilters
           {...boundFilters(list, {
             placeholder: "Name",
-            ...exportProps(fileExport, list.query, list.skip),
+            ...exportProps(fileExport, query, list.skip),
             selects: [
               { label: "Lens quality category", value: list.filters.lens, onChange: (value) => list.setFilter("lens", value), empty: "All categories", options: namedOptions(lensData?.data) },
               { label: "Lens color", value: list.filters.lensColor, onChange: (value) => list.setFilter("lensColor", value), empty: "All colors", options: namedOptions(colorData?.data) },

@@ -1,7 +1,7 @@
 import { allow } from "../../../commondata/permissions";
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Card, Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { TrashButton } from '../../common/ListFilters'
 import { useDispatch } from 'react-redux'
 import { openModal } from '../../../redux/slices/allModalSlice'
 import PageHeader from '../../../layouts/layoutcomponents/pageheader'
@@ -24,7 +24,8 @@ const statStyle = {
 
 export default function AllOptometristMembershipsPlans() {
     const dispatch = useDispatch()
-    const { data, isError, error, isLoading, isFetching } = useGetAllMembershipPlansQuery()
+    const [viewingTrash, setViewingTrash] = useState(false)
+    const { data, isError, error, isLoading, isFetching } = useGetAllMembershipPlansQuery(viewingTrash ? { trash: true } : undefined)
     const plans = data?.data || []
 
     if (isLoading || isFetching) return <Loader />
@@ -40,7 +41,7 @@ export default function AllOptometristMembershipsPlans() {
                     <Button variant="success" className="text-white" onClick={() => dispatch(openModal({ componentName: 'AddMembershipPlan' }))}>
                         <i className="fe fe-plus me-1"></i> Add Plan
                     </Button>
-                    <Link className="btn btn-danger text-white" to="/optometrist/memberships-plans/trashed">Trash</Link>
+                    <TrashButton show={allow("OptometristMembership", "view-trash")} viewing={viewingTrash} onToggle={() => setViewingTrash((value) => !value)} label="Trash" backLabel="All plans" />
                 </Col>
             </Row>
             <Card>
@@ -60,14 +61,20 @@ export default function AllOptometristMembershipsPlans() {
                                                     <span className="badge" style={{ background: free ? '#e2e8f0' : '#dcfce7', color: free ? '#475569' : '#15803d' }}>{free ? 'Free' : 'Paid'}</span>
                                                 </div>
                                                 <div className="d-flex gap-1">
-                                                    {allow("OptometristMembership", "edit") && (
+                                                    {viewingTrash ? (
+                                                        <OverlayTrigger placement="top" overlay={<Tooltip>Restore</Tooltip>}>
+                                                            <Button variant="warning" size="sm" className="btn-icon" onClick={() => dispatch(openModal({ componentName: 'RestoreMembershipPlan', data: plan }))}>
+                                                                <i className="fe fe-refresh-ccw text-white"></i>
+                                                            </Button>
+                                                        </OverlayTrigger>
+                                                    ) : allow("OptometristMembership", "edit") && (
 <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
                                                         <Button variant="primary" size="sm" className="btn-icon" onClick={() => dispatch(openModal({ componentName: 'EditMembershipPlan', data: plan }))}>
                                                             <i className="fe fe-edit"></i>
                                                         </Button>
                                                     </OverlayTrigger>
 )}
-                                                    {allow("OptometristMembership", "delete") && (
+                                                    {!viewingTrash && allow("OptometristMembership", "delete") && (
 <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
                                                         <Button variant="danger" size="sm" className="btn-icon" onClick={() => dispatch(openModal({ componentName: 'DeleteMembershipPlan', data: plan }))}>
                                                             <i className="fe fe-trash"></i>

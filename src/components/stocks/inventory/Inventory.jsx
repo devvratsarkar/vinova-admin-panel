@@ -4,7 +4,8 @@ import { Nav, TabContainer, Tabs, Tab, Row, Card, Col, Form, Dropdown, Button, I
 import PageHeader from '../../../layouts/layoutcomponents/pageheader';
 import InventoryWithVariant from '../../inventory-with-variant/InventoryWithVariant';
 import { Link } from 'react-router-dom';
-import { getInventoryWithVariantTrashPage, } from '../../../utils/routes';
+import { TrashButton } from '../../common/ListFilters';
+import { hasPermission } from '../../../commondata/permissions';
 import Loader from '../../../layouts/layoutcomponents/loader';
 import { openModal } from '../../../redux/slices/allModalSlice';
 import { useDispatch } from 'react-redux';
@@ -26,8 +27,10 @@ export default function Inventory() {
     }
   };
 
+  const [viewingTrash, setViewingTrash] = useState(false)
   const role = localStorage.getItem("role")
   const permissions = JSON.parse(localStorage.getItem("permissions"))
+  const showTrash = hasPermission(role, permissions, "InventoryWithVariant", "view-trash")
 
   return (
     <>
@@ -36,9 +39,7 @@ export default function Inventory() {
           <PageHeader titles="Inventory" active="Inventory With Variant" items={['Home']} links={["/dashboard"]} />
         </Col>
         <Col className='text-end'>
-          <Link to={`${getInventoryWithVariantTrashPage()}`}>
-            <Button variant='danger'> Inventory With Variant Trash</Button>
-          </Link>
+          <TrashButton show={showTrash} viewing={viewingTrash} onToggle={() => setViewingTrash((value) => !value)} label="Inventory With Variant Trash" backLabel="All inventory" />
         </Col>
       </Row>
 
@@ -95,7 +96,7 @@ export default function Inventory() {
           <div className="panel panel-primary">
             <div className="tab-menu-heading">
               <div className="tabs-menu ">
-                <InventoryWithVariant />
+                <InventoryWithVariant viewingTrash={viewingTrash} />
               </div>
             </div>
           </div>

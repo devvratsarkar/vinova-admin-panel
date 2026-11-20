@@ -78,7 +78,7 @@ export const optometristAPIEndPoint = optometristSlice.injectEndpoints({
             }),
         }),
         getAllOptometristStoreData: builder.query({
-            query: () => `/store`,
+            query: (params) => params?.trash ? { url: `/store`, params: { trash: true } } : `/store`,
         }),
         addOptometristStore: builder.mutation({
             query: (formData) => ({

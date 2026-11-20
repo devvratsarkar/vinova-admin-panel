@@ -1,16 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { hasPermission } from "../../commondata/permissions";
 // import PageHeader from "../../../layouts/layoutcomponents/pageheader";
 import { Row, Card, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 // import { getCategoryDeletedItemsPage } from "../../../utils/routes";
 import { FrameDataTable } from "../../commondata/frameDataTable";
+import { TrashButton } from "../../components/common/ListFilters";
 import PageHeader from "../../layouts/layoutcomponents/pageheader";
 
 export default function Frame() {
   const role = localStorage.getItem("role")
   const permission = JSON.parse(localStorage.getItem("permissions"))
 
+  const [viewingTrash, setViewingTrash] = useState(false)
   const showAdd = hasPermission(role, permission, "Frame", "add")
   const showTrash = hasPermission(role, permission, "Frame", "view-trash")
   return (
@@ -23,18 +25,14 @@ export default function Frame() {
           <Link to="/catalogue/frames/add" className="btn btn-success text-white me-3" >Add Frame</Link>
            )
           }
-          { 
-           showTrash && ( 
-          <Link className="btn btn-danger text-white" to={`/catalogue/frames/deleted`}>Frame Trashed</Link>
-           )
-          } 
+          <TrashButton show={showTrash} viewing={viewingTrash} onToggle={() => setViewingTrash((value) => !value)} label="Frame Trashed" backLabel="All frames" />
         </Col>
       </Row>
       <Row>
         <Col>
           <Card>
             <Card.Body className="data_table">
-              <FrameDataTable />
+              <FrameDataTable viewingTrash={viewingTrash} />
             </Card.Body>
           </Card>
         </Col>

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
 import moment from "moment";
 import DateRangeFields from "./DateRangeFields";
 import MuiDataTable from "./MuiDataTable";
@@ -130,6 +130,34 @@ export function useListFilters(keys = [], initial = {}) {
     skip: Boolean(dateError),
     onPaginationModelChange,
   };
+}
+
+export function withTrash(query, viewingTrash) {
+  return viewingTrash ? { ...query, trash: true } : query;
+}
+
+export function TrashActions({ viewingTrash, onRestore, onDelete, children }) {
+  if (!viewingTrash) return children;
+  return (
+    <>
+      <OverlayTrigger placement="top" overlay={<Tooltip>Restore</Tooltip>}>
+        <Button type="button" className="btn btn-icon btn-warning" variant="" onClick={onRestore}><i className="fe fe-refresh-ccw text-white"></i></Button>
+      </OverlayTrigger>
+      <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+        <Button type="button" className="btn btn-icon btn-danger" variant="" onClick={onDelete}><i className="fe fe-trash text-white"></i></Button>
+      </OverlayTrigger>
+    </>
+  );
+}
+
+export function TrashButton({ show, viewing, onToggle, label = "Trash", backLabel = "All" }) {
+  if (!show && !viewing) return null;
+  return (
+    <Button type="button" variant={viewing ? "primary" : "danger"} className="text-white" onClick={onToggle}>
+      <i className={`fe ${viewing ? "fe-list" : "fe-trash"} me-1`}></i>
+      {viewing ? backLabel : label}
+    </Button>
+  );
 }
 
 export function boundFilters(list, extra = {}) {

@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { Row, Col, Card, Form, Button } from "react-bootstrap";
 import { hasPermission } from "../../../commondata/permissions";
 Link;
 import PageHeader from "../../../layouts/layoutcomponents/pageheader";
 import { Link } from "react-router-dom";
 import { PushNotificationDataTable } from "../../../commondata/pushNotificationData";
-import { getTrashPushNotification } from "../../../utils/routes";
+import { TrashButton } from "../../common/ListFilters";
 
 function PushNotification() {
   const role = localStorage.getItem("role")
   const permissions = JSON.parse(localStorage.getItem("permissions"))
 
+  const [viewingTrash, setViewingTrash] = useState(false)
   const showAdd = hasPermission(role, permissions, "PushNotification", "add")
   const showTrash = hasPermission(role, permissions, "PushNotification", "view-trash")
   return (
@@ -25,17 +26,13 @@ function PushNotification() {
               <Link className="btn btn-success border-success fit-content" to="/push-notification/add-push-notification" >Add New Push Notification</Link>
             )
           }
-          {
-            showTrash && (
-              <Link className="btn btn-danger text-white fit-content" to={`${getTrashPushNotification()}`}>Push Notification Trashed</Link>
-            )
-          }
+          <TrashButton show={showTrash} viewing={viewingTrash} onToggle={() => setViewingTrash((value) => !value)} label="Push Notification Trashed" backLabel="All notifications" />
         </Col>
       </Row>
       <Row>
         <Col>
           <Card>
-            <PushNotificationDataTable />
+            <PushNotificationDataTable viewingTrash={viewingTrash} />
           </Card>
         </Col>
       </Row>

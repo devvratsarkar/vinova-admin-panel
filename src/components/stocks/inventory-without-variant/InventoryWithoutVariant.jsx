@@ -4,7 +4,8 @@ import { Nav, TabContainer, Tabs, Tab, Row, Card, Col, Form, Dropdown, Button, I
 // import PageHeader from '../../../layouts/layoutcomponents/pageheader';
 // import InventoryWithVariant from '../../inventory-with-variant/InventoryWithVariant';
 import { Link, useNavigate } from 'react-router-dom';
-import { getInventoryWithVariantTrashPage, } from '../../../utils/routes';
+import { TrashButton } from '../../common/ListFilters';
+import { hasPermission } from '../../../commondata/permissions';
 import Loader from '../../../layouts/layoutcomponents/loader';
 import { openModal } from '../../../redux/slices/allModalSlice';
 import { useDispatch } from 'react-redux';
@@ -14,7 +15,11 @@ import PageHeader from '../../../layouts/layoutcomponents/pageheader';
 import { FaPlus } from "react-icons/fa";
 
 export default function InventoryWithoutVariant() {
+    const [viewingTrash, setViewingTrash] = useState(false)
     const dispatch = useDispatch();
+    const role = localStorage.getItem("role")
+    const permissions = JSON.parse(localStorage.getItem("permissions") || "{}")
+    const showTrash = hasPermission(role, permissions, "InventoryWithOutVariant", "view-trash")
     const navigate = useNavigate()
     const [trigger, { data, error, isLoading, isFetching, isSuccess }] = useLazySearchFrameInventoryQuery();
     const [show, setShow] = useState(false);
@@ -37,9 +42,7 @@ export default function InventoryWithoutVariant() {
                     <PageHeader titles="Inventory" active="Inventory Without Variant" items={['Home']} links={["/dashboard"]} />
                 </Col>
                 <Col className='text-end'>
-                    <Link to={`/stocks/inventory-without-variant-trash`}>
-                        <Button variant='danger'> Inventory Without Variant Trash</Button>
-                    </Link>
+                    <TrashButton show={showTrash} viewing={viewingTrash} onToggle={() => setViewingTrash((value) => !value)} label="Inventory Without Variant Trash" backLabel="All inventory" />
                 </Col>
             </Row>
 
@@ -98,7 +101,7 @@ export default function InventoryWithoutVariant() {
                     <div className="panel panel-primary">
                         <div className="tab-menu-heading">
                             <div className="tabs-menu ">
-                                <InventoryWithoutVariantDataTable />
+                                <InventoryWithoutVariantDataTable viewingTrash={viewingTrash} />
                             </div>
                         </div>
                     </div>
