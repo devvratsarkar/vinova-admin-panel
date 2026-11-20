@@ -3,7 +3,6 @@ import { hasPermission } from "../../commondata/permissions";
 // import PageHeader from "../../../layouts/layoutcomponents/pageheader";
 import { Row, Card, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
-// import { getCategoryDeletedItemsPage } from "../../../utils/routes";
 import { FrameDataTable } from "../../commondata/frameDataTable";
 import { TrashButton } from "../../components/common/ListFilters";
 import PageHeader from "../../layouts/layoutcomponents/pageheader";

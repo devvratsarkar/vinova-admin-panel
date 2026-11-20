@@ -5,7 +5,6 @@ import { hasPermission } from "../../commondata/permissions";
 
 import { Link } from "react-router-dom";
 import { CouponData } from "../../../commondata/couponDatas";
-import { getDeletedCouponPage } from "../../../utils/routes";
 import { CouponUsageDataTable } from "../../../commondata/couponDataTable";
 
 export default function Couponusage() {

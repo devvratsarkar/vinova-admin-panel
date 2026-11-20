@@ -25,9 +25,6 @@ export function generateViewCustomerPage() {
 export function getCategoryPage() {
   return `/catalogue/category`;
 }
-export function getCategoryDeletedItemsPage() {
-  return `/catalogue/category-deleted-items`;
-}
 export function getAddNewCategoryPage() {
   return `/catalogue/add-new-category`;
 }
@@ -40,17 +37,8 @@ export function generateEditCategoryPage(categoryID) {
 export function getCustomFieldPage() {
   return `/catalogue/custom-field`;
 }
-export function getCustomFieldTrashPage() {
-  return `/catalogue/custom-field-deleted-items`;
-}
-export function getCustomFieldValueTrashPage() {
-  return `/catalogue/custom-field-value-deleted-items`;
-}
 export function getProductPage() {
   return `/catalogue/products`;
-}
-export function getProductTrashPage() {
-  return `/catalogue/product-deleted-items`;
 }
 export function getAddNewProductPage() {
   return `/catalogue/add-new-product`;
@@ -67,12 +55,6 @@ export function getSurgicalEquipmentPage() {
 export function getInventoryPage() {
   return `/stocks/inventory`;
 }
-export function getInventoryWithoutVariantTrashPage() {
-  return `/stocks/inventory-without-variant-delete-items`;
-}
-export function getInventoryWithVariantTrashPage() {
-  return `/stocks/inventory-with-variant-delete-items`;
-}
 export function generateViewInventoryWithoutVariantPage() {
   return `/stocks/view-inventory-without-variant`;
 }
@@ -81,9 +63,6 @@ export function generateEditInventoryWithVariantPage() {
 }
 export function getCarrierPage() {
   return `/shipping/carrier`;
-}
-export function getCarrierTrashPage() {
-  return `/shipping/carrier-deleted-items`;
 }
 export function getAddNewCarrierPage() {
   return `/shipping/carrier/add-new-carrier`;
@@ -102,9 +81,6 @@ export function getReturnsPage() {
 }
 export function getCouponPage() {
   return `/coupon`;
-}
-export function getDeletedCouponPage() {
-  return `/coupon/deleted-coupons`;
 }
 export function getPromocodePage() {
   return `/offer/promocode`;
@@ -154,14 +130,8 @@ export function getFaqPage() {
 export function getBlogsPage() {
   return `/blogs`;
 }
-export function getBlogsTrashPage() {
-  return `/blogs-deleted-items`;
-}
 export function getBlogCategoriesPage() {
   return `/blogs/categories`;
-}
-export function getBlogCategoriesTrashPage() {
-  return `/blogs/categories-deleted-items`;
 }
 export function getAddNewBlogCategoriesPage() {
   return `/blogs/add-categories`;
@@ -227,19 +197,12 @@ export function getDisputeSupportDesk() {
 export function getNotification() {
   return "/support-desk/notification";
 }
-export function getNotificationTrash() {
-  return "/support-desk/notification-deleted-items";
-}
-
 export function getMessageInbox() {
   return "/message/messages-inbox";
 }
 
 export function getMedicinePage() {
   return "/catalogue/medicines";
-}
-export function getMedicineDeletedPage() {
-  return "/catalogue/medicines-deleted-items";
 }
 export function generateViewMedicinePage() {
   return "/catalogue/view-medicines";
@@ -283,9 +246,6 @@ export function getSubscriber() {
 export function getPushNotification() {
   return `/push-notification`;
 }
-export function getTrashPushNotification() {
-  return `/push-notification-deleted-items`;
-}
 export function getReviewsPage() {
   return `/reviews`;
 }
@@ -309,15 +269,6 @@ export function ProductsEnquiries() {
 
 export function getTags() {
   return `/tags`;
-}
-export function getManufacturerDeletedItem() {
-  return `/marketer-manufacturer-deleted-item`;
-}
-export function getBrandDeletedItem() {
-  return `/brand-deleted-items`;
-}
-export function getSurgicalEquipmentTrashPage() {
-  return `/catalogue/surgical-equipment/trash-surgical-equipment`;
 }
 export function getContactUsPage() {
   return `/cms/contact-us`;
