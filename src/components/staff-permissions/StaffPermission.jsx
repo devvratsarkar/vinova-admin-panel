@@ -101,17 +101,70 @@ export default function StaffPermission() {
   return (
     <>
       <style>{`
-        .roles-access-layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 16px; align-items: start; }
-        @media (max-width: 991px) { .roles-access-layout { grid-template-columns: 1fr; } }
+        body:has(.roles-access-page),
+        .horizontalMenucontainer:has(.roles-access-page),
+        .app-content:has(.roles-access-page) { overflow: visible !important; }
+        .roles-access-page { display: flow-root; min-width: 0; }
+        .roles-access-layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 16px; align-items: start; min-width: 0; }
+        .roles-access-roles, .roles-access-main { min-width: 0; }
+        .roles-access-roles { align-self: start; }
+        .roles-access-panel { padding: 20px 24px 24px; }
+        .roles-access-summary { padding-bottom: 16px; margin-bottom: 8px; border-bottom: 1px solid #e8edf3; }
+        .roles-access-summary h4 { margin: 0 0 2px; font-size: 18px; font-weight: 700; color: #0f172a; }
+        .roles-access-summary p { margin: 0 0 14px; color: #64748b; font-size: 14px; }
+        .roles-access-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+        .roles-access-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: 8px; font-size: 14px; font-weight: 400; line-height: 1; }
+        .roles-access-role { gap: 12px; }
+        .roles-access-check-label { display: none; }
+        .roles-access-check input,
+        .roles-access-colhead input { width: 16px; height: 16px; margin: 0; accent-color: #293896; }
+        .roles-access-table { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .roles-access-table table { min-width: 640px; border-collapse: separate; border-spacing: 0; }
+        .roles-access-table::-webkit-scrollbar { width: 8px; height: 8px; }
+        .roles-access-table::-webkit-scrollbar-thumb { background: #c5cee0; border-radius: 8px; }
+        .roles-access-th { text-align: center; font-size: 12px; letter-spacing: 0.05em; color: #64748b; font-weight: 700; padding: 10px 8px; border-bottom: 1px solid #eef2f6; width: 90px; white-space: nowrap; }
+        .roles-access-th--module { text-align: left; width: auto; padding: 10px 12px; }
+        .roles-access-colhead { display: inline-flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; }
+        .roles-access-group td { padding: 14px 12px 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; color: #94a3b8; }
+        .roles-access-module td { padding: 11px 8px; border-top: 1px solid #f1f5f9; text-align: center; }
+        .roles-access-module td:first-child { text-align: left; padding: 11px 12px; color: #0f172a; font-weight: 500; }
+        @media (min-width: 992px) {
+          .roles-access-roles { position: sticky; top: 90px; z-index: 2; }
+        }
+        @media (max-width: 1199px) {
+          .roles-access-layout { grid-template-columns: 230px minmax(0, 1fr); }
+        }
+        @media (max-width: 991px) {
+          .roles-access-layout { grid-template-columns: 1fr; }
+          .roles-access-panel { padding: 16px; }
+        }
+        @media (max-width: 767px) {
+          .roles-access-panel { padding: 12px; }
+          .roles-access-summary { padding-bottom: 10px; margin-bottom: 2px; }
+          .roles-access-summary h4 { font-size: 16px; }
+          .roles-access-summary p { margin-bottom: 10px; font-size: 13px; }
+          .roles-access-actions { gap: 6px; }
+          .roles-access-btn { height: 32px; padding: 0 10px; font-size: 13px; border-radius: 7px; }
+          .roles-access-table table { min-width: 0; width: 100%; }
+          .roles-access-th { width: 46px; padding: 6px 0; font-size: 9px; letter-spacing: 0.03em; }
+          .roles-access-th--module { width: auto; padding: 6px 6px 6px 0; }
+          .roles-access-colhead { flex-direction: column; gap: 3px; line-height: 1; }
+          .roles-access-group td { padding: 10px 0 2px; font-size: 10px; }
+          .roles-access-module td { padding: 7px 0; }
+          .roles-access-module td:first-child { padding: 7px 6px 7px 0; font-size: 13px; }
+          .roles-access-check input,
+          .roles-access-colhead input { width: 14px; height: 14px; }
+        }
       `}</style>
+      <div className="roles-access-page">
       <AccessHeader page="permissions" />
 
       <div className="roles-access-layout">
-          <div>
+          <div className="roles-access-roles">
             <Card style={{ border: '1px solid #e8edf3', borderRadius: 12, boxShadow: 'none' }}>
               <Card.Body className="p-3">
                 <div className="px-2 mb-2" style={labelStyle}>Roles</div>
-                <div className="d-flex flex-column gap-1">
+                <div className="roles-access-list d-flex flex-column gap-1">
                   {roles.map((item) => {
                     const selected = item.id === role.id
                     return (
@@ -119,7 +172,7 @@ export default function StaffPermission() {
                         key={item.id}
                         type="button"
                         onClick={() => setRoleId(item.id)}
-                        className="d-flex align-items-center justify-content-between"
+                        className="roles-access-role d-flex align-items-center justify-content-between"
                         style={{
                           width: '100%',
                           textAlign: 'left',
@@ -132,8 +185,8 @@ export default function StaffPermission() {
                           cursor: 'pointer',
                         }}
                       >
-                        <span>{item.name}</span>
-                        <span style={{ fontSize: 12, fontWeight: 500, color: '#94a3b8' }}>{item.users} {item.users === 1 ? 'user' : 'users'}</span>
+                        <span style={{ minWidth: 0 }}>{item.name}</span>
+                        <span style={{ flexShrink: 0, fontSize: 12, fontWeight: 500, color: '#94a3b8' }}>{item.users} {item.users === 1 ? 'user' : 'users'}</span>
                       </button>
                     )
                   })}
@@ -148,33 +201,33 @@ export default function StaffPermission() {
               </Card.Body>
             </Card>
           </div>
-          <div>
+          <div className="roles-access-main">
             <Card style={{ border: '1px solid #e8edf3', borderRadius: 12, boxShadow: 'none' }}>
-              <Card.Body className="p-4">
-                <div className="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
-                  <div>
-                    <h4 className="fw-semibold mb-1">{role.name}</h4>
-                    <p className="text-muted mb-0 small">{role.description}</p>
-                  </div>
-                  <div className="d-flex flex-wrap gap-2">
-                    <button type="button" className="btn btn-primary">Edit</button>
-                    <button type="button" className="btn btn-primary">Save changes</button>
-                    <button type="button" className="btn btn-danger">Delete</button>
+              <Card.Body className="roles-access-panel">
+                <div className="roles-access-summary">
+                  <h4>{role.name}</h4>
+                  <p>{role.description}</p>
+                  <div className="roles-access-actions">
+                    <button type="button" className="btn btn-primary roles-access-btn">
+                      <i className="fe fe-edit-2" aria-hidden="true"></i>
+                      Edit
+                    </button>
+                    <button type="button" className="btn btn-primary roles-access-btn">Save changes</button>
+                    <button type="button" className="btn btn-danger roles-access-btn">Delete</button>
                   </div>
                 </div>
                 <div className="roles-access-table">
-                  <table className="w-100" style={{ borderCollapse: 'separate', borderSpacing: 0, minWidth: 640 }}>
+                  <table className="w-100">
                     <thead>
                       <tr>
-                        <th style={{ textAlign: 'left', fontSize: 12, letterSpacing: '0.05em', color: '#64748b', fontWeight: 700, padding: '10px 12px', borderBottom: '1px solid #eef2f6' }}>MODULE</th>
+                        <th className="roles-access-th roles-access-th--module">MODULE</th>
                         {ACTIONS.map((action) => (
-                          <th key={action.key} style={{ textAlign: 'center', fontSize: 12, letterSpacing: '0.05em', color: '#64748b', fontWeight: 700, padding: '10px 8px', borderBottom: '1px solid #eef2f6', width: 90 }}>
-                            <label className="d-inline-flex align-items-center gap-2 mb-0" style={{ cursor: 'pointer' }}>
+                          <th key={action.key} className="roles-access-th">
+                            <label className="roles-access-colhead">
                               <input
                                 type="checkbox"
                                 checked={columnChecked(action.key)}
                                 onChange={(event) => setColumn(action.key, event.target.checked)}
-                                style={{ accentColor: '#293896' }}
                               />
                               {action.label.toUpperCase()}
                             </label>
@@ -184,21 +237,23 @@ export default function StaffPermission() {
                     </thead>
                     <tbody>
                       {GROUPS.flatMap((group) => [
-                        <tr key={`${group.label}-label`}>
-                          <td colSpan={6} style={{ padding: '14px 12px 6px', fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', color: '#94a3b8' }}>{group.label.toUpperCase()}</td>
+                        <tr key={`${group.label}-label`} className="roles-access-group">
+                          <td colSpan={6}>{group.label.toUpperCase()}</td>
                         </tr>,
                         ...group.modules.map((name) => (
-                          <tr key={name}>
-                            <td style={{ padding: '11px 12px', borderTop: '1px solid #f1f5f9', color: '#0f172a', fontWeight: 500 }}>{name}</td>
+                          <tr key={name} className="roles-access-module">
+                            <td>{name}</td>
                             {ACTIONS.map((action) => (
-                              <td key={action.key} style={{ textAlign: 'center', borderTop: '1px solid #f1f5f9' }}>
-                                <input
-                                  type="checkbox"
-                                  aria-label={`${name} ${action.label}`}
-                                  checked={Boolean(role.access[name]?.[action.key])}
-                                  onChange={(event) => setAccess(name, action.key, event.target.checked)}
-                                  style={{ accentColor: '#293896', width: 16, height: 16 }}
-                                />
+                              <td key={action.key}>
+                                <label className="roles-access-check mb-0">
+                                  <input
+                                    type="checkbox"
+                                    aria-label={`${name} ${action.label}`}
+                                    checked={Boolean(role.access[name]?.[action.key])}
+                                    onChange={(event) => setAccess(name, action.key, event.target.checked)}
+                                  />
+                                  <span className="roles-access-check-label">{action.label}</span>
+                                </label>
                               </td>
                             ))}
                           </tr>
@@ -211,6 +266,7 @@ export default function StaffPermission() {
             </Card>
           </div>
         </div>
+      </div>
 
       <Modal show={addOpen} onHide={closeAdd} centered>
         <Modal.Header closeButton>

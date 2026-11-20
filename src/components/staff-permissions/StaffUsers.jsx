@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Card, Col, Form, Row } from 'react-bootstrap'
+import { Card, Form } from 'react-bootstrap'
 import AccessHeader from './AccessHeader'
 
 const ROLES = ['Editor', 'Viewer', 'Admin']
@@ -23,29 +23,27 @@ export default function StaffUsers() {
           <h4 className="fw-semibold mb-1">Staff users</h4>
           <p className="text-muted small">Add a person and choose which role they get after login.</p>
           <div className="p-3 mb-4" style={{ background: '#f8fafc', border: '1px solid #e8edf3', borderRadius: 12 }}>
-            <Row className="g-3 align-items-end">
-              <Col md={3}>
+            <div className="d-flex flex-nowrap align-items-end gap-3">
+              <div style={{ flex: '0.9 1 0', minWidth: 0 }}>
                 <Form.Label className="small text-muted mb-1">Name</Form.Label>
                 <Form.Control placeholder="Jane Doe" style={fieldStyle} />
-              </Col>
-              <Col md={3}>
+              </div>
+              <div style={{ flex: '1.3 1 0', minWidth: 0 }}>
                 <Form.Label className="small text-muted mb-1">Email</Form.Label>
                 <Form.Control type="email" placeholder="jane@example.com" style={fieldStyle} />
-              </Col>
-              <Col md={3}>
+              </div>
+              <div style={{ flex: '1.45 1 0', minWidth: 160 }}>
                 <Form.Label className="small text-muted mb-1">Password</Form.Label>
                 <Form.Control type="password" placeholder="At least 8 characters" style={fieldStyle} />
-              </Col>
-              <Col md={2}>
+              </div>
+              <div style={{ flex: '0.75 1 0', minWidth: 110 }}>
                 <Form.Label className="small text-muted mb-1">Role</Form.Label>
                 <Form.Select defaultValue={ROLES[0]} style={fieldStyle}>
                   {ROLES.map((name) => <option key={name}>{name}</option>)}
                 </Form.Select>
-              </Col>
-              <Col md="auto">
-                <button type="button" className="btn btn-primary" style={{ height: 40 }}>Add user</button>
-              </Col>
-            </Row>
+              </div>
+              <button type="button" className="btn btn-primary flex-shrink-0" style={{ height: 40 }}>Add user</button>
+            </div>
           </div>
           <div style={{ overflowX: 'auto' }}>
             <table className="w-100" style={{ borderCollapse: 'separate', borderSpacing: 0, minWidth: 720 }}>

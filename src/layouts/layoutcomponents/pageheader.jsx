@@ -41,6 +41,7 @@ const PageHeader = (props) => {
             <Breadcrumb.Item className="breadcrumb-item active" aria-current="page">{props.active}</Breadcrumb.Item>
           </Breadcrumb>
         </div>
+        {props.children ? <div className="page-options">{props.children}</div> : null}
       </div>
     </div>
   );
