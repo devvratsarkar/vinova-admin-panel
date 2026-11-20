@@ -56,14 +56,22 @@ function blankAccess() {
   return access
 }
 
+function permissionRows(role) {
+  const rows = role?.permission || role?.user_permission || []
+  return Array.isArray(rows) ? rows : []
+}
+
 function accessFromApi(userPermission = []) {
   const access = blankAccess()
   userPermission.forEach((item) => {
-    if (!access[item.name]) return
-      ; (item.permissions || []).forEach((perm) => {
-        const key = perm === 'add' ? 'create' : perm
-        if (key in access[item.name]) access[item.name][key] = true
-      })
+    const name = item?.name || item?.model
+    if (!name || !access[name]) return
+    const permissions = item.permissions || item.Permission || []
+    if (!Array.isArray(permissions)) return
+    permissions.forEach((perm) => {
+      const key = perm === 'add' ? 'create' : perm
+      if (key in access[name]) access[name][key] = true
+    })
   })
   return access
 }
@@ -104,7 +112,7 @@ export default function StaffPermission() {
 
   useEffect(() => {
     if (role && String(roleId(role)) === String(selectedId)) {
-      const next = accessFromApi(role.user_permission || [])
+      const next = accessFromApi(permissionRows(role))
       setAccess(next)
       setSavedAccess(next)
     }
@@ -141,7 +149,7 @@ export default function StaffPermission() {
       toast.success(response.data.message || 'Role updated')
       return true
     }
-    toast.error(response?.data?.message || 'Failed to update role')
+    if (!response?.error) toast.error(response?.data?.message || 'Failed to update role')
     return false
   }
 
@@ -178,7 +186,7 @@ export default function StaffPermission() {
       setOpen(false)
       return
     }
-    toast.error(response?.data?.message || 'Failed to create role')
+    if (!response?.error) toast.error(response?.data?.message || 'Failed to create role')
   }
 
   const removeRole = async () => {
@@ -190,7 +198,7 @@ export default function StaffPermission() {
       setConfirmDelete(false)
       return
     }
-    toast.error(response?.data?.message || 'Failed to delete role')
+    if (!response?.error) toast.error(response?.data?.message || 'Failed to delete role')
   }
 
   const ready = role && String(roleId(role)) === String(selectedId)
