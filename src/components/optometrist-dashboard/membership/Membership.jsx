@@ -7,6 +7,7 @@ import Loader from '../../../layouts/layoutcomponents/loader'
 import { useGetOptometristUserProfileQuery, usePayOptometristPlanMutation } from '../../../redux/features/optometristAPIEndPoint'
 import { openPaymentLink, paymentLink, paymentRequired, planRenewDue } from '../../../commondata/optometristPayment'
 import RenewPlanModal from './RenewPlanModal'
+import './Membership.css'
 
 const cardStyle = {
   border: '1px solid #e8edf3',
@@ -133,12 +134,6 @@ export default function Membership() {
 
   return (
     <>
-      <style>{`
-        .op-rates .op-rate + .op-rate { border-top: 1px solid #eef2f7; }
-        @media (min-width: 768px) {
-          .op-rates .op-rate + .op-rate { border-top: 0; border-left: 1px solid #eef2f7; }
-        }
-      `}</style>
       {isLoading && <Loader />}
 
       <Row>

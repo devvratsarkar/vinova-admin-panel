@@ -1,0 +1,14 @@
+.staff-users-card .card-body { padding: 24px; }
+.staff-users-form-box { padding: 16px; margin-bottom: 24px; background: #f8fafc; border: 1px solid #e8edf3; border-radius: 12px; }
+.staff-users-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
+.staff-users-field { flex: 1 1 180px; min-width: 160px; }
+.staff-users-field--wide { flex-basis: 220px; }
+.staff-users-form__submit { flex: 0 0 auto; height: 40px; }
+@media (max-width: 767px) {
+  .staff-users-card .card-body { padding: 16px; }
+  .staff-users-form-box { padding: 12px; margin-bottom: 16px; }
+}
+@media (max-width: 575px) {
+  .staff-users-card .card-body { padding: 12px; }
+  .staff-users-field, .staff-users-form__submit { flex: 1 1 100%; min-width: 0; width: 100%; }
+}

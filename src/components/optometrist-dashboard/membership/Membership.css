@@ -1,0 +1,4 @@
+.op-rates .op-rate + .op-rate { border-top: 1px solid #eef2f7; }
+@media (min-width: 768px) {
+  .op-rates .op-rate + .op-rate { border-top: 0; border-left: 1px solid #eef2f7; }
+}

@@ -1,89 +1,150 @@
-import { useState } from 'react'
-import { Card, Form } from 'react-bootstrap'
+import { useEffect, useMemo, useState } from 'react'
+import { Button, Card, Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { useDispatch } from 'react-redux'
+import toast from 'react-hot-toast'
+import SelectWithDragDrop from '../common/SelectWithDragDrop'
+import { ListFilters, ListTable, STATUS_FILTERS, StatusSwitch, boundFilters, indexColumn, readList, useListFilters } from '../common/ListFilters'
 import AccessHeader from './AccessHeader'
+import './StaffUsers.css'
+import Loader from '../../layouts/layoutcomponents/loader'
+import { openModal } from '../../redux/slices/allModalSlice'
+import { useAddStaffMutation, useGetAllRolesQuery, useGetAllStaffQuery } from '../../redux/features/staffEndPoint'
 
-const ROLES = ['Editor', 'Viewer', 'Admin']
-const STAFF = [
-  { id: '1', name: 'admin', email: 'admin@example.com', role: 'Admin', active: true },
-  { id: '2', name: 'new', email: 'new@example.com', role: 'Editor', active: true },
-  { id: '3', name: 'test', email: 'test@example.com', role: 'Viewer', active: false },
-  { id: '4', name: 'monu', email: 'monu@example.com', role: 'Viewer', active: true },
-]
+const roleName = (role) => role?.role_name || role?.name || ''
+const staffRole = (person) => (typeof person.role === 'string' ? person.role : person.role?.name || person.role?.role_name || '')
 
 const fieldStyle = { borderColor: '#e6ebf2', borderRadius: 8, fontSize: 14, background: '#fff', height: 40 }
 
 export default function StaffUsers() {
-  const [staff, setStaff] = useState(STAFF)
+  const dispatch = useDispatch()
+  const list = useListFilters(['role', 'status'])
+  const { data: rolesData, isLoading: rolesLoading } = useGetAllRolesQuery()
+  const { data: staffData, isLoading: staffLoading, isFetching: staffFetching } = useGetAllStaffQuery(list.query, { skip: list.skip })
+  const [addStaff, { isLoading: adding }] = useAddStaffMutation()
+  const roles = Array.isArray(rolesData?.data) ? rolesData.data : []
+  const { rows, total } = readList(staffData)
+  const roleOptions = roles.map((role) => ({ value: roleName(role), label: roleName(role) })).filter((role) => role.value)
+  const [form, setForm] = useState({ name: '', email: '', password: '', role: '' })
+
+  useEffect(() => {
+    if (!form.role && roles[0]) setForm((current) => ({ ...current, role: roleName(roles[0]) }))
+  }, [roles, form.role])
+
+  const handleAdd = async () => {
+    if (!form.name.trim() || !form.email.trim() || !form.password || !form.role) {
+      toast.error('Name, email, password, and role are required')
+      return
+    }
+
+    const response = await addStaff({
+      name: form.name.trim(),
+      email: form.email.trim(),
+      password: form.password,
+      role: form.role,
+    })
+    if (response?.data?.http_status_code === 200 || response?.data?.http_status_code === 201) {
+      toast.success(response.data.message || 'Staff added')
+      setForm((current) => ({ ...current, name: '', email: '', password: '' }))
+      return
+    }
+    toast.error(response?.data?.message || 'Failed to add staff')
+  }
+
+  const columns = useMemo(() => [
+    indexColumn(list.currentPage, list.pageSize),
+    { id: 'name', label: 'Name', minWidth: 160, flex: 1, render: (row) => row?.name || '' },
+    { id: 'email', label: 'Email', minWidth: 220, flex: 1.2, render: (row) => row?.email || '' },
+    { id: 'role', label: 'Role', minWidth: 140, flex: 0.7, render: (row) => staffRole(row) },
+    {
+      id: 'active',
+      label: 'Active',
+      width: 110,
+      sortable: false,
+      filterable: false,
+      render: (row) => <StatusSwitch checked={!!row?.active} disabled />,
+    },
+    {
+      id: 'action',
+      label: 'Action',
+      width: 120,
+      align: 'center',
+      sortable: false,
+      filterable: false,
+      render: (row) => (
+        <div className="action_icon_wrapper d-flex justify-content-center">
+          <OverlayTrigger placement="top" overlay={<Tooltip>Edit</Tooltip>}>
+            <Button type="button" className="btn btn-icon btn-warning me-2" variant="" onClick={() => dispatch(openModal({ componentName: 'EditStaff', data: row }))}><i className="fe fe-edit"></i></Button>
+          </OverlayTrigger>
+          <OverlayTrigger placement="top" overlay={<Tooltip>Delete</Tooltip>}>
+            <Button type="button" className="btn btn-icon btn-danger" variant="" onClick={() => dispatch(openModal({ componentName: 'DeleteStaff', data: row }))}><i className="fe fe-trash text-white"></i></Button>
+          </OverlayTrigger>
+        </div>
+      ),
+    },
+  ], [list.currentPage, list.pageSize, dispatch])
 
   return (
     <>
+      {(rolesLoading || staffLoading || staffFetching || adding) && <Loader />}
       <AccessHeader page="staff" />
-      <Card style={{ border: '1px solid #e8edf3', borderRadius: 12, boxShadow: 'none' }}>
-        <Card.Body className="p-4">
+      <Card className="staff-users-card" style={{ border: '1px solid #e8edf3', borderRadius: 12, boxShadow: 'none' }}>
+        <Card.Body>
           <h4 className="fw-semibold mb-1">Staff users</h4>
           <p className="text-muted small">Add a person and choose which role they get after login.</p>
-          <div className="p-3 mb-4" style={{ background: '#f8fafc', border: '1px solid #e8edf3', borderRadius: 12 }}>
-            <div className="d-flex flex-nowrap align-items-end gap-3">
-              <div style={{ flex: '0.9 1 0', minWidth: 0 }}>
+          <div className="staff-users-form-box">
+            <div className="staff-users-form">
+              <div className="staff-users-field">
                 <Form.Label className="small text-muted mb-1">Name</Form.Label>
-                <Form.Control placeholder="Jane Doe" style={fieldStyle} />
+                <Form.Control placeholder="Jane Doe" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} style={fieldStyle} />
               </div>
-              <div style={{ flex: '1.3 1 0', minWidth: 0 }}>
+              <div className="staff-users-field staff-users-field--wide">
                 <Form.Label className="small text-muted mb-1">Email</Form.Label>
-                <Form.Control type="email" placeholder="jane@example.com" style={fieldStyle} />
+                <Form.Control type="email" placeholder="jane@example.com" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} style={fieldStyle} />
               </div>
-              <div style={{ flex: '1.45 1 0', minWidth: 160 }}>
+              <div className="staff-users-field staff-users-field--wide">
                 <Form.Label className="small text-muted mb-1">Password</Form.Label>
-                <Form.Control type="password" placeholder="At least 8 characters" style={fieldStyle} />
+                <Form.Control type="password" placeholder="At least 8 characters" value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} style={fieldStyle} />
               </div>
-              <div style={{ flex: '0.75 1 0', minWidth: 110 }}>
+              <div className="staff-users-field">
                 <Form.Label className="small text-muted mb-1">Role</Form.Label>
-                <Form.Select defaultValue={ROLES[0]} style={fieldStyle}>
-                  {ROLES.map((name) => <option key={name}>{name}</option>)}
-                </Form.Select>
+                <SelectWithDragDrop
+                  options={roleOptions}
+                  value={roleOptions.find((option) => option.value === form.role) || null}
+                  onChange={(selected) => setForm({ ...form, role: selected?.value || '' })}
+                  placeholder="Select role"
+                  isSearchable
+                  styles={{
+                    control: (base) => ({ ...base, minHeight: 40, height: 40, borderColor: '#e6ebf2', borderRadius: 8, boxShadow: 'none', fontSize: 14, background: '#fff' }),
+                    valueContainer: (base) => ({ ...base, height: 40, padding: '0 10px' }),
+                    indicatorsContainer: (base) => ({ ...base, height: 40 }),
+                    placeholder: (base) => ({ ...base, whiteSpace: 'nowrap' }),
+                    singleValue: (base) => ({ ...base, whiteSpace: 'nowrap' }),
+                  }}
+                />
               </div>
-              <button type="button" className="btn btn-primary flex-shrink-0" style={{ height: 40 }}>Add user</button>
+              <button type="button" className="btn btn-primary staff-users-form__submit" onClick={handleAdd} disabled={adding}>Add user</button>
             </div>
           </div>
-          <div style={{ overflowX: 'auto' }}>
-            <table className="w-100" style={{ borderCollapse: 'separate', borderSpacing: 0, minWidth: 720 }}>
-              <thead>
-                <tr>
-                  {['Name', 'Email', 'Role', 'Active', ''].map((heading) => (
-                    <th key={heading || 'actions'} style={{ textAlign: 'left', fontSize: 13, color: '#64748b', fontWeight: 700, padding: '10px 12px', borderBottom: '1px solid #eef2f6' }}>{heading}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {staff.map((person) => (
-                  <tr key={person.id}>
-                    <td style={{ padding: '14px 12px', borderTop: '1px solid #f1f5f9', fontWeight: 600 }}>{person.name}</td>
-                    <td style={{ padding: '14px 12px', borderTop: '1px solid #f1f5f9', color: '#475569' }}>{person.email}</td>
-                    <td style={{ padding: '14px 12px', borderTop: '1px solid #f1f5f9', width: 180 }}>
-                      <Form.Select
-                        value={person.role}
-                        onChange={(event) => setStaff((current) => current.map((item) => item.id === person.id ? { ...item, role: event.target.value } : item))}
-                        style={{ ...fieldStyle, height: 36 }}
-                      >
-                        {ROLES.map((name) => <option key={name}>{name}</option>)}
-                      </Form.Select>
-                    </td>
-                    <td style={{ padding: '14px 12px', borderTop: '1px solid #f1f5f9' }}>
-                      <Form.Check
-                        type="switch"
-                        checked={person.active}
-                        onChange={(event) => setStaff((current) => current.map((item) => item.id === person.id ? { ...item, active: event.target.checked } : item))}
-                        aria-label={`${person.name} active`}
-                      />
-                    </td>
-                    <td style={{ padding: '14px 12px', borderTop: '1px solid #f1f5f9', whiteSpace: 'nowrap' }}>
-                      <button type="button" className="btn btn-primary btn-sm me-2">Edit</button>
-                      <button type="button" className="btn btn-danger btn-sm">Delete</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="e-table">
+            <ListFilters
+              {...boundFilters(list, {
+                placeholder: 'Name or email',
+                selects: [
+                  { label: 'Role', value: list.filters.role, onChange: (value) => list.setFilter('role', value), empty: 'All roles', options: roleOptions, searchable: true },
+                  { label: 'Status', value: list.filters.status, onChange: (value) => list.setFilter('status', value), options: STATUS_FILTERS },
+                ],
+              })}
+            />
+            <ListTable
+              columns={columns}
+              rows={rows}
+              total={total}
+              page={list.currentPage}
+              pageSize={list.pageSize}
+              onPagination={list.onPaginationModelChange}
+              emptyLabel="No staff users yet."
+              disableRowSelectionOnClick
+            />
           </div>
         </Card.Body>
       </Card>

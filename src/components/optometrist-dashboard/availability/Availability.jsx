@@ -20,6 +20,7 @@ import {
   useGetOptometristWorkingRulesQuery,
   useSaveOptometristAvailabilityMutation,
 } from '../../../redux/features/optometristAPIEndPoint'
+import './Availability.css'
 
 const basePath = (import.meta.env.BASE_URL || '').replace(/\/$/, '')
 
@@ -495,21 +496,6 @@ export default function Availability() {
             <p className="text-muted mb-4 small">
               These availability windows are what patients see as bookable times.
             </p>
-            <style>
-              {`@media (max-width: 991px) {
-                .availability-day-row {
-                  grid-template-columns: 1fr max-content !important;
-                }
-                .availability-day-row .availability-day-switch {
-                  grid-column: 2;
-                  grid-row: 1;
-                }
-                .availability-day-row .availability-day-times {
-                  grid-column: 1 / -1;
-                  grid-row: 2;
-                }
-              }`}
-            </style>
             {DAYS.map(({ key, label, short }) => (
               <DayHoursRow
                 key={key}

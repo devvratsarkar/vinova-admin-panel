@@ -1,0 +1,5 @@
+.roles-access-header__tabs { display: inline-flex; flex-shrink: 0; background: #fff; border: 1px solid #e6ebf2; border-radius: 999px; padding: 4px; }
+@media (max-width: 991px) {
+  .page-header .roles-access-header__tabs { width: 100%; margin-top: 12px; }
+  .page-header .roles-access-header__tabs button { flex: 1 1 0; }
+}

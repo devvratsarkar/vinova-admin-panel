@@ -791,11 +791,6 @@ export const MENUITEMS = [
             active: false,
             permission: "view",
             model: "StaffLogin",
-            related_fields: [
-              "/staff-permissions/roles",
-              "/staff-permissions/roles/add",
-              "/staff-permissions/roles/edit/:id",
-            ],
           },
           {
             path: `/staff-permissions/staff`,
@@ -804,11 +799,6 @@ export const MENUITEMS = [
             active: false,
             permission: "view",
             model: "StaffLogin",
-            related_fields: [
-              "/staff-permissions/staff/add",
-              "/staff-permissions/staff/view/:id",
-              "/staff-permissions/staff/edit/:id",
-            ],
           },
         ],
       },

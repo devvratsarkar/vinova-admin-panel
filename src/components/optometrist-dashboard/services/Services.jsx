@@ -18,6 +18,7 @@ import {
   useGetOptometristServicesQuery,
   useUpdateOptometristServiceMutation,
 } from '../../../redux/features/optometristAPIEndPoint'
+import './Services.css'
 import AddEditServiceModal, { VISIT_OPTIONS, needsMeetingLink } from './AddEditServiceModal'
 
 const basePath = (import.meta.env.BASE_URL || '').replace(/\/$/, '')
@@ -177,13 +178,6 @@ export default function Services() {
 
   return (
     <>
-      <style>{`
-        .service-status-switch,
-        .service-status-switch .form-check-input,
-        .service-status-switch .form-check-label {
-          cursor: pointer;
-        }
-      `}</style>
       {(isLoading || isAdding || isUpdating) && <Loader />}
 
       <Row>

@@ -3,6 +3,7 @@ import { Button, Form } from "react-bootstrap";
 import moment from "moment";
 import DateRangeFields from "./DateRangeFields";
 import MuiDataTable from "./MuiDataTable";
+import SelectWithDragDrop from "./SelectWithDragDrop";
 import useDebounce from "../../hooks/useDebounce";
 
 const fieldStyle = { borderColor: "#e8edf3", borderRadius: 10, fontSize: 13, backgroundColor: "#fff" };
@@ -189,12 +190,33 @@ export function ListFilters({
         {selects.map((select) => (
           <div key={select.label}>
             <div className="text-muted mb-1" style={{ fontSize: 12, fontWeight: 600 }}>{select.label}</div>
-            <Form.Select aria-label={select.label} value={select.value} onChange={(event) => select.onChange(event.target.value)} style={fieldStyle}>
-              {select.empty != null && <option value="">{select.empty}</option>}
-              {(select.options || []).map((item) => (
-                <option key={`${item.value}-${item.label}`} value={item.value}>{item.label}</option>
-              ))}
-            </Form.Select>
+            {select.searchable ? (
+              <SelectWithDragDrop
+                aria-label={select.label}
+                options={select.options || []}
+                value={(select.options || []).find((item) => item.value === select.value) || null}
+                onChange={(option) => select.onChange(option?.value || "")}
+                placeholder={select.empty || "All"}
+                isClearable
+                isSearchable
+                menuPlacement="bottom"
+                styles={{
+                  control: (base) => ({ ...base, minHeight: 38, height: 38, borderColor: "#e8edf3", borderRadius: 10, boxShadow: "none", fontSize: 13, backgroundColor: select.value ? "#eef5ff" : "#fff" }),
+                  valueContainer: (base) => ({ ...base, height: 38, padding: "0 10px" }),
+                  indicatorsContainer: (base) => ({ ...base, height: 38 }),
+                  indicatorSeparator: () => ({ display: "none" }),
+                  placeholder: (base) => ({ ...base, color: "#212529" }),
+                  singleValue: (base) => ({ ...base, color: "#212529" }),
+                }}
+              />
+            ) : (
+              <Form.Select aria-label={select.label} value={select.value} onChange={(event) => select.onChange(event.target.value)} style={fieldStyle}>
+                {select.empty != null && <option value="">{select.empty}</option>}
+                {(select.options || []).map((item) => (
+                  <option key={`${item.value}-${item.label}`} value={item.value}>{item.label}</option>
+                ))}
+              </Form.Select>
+            )}
           </div>
         ))}
       </div>

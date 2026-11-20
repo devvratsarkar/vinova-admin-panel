@@ -1,0 +1,54 @@
+body:has(.roles-access-page),
+.horizontalMenucontainer:has(.roles-access-page),
+.app-content:has(.roles-access-page) { overflow: visible !important; }
+.roles-access-page { display: flow-root; min-width: 0; }
+.roles-access-layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 16px; align-items: start; min-width: 0; }
+.roles-access-roles, .roles-access-main { min-width: 0; }
+.roles-access-roles { align-self: start; }
+.roles-access-panel { padding: 20px 24px 24px; }
+.roles-access-summary { padding-bottom: 16px; margin-bottom: 8px; border-bottom: 1px solid #e8edf3; }
+.roles-access-summary h4 { margin: 0 0 2px; font-size: 18px; font-weight: 700; color: #0f172a; }
+.roles-access-summary p { margin: 0 0 14px; color: #64748b; font-size: 14px; }
+.roles-access-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.roles-access-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: 8px; font-size: 14px; font-weight: 400; line-height: 1; }
+.roles-access-role { gap: 12px; }
+.roles-access-check-label { display: none; }
+.roles-access-check input,
+.roles-access-colhead input { width: 16px; height: 16px; margin: 0; accent-color: #293896; }
+.roles-access-table { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.roles-access-table table { min-width: 640px; border-collapse: separate; border-spacing: 0; }
+.roles-access-table::-webkit-scrollbar { width: 8px; height: 8px; }
+.roles-access-table::-webkit-scrollbar-thumb { background: #c5cee0; border-radius: 8px; }
+.roles-access-th { text-align: center; font-size: 12px; letter-spacing: 0.05em; color: #64748b; font-weight: 700; padding: 10px 8px; border-bottom: 1px solid #eef2f6; width: 90px; white-space: nowrap; }
+.roles-access-th--module { text-align: left; width: auto; padding: 10px 12px; }
+.roles-access-colhead { display: inline-flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; }
+.roles-access-group td { padding: 14px 12px 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; color: #94a3b8; }
+.roles-access-module td { padding: 11px 8px; border-top: 1px solid #f1f5f9; text-align: center; }
+.roles-access-module td:first-child { text-align: left; padding: 11px 12px; color: #0f172a; font-weight: 500; }
+@media (min-width: 992px) {
+  .roles-access-roles { position: sticky; top: 90px; z-index: 2; }
+}
+@media (max-width: 1199px) {
+  .roles-access-layout { grid-template-columns: 230px minmax(0, 1fr); }
+}
+@media (max-width: 991px) {
+  .roles-access-layout { grid-template-columns: 1fr; }
+  .roles-access-panel { padding: 16px; }
+}
+@media (max-width: 767px) {
+  .roles-access-panel { padding: 12px; }
+  .roles-access-summary { padding-bottom: 10px; margin-bottom: 2px; }
+  .roles-access-summary h4 { font-size: 16px; }
+  .roles-access-summary p { margin-bottom: 10px; font-size: 13px; }
+  .roles-access-actions { gap: 6px; }
+  .roles-access-btn { height: 32px; padding: 0 10px; font-size: 13px; border-radius: 7px; }
+  .roles-access-table table { min-width: 0; width: 100%; }
+  .roles-access-th { width: 46px; padding: 6px 0; font-size: 9px; letter-spacing: 0.03em; }
+  .roles-access-th--module { width: auto; padding: 6px 6px 6px 0; }
+  .roles-access-colhead { flex-direction: column; gap: 3px; line-height: 1; }
+  .roles-access-group td { padding: 10px 0 2px; font-size: 10px; }
+  .roles-access-module td { padding: 7px 0; }
+  .roles-access-module td:first-child { padding: 7px 6px 7px 0; font-size: 13px; }
+  .roles-access-check input,
+  .roles-access-colhead input { width: 14px; height: 14px; }
+}

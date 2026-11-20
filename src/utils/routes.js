@@ -353,9 +353,6 @@ export function getDisputeList() {
   return "/dispute"
 }
 
-export function getStaffPermissions() {
-  return `/staff-permissions/staff`
-}
 export function getNotFoundPages() {
   return `/not-found-searches`
 }

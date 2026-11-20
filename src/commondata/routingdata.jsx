@@ -1150,16 +1150,7 @@ export const RouterData = [
 
   //staff permissions
   { path: `${import.meta.env.BASE_URL}/staff-permissions`, element: (<RouteGuard requiredRoles={["Admin"]} requiredPermissions={[]}><StaffPermission /></RouteGuard>) },
-  { path: `${import.meta.env.BASE_URL}/staff-permissions/roles`, element: (<RouteGuard requiredRoles={["Admin"]} requiredPermissions={[]}><StaffPermission /></RouteGuard>) },
-  { path: `${import.meta.env.BASE_URL}/staff-permissions/roles/add`, element: (<RouteGuard requiredRoles={["Admin"]} requiredPermissions={[]}><StaffPermission /></RouteGuard>) },
-  { path: `${import.meta.env.BASE_URL}/staff-permissions/roles/edit/:id`, element: (<RouteGuard requiredRoles={["Admin"]} requiredPermissions={[]}><StaffPermission /></RouteGuard>) },
   { path: `${import.meta.env.BASE_URL}/staff-permissions/staff`, element: (<RouteGuard requiredRoles={["Admin"]} requiredPermissions={[]}><StaffUsers /></RouteGuard>) },
-  { path: `${import.meta.env.BASE_URL}/staff-permissions/staff/add`, element: (<RouteGuard requiredRoles={["Admin"]} requiredPermissions={[]}><StaffUsers /></RouteGuard>) },
-  { path: `${import.meta.env.BASE_URL}/staff-permissions/staff/view/:id`, element: (<RouteGuard requiredRoles={["Admin"]} requiredPermissions={[]}><StaffUsers /></RouteGuard>) },
-  { path: `${import.meta.env.BASE_URL}/staff-permissions/staff/edit/:id`, element: (<RouteGuard requiredRoles={["Admin"]} requiredPermissions={[]}><StaffUsers /></RouteGuard>) },
-  { path: `${import.meta.env.BASE_URL}/add-staff-permissions`, element: (<RouteGuard requiredRoles={["Admin"]} requiredPermissions={[]}><StaffPermission /></RouteGuard>) },
-  { path: `${import.meta.env.BASE_URL}/view-staff-permissions/:id`, element: (<RouteGuard requiredRoles={["Admin"]} requiredPermissions={[]}><StaffPermission /></RouteGuard>) },
-  { path: `${import.meta.env.BASE_URL}/edit-staff-permissions/:id`, element: (<RouteGuard requiredRoles={["Admin"]} requiredPermissions={[]}><StaffPermission /></RouteGuard>) },
 
 
 

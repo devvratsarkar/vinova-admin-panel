@@ -1,0 +1,10 @@
+@keyframes wallet-skeleton {
+  0% { opacity: 0.45; }
+  50% { opacity: 1; }
+  100% { opacity: 0.45; }
+}
+.wallet-bone {
+  display: block;
+  background: #e8edf3;
+  animation: wallet-skeleton 1.2s ease-in-out infinite;
+}

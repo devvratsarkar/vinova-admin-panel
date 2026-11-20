@@ -11,6 +11,7 @@ export const StaffEndPoint = catalogueSlice.injectEndpoints({
         }),
         getSingleRole: builder.query({
             query: (id) => `/get-role/${id}`,
+            providesTags: ["RolesList"],
         }),
         createRole: builder.mutation({
             query: (body) => ({
@@ -28,6 +29,13 @@ export const StaffEndPoint = catalogueSlice.injectEndpoints({
             }),
             invalidatesTags: ["RolesList"],
         }),
+        deleteRole: builder.mutation({
+            query: (id) => ({
+                url: `/delete-role/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["RolesList"],
+        }),
         addStaff: builder.mutation({
             query: (staffData) => ({
                 url: `/add-staff`,
@@ -37,7 +45,18 @@ export const StaffEndPoint = catalogueSlice.injectEndpoints({
             invalidatesTags: ["StaffList"],
         }),
         getAllStaff: builder.query({
-            query: () => `/all-staff`,
+            query: (params = {}) => ({
+                url: `/all-staff`,
+                params: {
+                    ...(params.page && { page: params.page }),
+                    ...(params.limit && { limit: params.limit }),
+                    ...(params.search && { search: params.search }),
+                    ...(params.role && { role: params.role }),
+                    ...(params.status && { status: params.status }),
+                    ...(params.fromDate && { fromDate: params.fromDate }),
+                    ...(params.toDate && { toDate: params.toDate }),
+                },
+            }),
             providesTags: ["StaffList"],
         }),
         getSingleStaff: builder.query({
@@ -67,6 +86,7 @@ export const {
     useGetSingleRoleQuery,
     useCreateRoleMutation,
     useUpdateRoleMutation,
+    useDeleteRoleMutation,
     useAddStaffMutation,
     useGetAllStaffQuery,
     useGetSingleStaffQuery,

@@ -756,29 +756,6 @@ export const DisputeMessageValidation = Yup.object().shape({
   message: Yup.string().required("This field id required.")
 })
 
-export const AddStaffValidation = Yup.object().shape({
-  name: Yup.string().required("This field is required."),
-  email: Yup.string().required("This field is required."),
-  phone_number: Yup.string().required("This field is required."),
-  profile_pic: Yup.mixed().required("This field is required."),
-  password: Yup.string().required("This field is required."),
-  password_confirmation: Yup.string()
-    .oneOf([Yup.ref("password")], "Passwords must match")
-    .required("This field is required."),
-  role_id: Yup.string().required("Please select a role."),
-})
-
-export const EditStaffValidation = Yup.object().shape({
-  name: Yup.string().required("This field is required."),
-  email: Yup.string().required("This field is required."),
-  phone_number: Yup.string().required("This field is required."),
-  role_id: Yup.string().required("Please select a role."),
-})
-
-export const AddRoleValidation = Yup.object().shape({
-  role_name: Yup.string().required("This field is required."),
-})
-
 export const AddPopUpValidation = Yup.object().shape({
   type: Yup.string().required("This Field is required."),
   image: Yup.string().required("This field is reqired")

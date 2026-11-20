@@ -1,0 +1,13 @@
+@media (max-width: 991px) {
+  .availability-day-row {
+    grid-template-columns: 1fr max-content !important;
+  }
+  .availability-day-row .availability-day-switch {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .availability-day-row .availability-day-times {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}

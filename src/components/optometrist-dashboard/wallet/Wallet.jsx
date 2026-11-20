@@ -17,6 +17,7 @@ import {
 } from '../../../redux/features/optometristAPIEndPoint'
 import { OPTOMETRIST_API_BASE_URL } from '../../../utils/config'
 import BankFormModal, { bankPayload } from './BankFormModal'
+import './Wallet.css'
 
 const cardStyle = {
   border: '1px solid #e8edf3',
@@ -244,19 +245,6 @@ function EmptyNote({ children }) {
   )
 }
 
-const SKELETON_STYLE = `
-@keyframes wallet-skeleton {
-  0% { opacity: 0.45; }
-  50% { opacity: 1; }
-  100% { opacity: 0.45; }
-}
-.wallet-bone {
-  display: block;
-  background: #e8edf3;
-  animation: wallet-skeleton 1.2s ease-in-out infinite;
-}
-`
-
 function Bone({ width = '40%', height = 12, radius = 8, className = '' }) {
   return <span className={`wallet-bone ${className}`} style={{ width, height, borderRadius: radius }} />
 }
@@ -440,7 +428,6 @@ export default function Wallet() {
 
   return (
     <>
-      <style>{SKELETON_STYLE}</style>
       {busy && <Loader />}
       <Row>
         <Col>

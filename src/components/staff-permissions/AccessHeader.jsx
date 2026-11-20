@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import PageHeader from '../../layouts/layoutcomponents/pageheader'
+import './AccessHeader.css'
 
 const PAGES = [
   { key: 'permissions', label: 'Permissions', to: '/staff-permissions' },
@@ -11,15 +12,7 @@ export default function AccessHeader({ page }) {
   const title = page === 'staff' ? 'Staff users' : 'Roles & access'
 
   return (
-    <>
-      <style>{`
-        .roles-access-header__tabs { display: inline-flex; flex-shrink: 0; background: #fff; border: 1px solid #e6ebf2; border-radius: 999px; padding: 4px; }
-        @media (max-width: 991px) {
-          .page-header .roles-access-header__tabs { width: 100%; margin-top: 12px; }
-          .page-header .roles-access-header__tabs button { flex: 1 1 0; }
-        }
-      `}</style>
-      <PageHeader titles={title} active={title} items={['Home']} links={['/dashboard']}>
+    <PageHeader titles={title} active={title} items={['Home']} links={['/dashboard']}>
         <div className="roles-access-header__tabs">
           {PAGES.map((item) => {
             const active = page === item.key
@@ -45,7 +38,6 @@ export default function AccessHeader({ page }) {
             )
           })}
         </div>
-      </PageHeader>
-    </>
+    </PageHeader>
   )
 }

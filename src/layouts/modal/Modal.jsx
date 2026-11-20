@@ -78,7 +78,6 @@ const ReplyDisputeMessage = lazy(() => import("../../components/dispute/editDisp
 const AddMedia = lazy(() => import("../../components/media/AddMedia"));
 const ViewMedia = lazy(() => import("../../components/media/ViewMedia"));
 const DeleteMedia = lazy(() => import("../../components/media/DeleteMedia"));
-const DeleteStaff = lazy(() => import("../../components/staff-permissions/DeleteStaff"));
 const DeleteNotifiation = lazy(() => import("../../components/support desk/notification/DeleteNotifiation"));
 const RestoreNotification = lazy(() => import("../../components/support desk/notification/RestoreNotification"));
 const DeletedPushNotification = lazy(() => import("../../components/support desk/push-notification/DeletedPushNotification"));
@@ -96,6 +95,8 @@ const BlogTagsDelete = lazy(() => import("../../components/blogs/tags/BlogTagsDe
 const RestoreBlogTags = lazy(() => import("../../components/blogs/tags/RestoreBlogTags"));
 const DeleteComment = lazy(() => import("../../components/blogs/comments/DeleteComment"));
 const ViewReviewModal = lazy(() => import("../../components/reviews/ViewReviewModal"));
+const EditStaff = lazy(() => import("../../components/staff-permissions/EditStaff"));
+const DeleteStaff = lazy(() => import("../../components/staff-permissions/DeleteStaff"));
 
 export default function Modal() {
     const { isOpen, componentName } = useSelector(
@@ -284,8 +285,6 @@ export default function Modal() {
                 return <ViewMedia />
             case "DeleteMedia":
                 return <DeleteMedia />
-            case "DeleteStaff":
-                return <DeleteStaff />
             case "DeleteNotifiation":
                 return <DeleteNotifiation />
             case "RestoreNotification":
@@ -321,6 +320,10 @@ export default function Modal() {
                 return <DeleteComment />
             case "ViewReview":
                 return <ViewReviewModal />
+            case "EditStaff":
+                return <EditStaff />
+            case "DeleteStaff":
+                return <DeleteStaff />
 
             default:
                 return null;
