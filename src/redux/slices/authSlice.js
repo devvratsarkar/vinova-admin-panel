@@ -18,17 +18,14 @@ const authSlice = createSlice({
       state.token = action.payload.token;
       state.role = action.payload.role;
       state.permissions = action.payload.permissions;
-      // Only use country for SuperAdmin; other roles have no country
-      state.country = action.payload.role === "SuperAdmin" ? (action.payload.country || "IR") : null;
+      const countryCode = action.payload.country_code || (action.payload.role === "SuperAdmin" ? "IR" : null);
+      state.country = countryCode;
 
       localStorage.setItem('token', action.payload.token);
       localStorage.setItem('role', action.payload.role);
       localStorage.setItem('permissions', action.payload.permissions);
-      if (action.payload.role === "SuperAdmin") {
-        localStorage.setItem('country', action.payload.country || "IR");
-      } else {
-        localStorage.removeItem('country');
-      }
+      if (countryCode) localStorage.setItem('country', countryCode);
+      else localStorage.removeItem('country');
     },
     logoutSuccess(state) {
       state.isAuthenticated = false;

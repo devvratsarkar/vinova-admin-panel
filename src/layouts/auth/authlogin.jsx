@@ -62,7 +62,7 @@ function Authlogin() {
           setLoader(true)
           const res = await publicRequest.post("/login", values);
           if (res.data.http_status_code === 200) {
-            const { token, role } = res.data.data;
+            const { role, country_code } = res.data.data;
             // SuperAdmin: include lang in URL so first get-user/get-global request has lang (avoids duplicate calls)
             const isSuperAdmin = role === "SuperAdmin";
             const langParam = isSuperAdmin
@@ -77,7 +77,7 @@ function Authlogin() {
               token: res.data.data.token,
               role: res?.data?.data?.role,
               permissions: JSON.stringify(res?.data?.data?.permissions),
-              country: res?.data?.data?.country || "IR"
+              country_code,
             }));
           }
         } catch (error) {
