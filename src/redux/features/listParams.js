@@ -31,7 +31,6 @@ export function listRequest(url, params = {}, filename = "export.csv", keys = LI
   const source = params && typeof params === "object" ? params : {};
   const query = {};
   keys.forEach((key) => {
-    if (key === "page" || key === "limit") return;
     if (source[key]) query[key] = source[key];
   });
   return csvRequest(url, query, filename);

@@ -261,7 +261,7 @@ export default function Customers() {
             <span className="px-3 py-2 fw-semibold" style={{ fontSize: 13, background: '#f8fafc', border: '1px solid #e8edf3', borderRadius: 10 }}>
               {prescriptionCount} prescriptions
             </span>
-            <Button type="button" variant="outline-primary" className="d-inline-flex align-items-center gap-2" onClick={() => exportCustomers({ filter, search: debouncedSearch })} disabled={isExporting}>
+            <Button type="button" variant="outline-primary" className="d-inline-flex align-items-center gap-2" onClick={() => exportCustomers({ filter, search: debouncedSearch, page, limit })} disabled={isExporting}>
               {isExporting ? 'Exporting...' : 'Export'}
             </Button>
             <Button type="button" variant="primary" className="d-inline-flex align-items-center gap-2" onClick={() => setRegisterOpen(true)}>

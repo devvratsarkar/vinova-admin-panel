@@ -587,7 +587,7 @@ export default function Appointments() {
                 size="sm"
                 className="p-0 text-decoration-none fw-semibold"
                 disabled={Boolean(dateError) || isExporting}
-                onClick={() => exportAppointments({ status, payment_status: paymentStatus, type, fromDate, toDate, search: debouncedSearch })}
+                onClick={() => exportAppointments({ status, payment_status: paymentStatus, type, fromDate, toDate, search: debouncedSearch, page, limit })}
               >
                 {isExporting ? 'Exporting...' : 'Export'}
               </Button>

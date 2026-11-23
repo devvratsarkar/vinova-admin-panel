@@ -218,8 +218,7 @@ export default function PlanHistory() {
                     placeholder: 'Plan or transaction ID',
                     onExport: () => {
                       if (filters.skip) return
-                      const { page, limit, ...query } = filters.query
-                      exportHistory(query)
+                      exportHistory(filters.query)
                     },
                     exporting: isExporting,
                     selects: [

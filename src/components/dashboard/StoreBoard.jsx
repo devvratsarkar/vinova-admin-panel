@@ -232,7 +232,7 @@ export default function StoreBoard({ data }) {
         </Link>
       </div>
     </section>
-    <section className="sa-card sa-board">
+    {/* <section className="sa-card sa-board">
       <div className="sa-books-head">
         <div>
           <h2>Store activity <span className="sa-sample">Sample</span></h2>
@@ -251,7 +251,7 @@ export default function StoreBoard({ data }) {
           note="Products at or under the stock line."
         />
       </div>
-    </section>
+    </section> */}
     </>
   )
 }

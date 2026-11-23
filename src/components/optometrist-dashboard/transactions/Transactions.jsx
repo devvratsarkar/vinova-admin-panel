@@ -200,8 +200,7 @@ export default function Transactions() {
                     placeholder: 'Description or ID',
                     onExport: () => {
                       if (filters.skip) return
-                      const { page, limit, ...query } = filters.query
-                      exportTransactions(query)
+                      exportTransactions(filters.query)
                     },
                     exporting: isExporting,
                     selects: [

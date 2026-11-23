@@ -26,8 +26,8 @@ export const optometristAPIEndPoint = optometristSlice.injectEndpoints({
         getOptometristPlanHistory: builder.query({
             query: ({ page, limit, status, plan_type, search, fromDate, toDate, export: shouldExport } = {}) => {
                 const params = {}
-                if (!shouldExport && page) params.page = page
-                if (!shouldExport && limit) params.limit = limit
+                if (page) params.page = page
+                if (limit) params.limit = limit
                 if (status) params.status = status
                 if (plan_type) params.plan_type = plan_type
                 if (search) params.search = search
@@ -177,8 +177,8 @@ export const optometristAPIEndPoint = optometristSlice.injectEndpoints({
                 if (fromDate) params.fromDate = fromDate
                 if (toDate) params.toDate = toDate
                 if (search) params.search = search
-                if (!shouldExport && page) params.page = page
-                if (!shouldExport && limit) params.limit = limit
+                if (page) params.page = page
+                if (limit) params.limit = limit
                 if (shouldExport) return csvRequest(`/appointments`, params, 'appointments.csv')
                 return { url: `/appointments`, params }
             },
@@ -216,8 +216,8 @@ export const optometristAPIEndPoint = optometristSlice.injectEndpoints({
                 const params = {}
                 if (filter && filter !== 'all') params.filter = filter
                 if (search) params.search = search
-                if (!shouldExport && page) params.page = page
-                if (!shouldExport && limit) params.limit = limit
+                if (page) params.page = page
+                if (limit) params.limit = limit
                 if (shouldExport) return csvRequest(`/customers`, params, 'customers.csv')
                 return { url: `/customers`, params }
             },
@@ -315,8 +315,8 @@ export const optometristAPIEndPoint = optometristSlice.injectEndpoints({
         getOptometristTransactions: builder.query({
             query: ({ page, limit, type, transaction_type, status, search, fromDate, toDate, export: shouldExport } = {}) => {
                 const params = {}
-                if (!shouldExport && page) params.page = page
-                if (!shouldExport && limit) params.limit = limit
+                if (page) params.page = page
+                if (limit) params.limit = limit
                 if (type) params.type = type
                 if (transaction_type) params.transaction_type = transaction_type
                 if (status) params.status = status

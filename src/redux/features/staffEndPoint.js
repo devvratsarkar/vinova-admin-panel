@@ -47,7 +47,7 @@ export const StaffEndPoint = catalogueSlice.injectEndpoints({
         }),
         getAllStaff: builder.query({
             query: (params = {}) => params?.export
-                ? listRequest(`/all-staff`, params, "staff-users.csv", ["search", "role", "status", "fromDate", "toDate"])
+                ? listRequest(`/all-staff`, params, "staff-users.csv", ["page", "limit", "search", "role", "status", "fromDate", "toDate"])
                 : ({
                 url: `/all-staff`,
                 params: {

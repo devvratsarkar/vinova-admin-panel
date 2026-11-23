@@ -56,8 +56,7 @@ export function useExportAction(endpoint, model, successMessage) {
   const onExport = allow(model, 'export')
     ? (query, skip) => {
       if (skip) return
-      const { page, limit, ...filters } = query || {}
-      download(filters)
+      download(query || {})
     }
     : undefined
   return { onExport, exporting }

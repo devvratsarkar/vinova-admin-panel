@@ -80,10 +80,9 @@ function Authlogin() {
             navigate(dashboardPath);
           }
         } catch (error) {
-          console.error('error ----->', error);
+          // console.error('error -----> dfdfdfdfdf', error);
+          toast.error(error.message)
           setLoader(false)
-          console.log(Date());
-          toast.error(error.response.data.message)
         }
       }
     });

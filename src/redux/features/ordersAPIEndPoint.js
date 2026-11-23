@@ -5,7 +5,7 @@ export const ordersAPIEndPoint = catalogueSlice.injectEndpoints({
     endpoints: (builder) => ({
         getAllOrders: builder.query({
             query: (params = {}) => {
-                if (params.export) return listRequest(`/all-orders`, params, "orders.csv", ["status", "payment_status", "fromDate", "toDate", "isprescription", "search"]);
+                if (params.export) return listRequest(`/all-orders`, params, "orders.csv", ["page", "limit", "status", "payment_status", "fromDate", "toDate", "isprescription", "search"]);
                 const query = new URLSearchParams();
                 if (params.status) query.append("status", params.status);
                 if (params.payment_status) query.append("payment_status", params.payment_status);
@@ -35,7 +35,7 @@ export const ordersAPIEndPoint = catalogueSlice.injectEndpoints({
         }),
         getAllHtoOrders: builder.query({
             query: (params = {}) => {
-                if (params.export) return listRequest(`/all-hto-orders`, params, "hto-orders.csv", ["status", "payment_status", "fromDate", "toDate", "search"]);
+                if (params.export) return listRequest(`/all-hto-orders`, params, "hto-orders.csv", ["page", "limit", "status", "payment_status", "fromDate", "toDate", "search"]);
                 const query = new URLSearchParams();
                 if (params.status) query.append("status", params.status);
                 if (params.payment_status) query.append("payment_status", params.payment_status);
