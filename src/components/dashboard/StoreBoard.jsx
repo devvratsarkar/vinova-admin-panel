@@ -149,10 +149,10 @@ export default function StoreBoard({ data }) {
         />
         <MoneyCell
           to={`${base}affiliate/withdrawal-request?status=Pending`}
-          title="Withdrawals waiting"
+          title="Affiliate withdrawals waiting"
           value={shownCount(data.withdrawalCount)}
           unit="requests"
-          note={`${shownMoney(data.attention?.withdrawals)} Rials they asked to be paid`}
+          note={`${shownMoney(data.attention?.withdrawals)} Rials affiliates asked to be paid`}
         />
         <MoneyCell
           to={`${base}optometrist/memberships-plans`}
@@ -182,7 +182,7 @@ export default function StoreBoard({ data }) {
           title="Coupon discounts"
           value={shownMoney(data.couponDiscount)}
           unit="Rials"
-          note={`${shownCount(data.discountCount)} discounts given. Store coupons. Not earnings.`}
+          note={`${shownCount(data.discountCount)} times store coupons applied. Not earnings.`}
         />
         <MoneyCell
           to={`${base}optometrist/memberships-plans`}
