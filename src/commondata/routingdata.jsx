@@ -2,6 +2,7 @@ import React, { lazy } from "react";
 import RouteGuard from "./RouteGuard";
 
 const Dashboard = lazy(() => import("../components/dashboard/dashboard"));
+const Ledger = lazy(() => import("../components/ledger/Ledger"));
 const Analytics = lazy(() => import("../components/analytics/Analytics"));
 const Category = lazy(() => import("../components/catalogue/category/Category"));
 const CustomField = lazy(() => import("../components/catalogue/customfield/CustomField"));
@@ -172,6 +173,10 @@ export const RouterData = [
   {
     path: `${import.meta.env.BASE_URL}/dashboard`,
     element: <RouteGuard requiredPermissions={[{ category: "Dashboard", action: "view" }]}><Dashboard /></RouteGuard>,
+  },
+  {
+    path: `${import.meta.env.BASE_URL}/ledger`,
+    element: <RouteGuard requiredPermissions={[{ category: "Dashboard", action: "view" }]}><Ledger /></RouteGuard>,
   },
   {
     path: `${import.meta.env.BASE_URL}/analytics`,

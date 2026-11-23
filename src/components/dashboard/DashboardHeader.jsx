@@ -11,6 +11,7 @@ export default function DashboardHeader({
   dateError,
   onFromDate,
   onToDate,
+  title = 'Dashboard',
 }) {
   const fromMax = toDate && toDate < today ? toDate : today
 
@@ -25,7 +26,7 @@ export default function DashboardHeader({
             <span className="sa-kicker-dot" />
             Super Admin
           </div>
-          <h1>Dashboard</h1>
+          <h1>{title}</h1>
           <p>
             {[data?.range, 'Iran, UAE, and UK', todayLabel].filter(Boolean).join(' · ')}
           </p>

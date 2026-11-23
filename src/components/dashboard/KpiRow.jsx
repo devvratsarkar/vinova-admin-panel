@@ -15,7 +15,7 @@ function Trend({ text, featured }) {
   )
 }
 
-function Kpi({ featured, icon, label, value, unit, trend, hint, to }) {
+export function Kpi({ featured, icon, label, value, unit, trend, hint, to }) {
   const body = (
     <>
       <div className="sa-kpi-top">
@@ -65,7 +65,7 @@ export default function KpiRow({ data }) {
           unit="Rials"
           trend={data.earningsTrend}
           hint="Money Vinova keeps"
-          to="#sa-income"
+          to={`${base}ledger`}
         />
       </Col>
       <Col xs={12} md={6} xl={3}>
