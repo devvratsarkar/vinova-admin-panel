@@ -27,6 +27,7 @@ export default function OrderDetailsData({ formik, singleOrder, showOrderEdit })
     const tax_amount = (singleOrder?.tax_amount || 0);
     const coupon_discount = singleOrder?.coupon_discount ?? 0;
     const total_amount_paid = singleOrder?.total_amount || 0;
+    const couponDiscountPercent = subTotal > 0 ? ((coupon_discount / subTotal) * 100).toFixed(2) : 0;
 
     const taxPercent = subTotal > 0 ? ((tax_amount / subTotal) * 100).toFixed(2) : 0;
     const hasPendingPrescription = Array.isArray(singleOrder?.orderItems)
@@ -327,9 +328,9 @@ export default function OrderDetailsData({ formik, singleOrder, showOrderEdit })
                                 <tr>
                                     <td>
                                         Coupon Discount{' '}
-                                        {singleOrder?.coupon_code ? (
+                                        {(singleOrder?.coupon_code || couponDiscountPercent != null) ? (
                                             <span className="text-muted fw-normal">
-                                                ({singleOrder.coupon_code})
+                                                ({[singleOrder?.coupon_code, couponDiscountPercent != null ? `${couponDiscountPercent}%` : null].filter(Boolean).join(', ')})
                                             </span>
                                         ) : null}
                                     </td>
