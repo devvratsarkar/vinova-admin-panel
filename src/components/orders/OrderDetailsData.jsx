@@ -23,12 +23,11 @@ export default function OrderDetailsData({ formik, singleOrder, showOrderEdit })
             : 0;
 
     const subTotal = subTotalWithoutExchangeRate * exchange_rate;
-    const shipping_amount = (singleOrder?.shipping_amount || 0) * exchange_rate;
+    const shipping_amount = singleOrder?.shipping_amount ?? 0;
     const tax_amount = (singleOrder?.tax_amount || 0);
-    const coupon_discount = (singleOrder?.coupon_discount || 0) * exchange_rate;
+    const coupon_discount = singleOrder?.coupon_discount ?? 0;
     const total_amount_paid = singleOrder?.total_amount || 0;
 
-    const couponDiscountPercent = subTotal > 0 ? ((coupon_discount / subTotal) * 100).toFixed(2) : 0;
     const taxPercent = subTotal > 0 ? ((tax_amount / subTotal) * 100).toFixed(2) : 0;
     const hasPendingPrescription = Array.isArray(singleOrder?.orderItems)
         ? singleOrder.orderItems.some((item) => isPrescriptionPending(item))
@@ -328,12 +327,14 @@ export default function OrderDetailsData({ formik, singleOrder, showOrderEdit })
                                 <tr>
                                     <td>
                                         Coupon Discount{' '}
-                                        <span className="text-muted fw-normal">
-                                            ({[singleOrder?.coupon_code, `${couponDiscountPercent}%`].filter(Boolean).join(', ')})
-                                        </span>
+                                        {singleOrder?.coupon_code ? (
+                                            <span className="text-muted fw-normal">
+                                                ({singleOrder.coupon_code})
+                                            </span>
+                                        ) : null}
                                     </td>
                                     <td colSpan="5" className="text-end">
-                                        -{currencySymbol} {coupon_discount?.toFixed(2)}
+                                        -{currencySymbol} {coupon_discount}
                                     </td>
                                 </tr>
 

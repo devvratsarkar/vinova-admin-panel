@@ -88,10 +88,10 @@ export default function Ledger() {
               />
             </Col>
           </Row>
-          <LedgerChart period={period} />
           <section className="sa-card sa-board">
             <IncomeBooks data={data} />
           </section>
+          <LedgerChart period={period} />
         </>
       )}
     </div>
