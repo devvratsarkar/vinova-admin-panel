@@ -75,7 +75,8 @@ export default function Ledger() {
               <Kpi
                 icon={<IoCashOutline size={18} />}
                 label="Total expenses"
-                value="NA"
+                value={compact(data.totalExpenses)}
+                trend={data.expensesTrend}
                 hint="Commissions, refunds, and discounts"
               />
             </Col>
@@ -83,7 +84,7 @@ export default function Ledger() {
               <Kpi
                 icon={<IoTimeOutline size={18} />}
                 label="Pending expenses"
-                value="NA"
+                value={compact(data.pendingExpenses)}
                 hint="To pay for withdrawal"
               />
             </Col>

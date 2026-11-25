@@ -96,9 +96,9 @@ export default function IncomeBooks({ data }) {
         <MoneyCell
           to={`${base}optometrist/withdrawal-request?status=Pending`}
           title="Optometrist withdrawal requests"
-          value="NA"
+          value={shownCount(data.optometristWithdrawalCount)}
           unit="requests"
-          note="Not available yet"
+          note={`${shownMoney(data.optometristWithdrawals)} Rials optometrists asked to be paid`}
         />
       </div>
       <div className="sa-board-money sa-books-discounts">
