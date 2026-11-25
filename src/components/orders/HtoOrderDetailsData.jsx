@@ -29,7 +29,7 @@ export default function HtoOrderDetailsData({ singleOrder, showOrderEdit, formik
     : 0;
 
   const subTotal = subTotalWithoutExchangeRate * exchange_rate;
-  const shipping_amount = (singleOrder?.shipping_amount || 0) * exchange_rate;
+  const shipping_amount = singleOrder?.shipping_amount ?? 0;
   const tax_amount = singleOrder?.tax_amount || 0;
   const total_amount_paid = singleOrder?.total_amount || 0;
 
