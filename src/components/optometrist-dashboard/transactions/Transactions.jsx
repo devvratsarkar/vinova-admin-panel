@@ -88,19 +88,14 @@ function statusTone(value) {
 
 function referenceIds(row) {
   const lines = [
-    ['Withdrawal', row.withdrawal_id],
-    ['Transaction', row.transaction_id],
-    ['Order', row.order_id],
-  ].filter(([, value]) => filled(value))
+    filled(row.withdrawal_id) && `Withdrawal #${row.withdrawal_id}`,
+    filled(row.transaction_id) && `Txn: ${row.transaction_id}`,
+    filled(row.order_id) && `Order #${row.order_id}`,
+  ].filter(Boolean)
   if (!lines.length) return '—'
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: '4px 0', width: '100%', minWidth: 0 }}>
-      {lines.map(([label, value]) => (
-        <div key={label} style={{ minWidth: 0 }}>
-          <div style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', lineHeight: 1.2 }}>{label}</div>
-          <div style={{ color: '#0f172a', fontSize: 13, lineHeight: 1.4, overflowWrap: 'anywhere' }}>{String(value)}</div>
-        </div>
-      ))}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 4, lineHeight: 1.4 }}>
+      {lines.map((line) => <div key={line}>{line}</div>)}
     </div>
   )
 }
@@ -171,7 +166,7 @@ export default function Transactions() {
         )
       },
     },
-    { id: 'references', label: 'IDs', minWidth: 220, flex: 1, render: referenceIds },
+    { id: 'references', label: 'References IDs', minWidth: 180, flex: 1, render: referenceIds },
     {
       id: 'description',
       label: 'Description',
