@@ -66,11 +66,11 @@ export default function IncomeBooks({ data }) {
           note="Vinova’s share of optometrist orders."
         />
         <MoneyCell
-          to={`#`}
+          to={`${base}optometrist/enquiry`}
           title="Booking fees"
           value="NA"
           unit="Rials"
-          note="Optometrist appointment booking fees."
+          note={`${shownCount(data.bookingCount)} bookings · ${shownMoney(data.bookingFees)} Rials in appointment fees.`}
         />
       </div>
       {/* Optometrist expenses */}
@@ -81,7 +81,8 @@ export default function IncomeBooks({ data }) {
         </div>
       </div>
       <div className="sa-board-money sa-books-opt-expenses">
-          <MoneyCell
+        <MoneyCell
+          to={`${base}optometrist/enquiry`}
           title="Booking fees"
           value="NA"
           unit="Rials"
@@ -117,7 +118,7 @@ export default function IncomeBooks({ data }) {
           <p>Refunds, discounts, and other deductions. Not Vinova earnings.</p>
         </div>
       </div>
-      <div className="sa-board-money sa-books-expenses">
+      <div className="sa-board-money sa-books-other-expenses">
         <MoneyCell
           to={`${base}affiliate/withdrawal-request`}
           title="Affiliate commission"
@@ -139,8 +140,6 @@ export default function IncomeBooks({ data }) {
           unit="Rials"
           note={`${shownCount(data.affiliateDiscountUses)} times affiliate coupons applied. Give %. Not earnings.`}
         />
-      </div>
-      <div className="sa-board-money sa-books-discounts">
         <MoneyCell
           to={orders({ status: 'refunded' })}
           title="Order payment refund"

@@ -855,6 +855,10 @@ a.sa-panel-row:hover span {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.sa-books-other-expenses {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
 
 .sa-books-activity {
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1175,6 +1179,7 @@ a.sa-id:hover {
   .sa-books-income,
   .sa-books-discounts,
   .sa-books-opt-expenses,
+  .sa-books-other-expenses,
   .sa-board-extra {
     grid-template-columns: 1fr 1fr;
   }
@@ -1231,6 +1236,7 @@ a.sa-id:hover {
   .sa-books-income,
   .sa-books-discounts,
   .sa-books-opt-expenses,
+  .sa-books-other-expenses,
   .sa-board-extra {
     grid-template-columns: 1fr;
   }
