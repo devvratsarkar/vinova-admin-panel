@@ -64,6 +64,13 @@ export default function IncomeBooks({ data }) {
           unit="Rials"
           note="Vinova’s share of optometrist orders."
         />
+        <MoneyCell
+          to={`#`}
+          title="Booking fees"
+          value="NA"
+          unit="Rials"
+          note="Optometrist appointment booking fees."
+        />
       </div>
       <div className="sa-books-head">
         <div>
