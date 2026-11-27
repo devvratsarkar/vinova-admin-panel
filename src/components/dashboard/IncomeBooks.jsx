@@ -26,6 +26,7 @@ function MoneyCell({ to, title, value, unit, note }) {
   return <Link to={to}>{body}</Link>
 }
 
+
 export default function IncomeBooks({ data }) {
   const { search } = useLocation()
   const lang = new URLSearchParams(search).get('lang')
@@ -72,10 +73,48 @@ export default function IncomeBooks({ data }) {
           note="Optometrist appointment booking fees."
         />
       </div>
+      {/* Optometrist expenses */}
       <div className="sa-books-head">
         <div>
-          <h2>Expenses</h2>
-          <p>Paid back, given away, or owed. Not Vinova earnings.</p>
+          <h2>Optometrist expenses</h2>
+          <p>Paid back or owed to optometrists. Not Vinova earnings.</p>
+        </div>
+      </div>
+      <div className="sa-board-money sa-books-opt-expenses">
+          <MoneyCell
+          title="Booking fees"
+          value="NA"
+          unit="Rials"
+          note="NA appointments settled. Optometrist earnings from booking plans."
+        />
+        <MoneyCell
+          to={`${base}optometrist/memberships-plans`}
+          title="Optometrist commission"
+          value={shownMoney(data.optometristCommission)}
+          unit="Rials"
+          note="Optometrist Take %. Not Vinova earnings."
+        />
+        <MoneyCell
+          to={`${base}optometrist/withdrawal-request?status=Pending`}
+          title="Optometrist withdrawal requests"
+          value={shownCount(data.optometristWithdrawalCount)}
+          unit="requests"
+          note={`${shownMoney(data.optometristWithdrawals)} Rials optometrists asked to be paid`}
+        />
+        <MoneyCell
+          to={`${base}optometrist/memberships-plans`}
+          title="Optometrist discounts"
+          value={shownMoney(data.optometristDiscount)}
+          unit="Rials"
+          note={`${shownCount(data.optometristDiscountUses)} times optometrist coupons applied. Give %. Not earnings.`}
+        />
+      </div>
+
+      {/* Other expenses */}
+      <div className="sa-books-head">
+        <div>
+          <h2>Other expenses</h2>
+          <p>Refunds, discounts, and other deductions. Not Vinova earnings.</p>
         </div>
       </div>
       <div className="sa-board-money sa-books-expenses">
@@ -94,18 +133,11 @@ export default function IncomeBooks({ data }) {
           note={`${shownMoney(data.attention?.withdrawals)} Rials affiliates asked to be paid`}
         />
         <MoneyCell
-          to={`${base}optometrist/memberships-plans`}
-          title="Optometrist commission"
-          value={shownMoney(data.optometristCommission)}
+          to={`${base}affiliate/coupon-request`}
+          title="Affiliate discounts"
+          value={shownMoney(data.affiliateDiscount)}
           unit="Rials"
-          note="Optometrist Take %. Not Vinova earnings."
-        />
-        <MoneyCell
-          to={`${base}optometrist/withdrawal-request?status=Pending`}
-          title="Optometrist withdrawal requests"
-          value={shownCount(data.optometristWithdrawalCount)}
-          unit="requests"
-          note={`${shownMoney(data.optometristWithdrawals)} Rials optometrists asked to be paid`}
+          note={`${shownCount(data.affiliateDiscountUses)} times affiliate coupons applied. Give %. Not earnings.`}
         />
       </div>
       <div className="sa-board-money sa-books-discounts">
@@ -122,20 +154,6 @@ export default function IncomeBooks({ data }) {
           value={shownMoney(data.couponDiscount)}
           unit="Rials"
           note={`${shownCount(data.discountCount)} times store coupons applied. Not earnings.`}
-        />
-        <MoneyCell
-          to={`${base}optometrist/memberships-plans`}
-          title="Optometrist discounts"
-          value={shownMoney(data.optometristDiscount)}
-          unit="Rials"
-          note={`${shownCount(data.optometristDiscountUses)} times optometrist coupons applied. Give %. Not earnings.`}
-        />
-        <MoneyCell
-          to={`${base}affiliate/coupon-request`}
-          title="Affiliate discounts"
-          value={shownMoney(data.affiliateDiscount)}
-          unit="Rials"
-          note={`${shownCount(data.affiliateDiscountUses)} times affiliate coupons applied. Give %. Not earnings.`}
         />
       </div>
     </>

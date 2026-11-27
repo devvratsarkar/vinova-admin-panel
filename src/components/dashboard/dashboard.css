@@ -851,6 +851,11 @@ a.sa-panel-row:hover span {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.sa-books-opt-expenses {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+
 .sa-books-activity {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
@@ -864,18 +869,19 @@ a.sa-panel-row:hover span {
   border-left: 1px solid var(--sa-line);
 }
 
-.sa-board-money a {
+.sa-board-money>a,
+.sa-board-money>div {
   display: block;
   padding: 14px 18px 16px;
   text-decoration: none;
   color: inherit;
 }
 
-.sa-board-money a+a {
+.sa-board-money>*+* {
   border-left: 1px solid var(--sa-line);
 }
 
-.sa-board-money a:hover {
+.sa-board-money>a:hover {
   background: #f8fafc;
   color: inherit;
 }
@@ -1168,21 +1174,22 @@ a.sa-id:hover {
   .sa-board-money,
   .sa-books-income,
   .sa-books-discounts,
+  .sa-books-opt-expenses,
   .sa-board-extra {
     grid-template-columns: 1fr 1fr;
   }
 
-  .sa-board-money a+a,
+  .sa-board-money>*+*,
   .sa-board-extra a+a {
     border-left: 0;
   }
 
-  .sa-board-money a:nth-child(2n),
+  .sa-board-money>*:nth-child(2n),
   .sa-board-extra a:nth-child(2n) {
     border-left: 1px solid var(--sa-line);
   }
 
-  .sa-board-money a:nth-child(n + 3),
+  .sa-board-money>*:nth-child(n + 3),
   .sa-board-extra a:nth-child(n + 3) {
     border-top: 1px solid var(--sa-line);
   }
@@ -1223,21 +1230,22 @@ a.sa-id:hover {
   .sa-board-money,
   .sa-books-income,
   .sa-books-discounts,
+  .sa-books-opt-expenses,
   .sa-board-extra {
     grid-template-columns: 1fr;
   }
 
   .sa-board-col+.sa-board-col,
   .sa-board-col:nth-child(2n),
-  .sa-board-money a+a,
-  .sa-board-money a:nth-child(2n),
+  .sa-board-money>*+*,
+  .sa-board-money>*:nth-child(2n),
   .sa-board-extra a+a,
   .sa-board-extra a:nth-child(2n) {
     border-left: 0;
   }
 
   .sa-board-col+.sa-board-col,
-  .sa-board-money a+a,
+  .sa-board-money>*+*,
   .sa-board-extra a+a,
   .sa-books-activity>*+* {
     border-top: 1px solid var(--sa-line);
