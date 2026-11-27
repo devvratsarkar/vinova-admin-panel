@@ -15,6 +15,7 @@ const STATUS_BADGE = { approved: 'success', pending: 'warning', rejected: 'dange
 
 const text = (value) => (value === 0 || value ? String(value) : '—')
 const yesNo = (value) => (value ? 'Yes' : 'No')
+const money = (value) => (value != null ? Number(value).toLocaleString() : '—')
 const date = (value) => {
     if (!value) return '—'
     const parsed = moment(value)
@@ -43,6 +44,16 @@ const SectionCard = ({ title, children }) => (
         </Card.Body>
     </Card>
 )
+
+function StatCell({ label, value, sub, color }) {
+    return (
+        <div className="text-center px-3 py-2" style={{ borderRight: '1px solid #e8edf3' }}>
+            <div className="fw-bold" style={{ fontSize: '1.1rem', color: color || 'inherit' }}>{value}</div>
+            <div className="text-muted small">{label}</div>
+            {sub && <div className="text-muted" style={{ fontSize: '0.7rem' }}>{sub}</div>}
+        </div>
+    )
+}
 
 function CopyReferral({ code }) {
     const [copied, setCopied] = useState(false)
@@ -81,6 +92,11 @@ export default function ViewOptometristEnquiry() {
     const plan = item.plan || {}
     const commission = item.updated_commission_percentage || {}
     const transactions = Array.isArray(item.transactions) ? item.transactions : []
+    const wallet = item.wallet || {}
+    const appointments = item.appointments || {}
+    const earnings = item.earnings || {}
+    const expenses = item.expenses || {}
+    const withdrawals = item.withdrawals || {}
     const stateName = State.getStateByCodeAndCountry(item.state_code, item.country_code || 'IR')?.name || item.state
     const fee = (field) => (commission.is_updated ? commission[field] : plan[field])
 
@@ -162,18 +178,16 @@ export default function ViewOptometristEnquiry() {
                                 )}
                             </div>
                         </div>
-                        {/* Payment summary */}
-                        <div className="text-end">
-                            <div className="text-muted small mb-1">Payment</div>
-                            <Badge bg={item.payment_status === 'completed' ? 'success' : 'warning'} className="mb-1 text-capitalize">
-                                {item.payment_status || '—'}
-                            </Badge>
-                            {item.payment_amount && (
-                                <div className="fw-bold">{item.payment_amount.toLocaleString()} {item.transactions?.[0]?.currency_code || ''}</div>
-                            )}
-                            {item.payment_method && (
-                                <div className="text-muted small">{item.payment_method}</div>
-                            )}
+                        {/* Quick stats */}
+                        <div className="d-flex gap-0 flex-wrap" style={{ borderRadius: 8, border: '1px solid #e8edf3', overflow: 'hidden' }}>
+                            <StatCell label="Customers" value={text(item.total_customers)} />
+                            <StatCell label="Prescriptions" value={text(item.total_prescriptions)} />
+                            <StatCell label="Appointments" value={text(appointments.total)} />
+                            <StatCell label="Payment" value={
+                                <Badge bg={item.payment_status === 'completed' ? 'success' : 'warning'} className="text-capitalize">
+                                    {item.payment_status || '—'}
+                                </Badge>
+                            } style={{ borderRight: 'none' }} />
                         </div>
                     </div>
                 </Card.Body>
@@ -191,6 +205,13 @@ export default function ViewOptometristEnquiry() {
                             <Col sm={6}><InfoItem label="Date of birth" value={text(item.dob)} /></Col>
                             <Col sm={6}><InfoItem label="Designation" value={text(item.designation)} /></Col>
                             <Col sm={6}><InfoItem label="Qualification" value={text(item.qualification)} /></Col>
+                            <Col sm={6}><InfoItem label="Experience" value={item.experience ? `${item.experience} years` : '—'} /></Col>
+                            {item.specialty?.length > 0 && (
+                                <Col sm={6}><InfoItem label="Specialty" value={item.specialty.join(', ')} /></Col>
+                            )}
+                            {item.spoken_lang?.length > 0 && (
+                                <Col sm={6}><InfoItem label="Languages" value={item.spoken_lang.join(', ')} /></Col>
+                            )}
                             {item.about && <Col sm={12}><InfoItem label="About" value={item.about} /></Col>}
                         </Row>
                     </SectionCard>
@@ -241,6 +262,80 @@ export default function ViewOptometristEnquiry() {
                     </SectionCard>
                 </Col>
             </Row>
+
+            {/* Wallet & Earnings */}
+            <Row>
+                <Col lg={6}>
+                    <SectionCard title="Wallet">
+                        <Row>
+                            <Col sm={6}><InfoItem label="Balance" value={`${money(wallet.balance)} ${wallet.currency || ''}`} /></Col>
+                            <Col sm={6}><InfoItem label="Available balance" value={`${money(wallet.available_balance)} ${wallet.currency || ''}`} /></Col>
+                            <Col sm={6}><InfoItem label="Appointment balance" value={`${money(wallet.appointment_balance)} ${wallet.currency || ''}`} /></Col>
+                            <Col sm={6}><InfoItem label="Referral balance" value={`${money(wallet.referral_balance)} ${wallet.currency || ''}`} /></Col>
+                            <Col sm={6}><InfoItem label="Pending withdrawal" value={`${money(wallet.pending_withdrawal)} ${wallet.currency || ''}`} /></Col>
+                        </Row>
+                    </SectionCard>
+                </Col>
+
+                <Col lg={6}>
+                    <SectionCard title="Earnings">
+                        <Row>
+                            <Col sm={4}><InfoItem label="Total" value={money(earnings.total)} /></Col>
+                            <Col sm={4}><InfoItem label="Appointment" value={money(earnings.appointment)} /></Col>
+                            <Col sm={4}><InfoItem label="Referral" value={money(earnings.referral)} /></Col>
+                        </Row>
+                    </SectionCard>
+                </Col>
+            </Row>
+
+            {/* Appointments */}
+            <SectionCard title="Appointments">
+                <Row className="mb-3">
+                    <Col xs={6} sm={4} md={2}><InfoItem label="Total" value={text(appointments.total)} /></Col>
+                    <Col xs={6} sm={4} md={2}><InfoItem label="Pending" value={text(appointments.pending)} /></Col>
+                    <Col xs={6} sm={4} md={2}><InfoItem label="Accepted" value={text(appointments.accepted)} /></Col>
+                    <Col xs={6} sm={4} md={2}><InfoItem label="Completed" value={text(appointments.completed)} /></Col>
+                    <Col xs={6} sm={4} md={2}><InfoItem label="Rejected" value={text(appointments.rejected)} /></Col>
+                    <Col xs={6} sm={4} md={2}><InfoItem label="Cancelled" value={text(appointments.cancelled)} /></Col>
+                </Row>
+                <div className="border-top pt-3">
+                    <div className="text-muted small fw-semibold mb-2 text-uppercase" style={{ letterSpacing: '0.05em', fontSize: '0.7rem' }}>Type</div>
+                    <Row className="mb-3">
+                        <Col xs={6} sm={4}><InfoItem label="Online" value={text(appointments.online)} /></Col>
+                        <Col xs={6} sm={4}><InfoItem label="In-person" value={text(appointments.in_person)} /></Col>
+                        {/* <Col xs={6} sm={4}><InfoItem label="Both" value={text(appointments.both)} /></Col> */}
+                    </Row>
+                </div>
+                <div className="border-top pt-3">
+                    <div className="text-muted small fw-semibold mb-2 text-uppercase" style={{ letterSpacing: '0.05em', fontSize: '0.7rem' }}>Payments</div>
+                    <Row>
+                        <Col xs={6} sm={3}><InfoItem label="Paid count" value={text(appointments.paid_count)} /></Col>
+                        <Col xs={6} sm={3}><InfoItem label="Paid amount" value={money(appointments.paid_amount)} /></Col>
+                        <Col xs={6} sm={3}><InfoItem label="Refund pending" value={`${text(appointments.refund_pending_count)} (${money(appointments.refund_pending_amount)})`} /></Col>
+                        <Col xs={6} sm={3}><InfoItem label="Refunded" value={`${text(appointments.refunded_count)} (${money(appointments.refunded_amount)})`} /></Col>
+                    </Row>
+                </div>
+            </SectionCard>
+
+            {/* Withdrawals */}
+            <SectionCard title="Withdrawals">
+                <Row>
+                    <Col xs={6} sm={3}><InfoItem label="Total requests" value={text(withdrawals.total_requests)} /></Col>
+                    <Col xs={6} sm={3}><InfoItem label="Pending" value={`${text(withdrawals.pending?.count)} (${money(withdrawals.pending?.amount)})`} /></Col>
+                    <Col xs={6} sm={3}><InfoItem label="Completed" value={`${text(withdrawals.completed?.count)} (${money(withdrawals.completed?.amount)})`} /></Col>
+                    <Col xs={6} sm={3}><InfoItem label="Rejected" value={`${text(withdrawals.rejected?.count)} (${money(withdrawals.rejected?.amount)})`} /></Col>
+                </Row>
+            </SectionCard>
+
+            {/* Expenses */}
+            {/* <SectionCard title="Expenses">
+                <Row>
+                    <Col xs={6} sm={4} md={3}><InfoItem label="Total" value={money(expenses.total)} /></Col>
+                    <Col xs={6} sm={4} md={3}><InfoItem label="Membership plan" value={money(expenses.membership_plan)} /></Col>
+                    <Col xs={6} sm={4} md={3}><InfoItem label="Paid from wallet" value={money(expenses.membership_plan_paid_from_wallet)} /></Col>
+                    <Col xs={6} sm={4} md={3}><InfoItem label="Paid other" value={money(expenses.membership_plan_paid_other)} /></Col>
+                </Row>
+            </SectionCard> */}
 
             {/* Plan */}
             <SectionCard title="Plan">
