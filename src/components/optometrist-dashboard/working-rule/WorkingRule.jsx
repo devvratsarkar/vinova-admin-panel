@@ -6,6 +6,7 @@ import {
   FaBriefcase,
   FaCalendarAlt,
   FaCheck,
+  FaClock,
   // FaClock,
   FaSave,
   FaUserClock,
@@ -33,7 +34,7 @@ const cardStyle = {
 const VISIT_TYPES = [
   { value: 'in_person', label: 'In-person', text: 'Clinic visits only', icon: <FaUserClock />, color: '#3b82f6', bg: '#eff6ff' },
   { value: 'online', label: 'Online', text: 'Remote consults only', icon: <FaVideo />, color: '#0ea5e9', bg: '#f0f9ff' },
-  // { value: 'both', label: 'Both', text: 'Patients can enquire for either', icon: <FaClock />, color: '#0d9488', bg: '#f0fdfa' },
+  { value: 'both', label: 'Both', text: 'Patients can enquire for either', icon: <FaClock />, color: '#0d9488', bg: '#f0fdfa' },
 ]
 
 const CONFIRMATION_OPTIONS = [

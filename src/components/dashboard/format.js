@@ -2,8 +2,8 @@ export const base = import.meta.env.BASE_URL || '/'
 
 export function compact(amount) {
   const abs = Math.abs(Number(amount) || 0)
-  if (abs >= 1e9) return `${(abs / 1e9).toFixed(2).replace(/\.00$/, '')}B`
-  if (abs >= 1e6) return `${(abs / 1e6).toFixed(1).replace(/\.0$/, '')}M`
+  // if (abs >= 1e9) return `${(abs / 1e9).toFixed(2).replace(/\.00$/, '')}B`
+  // if (abs >= 1e6) return `${(abs / 1e6).toFixed(1).replace(/\.0$/, '')}M`
   return Math.round(abs).toLocaleString('en-US')
 }
 
