@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Col, Row } from 'react-bootstrap'
+import { IoArrowBack } from 'react-icons/io5'
 import { IoWalletOutline, IoCashOutline, IoTimeOutline } from 'react-icons/io5'
 import { useGetDashboardQuery } from '../../redux/features/dashboardEndPoint'
 import Loader from '../../layouts/layoutcomponents/loader'
@@ -44,6 +46,10 @@ export default function Ledger() {
   return (
     <div className="sa-dash">
       {(isLoading || isFetching) && <Loader />}
+      <Link to="/dashboard" className="sa-back-link">
+        <IoArrowBack size={15} />
+        Back to Dashboard
+      </Link>
       <DashboardHeader
         title="Ledger"
         data={data}

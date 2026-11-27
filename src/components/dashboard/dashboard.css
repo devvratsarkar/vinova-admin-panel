@@ -97,11 +97,26 @@
   box-shadow: 0 0 0 1px #e8edf3;
 }
 
+.sa-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #64748b;
+  text-decoration: none;
+}
+
+.sa-back-link:hover {
+  color: #3b6ef8;
+}
+
 .sa-custom {
-  display: grid;
-  grid-template-columns: minmax(180px, 240px) minmax(180px, 240px);
-  gap: 8px 16px;
-  align-items: end;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   margin: -4px 0 16px;
   padding: 14px 16px;
   background: #fff;
@@ -109,11 +124,18 @@
   border-radius: 16px;
 }
 
+.sa-custom-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 16px;
+}
+
 .sa-custom label {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  min-width: 0;
+  width: 220px;
   margin: 0;
 }
 
@@ -146,11 +168,33 @@
 }
 
 .sa-custom-error {
-  grid-column: 1 / -1;
+  width: 100%;
+  order: 10;
   margin: 0;
   color: #b91c1c;
   font-size: 12px;
   font-weight: 600;
+}
+
+
+.sa-clear-btn {
+  height: 40px;
+  padding: 0 16px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.sa-clear-btn:hover {
+  border-color: #3b6ef8;
+  color: #3b6ef8;
+  background: #eff4ff;
 }
 
 .sa-alerts {
@@ -351,7 +395,7 @@ a.sa-kpi.is-featured:hover {
   min-width: 8px;
 }
 
-.sa-mix-bar i + i {
+.sa-mix-bar i+i {
   box-shadow: -2px 0 0 #fff;
 }
 
@@ -367,7 +411,7 @@ a.sa-kpi.is-featured:hover {
   color: inherit;
 }
 
-.sa-mix-parts a + a {
+.sa-mix-parts a+a {
   border-left: 1px solid var(--sa-line);
 }
 
@@ -408,7 +452,7 @@ a.sa-kpi.is-featured:hover {
   font-variant-numeric: tabular-nums;
 }
 
-.sa-mix-parts a > span:last-child,
+.sa-mix-parts a>span:last-child,
 .sa-payout span {
   display: block;
   margin-top: 2px;
@@ -563,17 +607,28 @@ a.sa-kpi.is-featured:hover {
   border-radius: 99px;
 }
 
-.sa-swatch.delivered { background: #0f766e; }
-.sa-swatch.processing { background: #24306e; }
-.sa-swatch.pending { background: #c2410c; }
-.sa-swatch.cancelled { background: #94a3b8; }
+.sa-swatch.delivered {
+  background: #0f766e;
+}
+
+.sa-swatch.processing {
+  background: #24306e;
+}
+
+.sa-swatch.pending {
+  background: #c2410c;
+}
+
+.sa-swatch.cancelled {
+  background: #94a3b8;
+}
 
 .sa-legend-row b {
   font-variant-numeric: tabular-nums;
   font-weight: 700;
 }
 
-.sa-bar + .sa-bar {
+.sa-bar+.sa-bar {
   margin-top: 14px;
 }
 
@@ -686,7 +741,7 @@ a.sa-panel-row:hover span {
   padding: 16px 18px 12px;
 }
 
-.sa-board-col + .sa-board-col {
+.sa-board-col+.sa-board-col {
   border-left: 1px solid var(--sa-line);
 }
 
@@ -751,7 +806,7 @@ a.sa-panel-row:hover span {
   background: #f8fafc;
 }
 
-.sa-board > .sa-books-head:first-child {
+.sa-board>.sa-books-head:first-child {
   border-top: 0;
 }
 
@@ -800,12 +855,12 @@ a.sa-panel-row:hover span {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
-.sa-books-activity > div {
+.sa-books-activity>div {
   display: block;
   padding: 14px 18px 16px;
 }
 
-.sa-books-activity > * + * {
+.sa-books-activity>*+* {
   border-left: 1px solid var(--sa-line);
 }
 
@@ -816,7 +871,7 @@ a.sa-panel-row:hover span {
   color: inherit;
 }
 
-.sa-board-money a + a {
+.sa-board-money a+a {
   border-left: 1px solid var(--sa-line);
 }
 
@@ -874,7 +929,7 @@ a.sa-panel-row:hover span {
   color: inherit;
 }
 
-.sa-board-extra a + a {
+.sa-board-extra a+a {
   border-left: 1px solid var(--sa-line);
 }
 
@@ -905,7 +960,7 @@ a.sa-panel-row:hover span {
   align-items: flex-start;
 }
 
-.sa-store + .sa-store {
+.sa-store+.sa-store {
   margin-top: 16px;
 }
 
@@ -998,7 +1053,7 @@ a.sa-id:hover {
   font-weight: 700;
 }
 
-.sa-table:not(.sa-table-compact) .sa-person > span:last-child {
+.sa-table:not(.sa-table-compact) .sa-person>span:last-child {
   white-space: nowrap;
 }
 
@@ -1091,13 +1146,14 @@ a.sa-id:hover {
 }
 
 @media (max-width: 1199px) {
+
   .sa-alerts,
   .sa-foot-stats,
   .sa-board-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .sa-board-col + .sa-board-col {
+  .sa-board-col+.sa-board-col {
     border-left: 0;
   }
 
@@ -1116,8 +1172,8 @@ a.sa-id:hover {
     grid-template-columns: 1fr 1fr;
   }
 
-  .sa-board-money a + a,
-  .sa-board-extra a + a {
+  .sa-board-money a+a,
+  .sa-board-extra a+a {
     border-left: 0;
   }
 
@@ -1131,15 +1187,15 @@ a.sa-id:hover {
     border-top: 1px solid var(--sa-line);
   }
 
-  .sa-books-activity > * + * {
+  .sa-books-activity>*+* {
     border-left: 0;
   }
 
-  .sa-books-activity > *:nth-child(2n) {
+  .sa-books-activity>*:nth-child(2n) {
     border-left: 1px solid var(--sa-line);
   }
 
-  .sa-books-activity > *:nth-child(n + 3) {
+  .sa-books-activity>*:nth-child(n + 3) {
     border-top: 1px solid var(--sa-line);
   }
 }
@@ -1171,27 +1227,27 @@ a.sa-id:hover {
     grid-template-columns: 1fr;
   }
 
-  .sa-board-col + .sa-board-col,
+  .sa-board-col+.sa-board-col,
   .sa-board-col:nth-child(2n),
-  .sa-board-money a + a,
+  .sa-board-money a+a,
   .sa-board-money a:nth-child(2n),
-  .sa-board-extra a + a,
+  .sa-board-extra a+a,
   .sa-board-extra a:nth-child(2n) {
     border-left: 0;
   }
 
-  .sa-board-col + .sa-board-col,
-  .sa-board-money a + a,
-  .sa-board-extra a + a,
-  .sa-books-activity > * + * {
+  .sa-board-col+.sa-board-col,
+  .sa-board-money a+a,
+  .sa-board-extra a+a,
+  .sa-books-activity>*+* {
     border-top: 1px solid var(--sa-line);
   }
 
-  .sa-books-activity > *:nth-child(2n) {
+  .sa-books-activity>*:nth-child(2n) {
     border-left: 0;
   }
 
-  .sa-mix-parts a + a,
+  .sa-mix-parts a+a,
   .sa-attention a:nth-child(odd) {
     border-left: 0;
     border-right: 0;
@@ -1226,6 +1282,7 @@ a.sa-id:hover {
 }
 
 @media (max-width: 1199px) {
+
   .op-kpis,
   .op-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1233,6 +1290,7 @@ a.sa-id:hover {
 }
 
 @media (max-width: 575px) {
+
   .op-kpis,
   .op-stats,
   .op-split {

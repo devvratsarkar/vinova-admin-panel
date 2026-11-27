@@ -81,7 +81,7 @@ function Authlogin() {
           }
         } catch (error) {
           // console.error('error -----> dfdfdfdfdf', error);
-          toast.error(error.message)
+          toast.error(error.response?.data?.message || error.message)
           setLoader(false)
         }
       }

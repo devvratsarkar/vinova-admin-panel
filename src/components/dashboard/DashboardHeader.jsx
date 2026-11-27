@@ -18,6 +18,12 @@ export default function DashboardHeader({
   const fromInvalid = Boolean(fromDate && (fromDate > today || (toDate && fromDate > toDate)))
   const toInvalid = Boolean(toDate && (toDate > today || (fromDate && toDate < fromDate)))
 
+  function clearFilters() {
+    onPeriod('year')
+    onFromDate('')
+    onToDate('')
+  }
+
   return (
     <>
       <header className="sa-top">
@@ -48,28 +54,33 @@ export default function DashboardHeader({
       </header>
       {period === 'custom' && (
         <div className="sa-custom">
-          <label>
-            <span>From</span>
-            <input
-              type="date"
-              value={fromDate}
-              max={fromMax}
-              className={fromInvalid ? 'is-invalid' : undefined}
-              onChange={(event) => onFromDate(event.target.value)}
-            />
-          </label>
-          <label>
-            <span>To</span>
-            <input
-              type="date"
-              value={toDate}
-              min={fromDate || undefined}
-              max={today}
-              disabled={!fromDate}
-              className={toInvalid ? 'is-invalid' : undefined}
-              onChange={(event) => onToDate(event.target.value)}
-            />
-          </label>
+          <div className="sa-custom-row">
+            <label>
+              <span>From</span>
+              <input
+                type="date"
+                value={fromDate}
+                max={fromMax}
+                className={fromInvalid ? 'is-invalid' : undefined}
+                onChange={(event) => onFromDate(event.target.value)}
+              />
+            </label>
+            <label>
+              <span>To</span>
+              <input
+                type="date"
+                value={toDate}
+                min={fromDate || undefined}
+                max={today}
+                disabled={!fromDate}
+                className={toInvalid ? 'is-invalid' : undefined}
+                onChange={(event) => onToDate(event.target.value)}
+              />
+            </label>
+            <button type="button" className="sa-clear-btn" onClick={clearFilters}>
+              Clear filters
+            </button>
+          </div>
           {dateError && <p className="sa-custom-error fw-normal">{dateError}</p>}
         </div>
       )}
