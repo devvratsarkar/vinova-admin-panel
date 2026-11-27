@@ -68,9 +68,9 @@ export default function IncomeBooks({ data }) {
         <MoneyCell
           to={`${base}optometrist/enquiry`}
           title="Booking fees"
-          value="NA"
+          value={shownMoney(data.optometristAppointmentFees)}
           unit="Rials"
-          note={`${shownCount(data.bookingCount)} bookings · ${shownMoney(data.bookingFees)} Rials in appointment fees.`}
+          note={`${shownCount(data.totalAppointments)} bookings · ${shownMoney(data.optometristAppointmentFees)} Rials in appointment fees.`}
         />
       </div>
       {/* Optometrist expenses */}
@@ -81,13 +81,13 @@ export default function IncomeBooks({ data }) {
         </div>
       </div>
       <div className="sa-board-money sa-books-opt-expenses">
-        <MoneyCell
+        {/* <MoneyCell
           to={`${base}optometrist/enquiry`}
           title="Booking fees"
           value="NA"
           unit="Rials"
           note="NA appointments settled. Optometrist earnings from booking plans."
-        />
+        /> */}
         <MoneyCell
           to={`${base}optometrist/memberships-plans`}
           title="Optometrist commission"

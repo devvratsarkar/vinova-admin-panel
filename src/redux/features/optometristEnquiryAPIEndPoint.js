@@ -13,7 +13,14 @@ export const optometristEnquiryAPIEndPoint = catalogueSlice.injectEndpoints({
             providesTags: ["Optometrists"],
         }),
         getSingleOptometrist: builder.query({
-            query: (id) => `/optometrist/${id}`,
+            query: ({ id, search, fromDate, toDate } = {}) => ({
+                url: `/optometrist/${id}`,
+                params: {
+                    ...(search ? { search } : {}),
+                    ...(fromDate ? { fromDate } : {}),
+                    ...(toDate ? { toDate } : {}),
+                },
+            }),
             providesTags: ["Optometrists"],
         }),
         approveOptometrist: builder.mutation({
