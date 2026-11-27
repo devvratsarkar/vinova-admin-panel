@@ -90,6 +90,13 @@ export default function IncomeBooks({ data }) {
         /> */}
         <MoneyCell
           to={`${base}optometrist/memberships-plans`}
+          title="Optometrist discounts"
+          value={shownMoney(data.optometristDiscount)}
+          unit="Rials"
+          note={`${shownCount(data.optometristDiscountUses)} times optometrist coupons applied. Give %. Not earnings.`}
+        />
+        <MoneyCell
+          to={`${base}optometrist/memberships-plans`}
           title="Optometrist commission"
           value={shownMoney(data.optometristCommission)}
           unit="Rials"
@@ -102,13 +109,6 @@ export default function IncomeBooks({ data }) {
           unit="requests"
           note={`${shownMoney(data.optometristWithdrawals)} Rials optometrists asked to be paid`}
         />
-        <MoneyCell
-          to={`${base}optometrist/memberships-plans`}
-          title="Optometrist discounts"
-          value={shownMoney(data.optometristDiscount)}
-          unit="Rials"
-          note={`${shownCount(data.optometristDiscountUses)} times optometrist coupons applied. Give %. Not earnings.`}
-        />
       </div>
 
       {/* Other expenses */}
@@ -119,6 +119,27 @@ export default function IncomeBooks({ data }) {
         </div>
       </div>
       <div className="sa-board-money sa-books-other-expenses">
+        <MoneyCell
+          to={`${base}coupons`}
+          title="Coupon discounts"
+          value={shownMoney(data.couponDiscount)}
+          unit="Rials"
+          note={`${shownCount(data.discountCount)} times store coupons applied. Not earnings.`}
+        />
+        <MoneyCell
+          to={orders({ status: 'refunded' })}
+          title="Order payment refund"
+          value={shownCount(data.refundCount)}
+          unit="refunds"
+          note={`${shownMoney(data.refunds)} Rials refunded on orders.`}
+        />
+        <MoneyCell
+          to={`${base}affiliate/coupon-request`}
+          title="Affiliate discounts"
+          value={shownMoney(data.affiliateDiscount)}
+          unit="Rials"
+          note={`${shownCount(data.affiliateDiscountUses)} times affiliate coupons applied. Give %. Not earnings.`}
+        />
         <MoneyCell
           to={`${base}affiliate/withdrawal-request`}
           title="Affiliate commission"
@@ -132,27 +153,6 @@ export default function IncomeBooks({ data }) {
           value={shownCount(data.withdrawalCount)}
           unit="requests"
           note={`${shownMoney(data.attention?.withdrawals)} Rials affiliates asked to be paid`}
-        />
-        <MoneyCell
-          to={`${base}affiliate/coupon-request`}
-          title="Affiliate discounts"
-          value={shownMoney(data.affiliateDiscount)}
-          unit="Rials"
-          note={`${shownCount(data.affiliateDiscountUses)} times affiliate coupons applied. Give %. Not earnings.`}
-        />
-        <MoneyCell
-          to={orders({ status: 'refunded' })}
-          title="Order payment refund"
-          value={shownCount(data.refundCount)}
-          unit="refunds"
-          note={`${shownMoney(data.refunds)} Rials refunded on orders.`}
-        />
-        <MoneyCell
-          to={`${base}coupons`}
-          title="Coupon discounts"
-          value={shownMoney(data.couponDiscount)}
-          unit="Rials"
-          note={`${shownCount(data.discountCount)} times store coupons applied. Not earnings.`}
         />
       </div>
     </>

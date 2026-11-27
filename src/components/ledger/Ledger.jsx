@@ -66,7 +66,7 @@ export default function Ledger() {
       {data && (
         <>
           <Row className="g-3 mb-3">
-            <Col xs={12} md={6} xl={4}>
+            <Col xs={12} md={6} xl={3}>
               <Kpi
                 featured
                 icon={<IoWalletOutline size={18} />}
@@ -77,21 +77,32 @@ export default function Ledger() {
                 hint="Money Vinova keeps"
               />
             </Col>
-            <Col xs={12} md={6} xl={4}>
+            <Col xs={12} md={6} xl={3}>
               <Kpi
                 icon={<IoCashOutline size={18} />}
-                label="Total expenses"
+                label="Total paid expenses"
                 value={compact(data.totalExpenses)}
                 trend={data.expensesTrend}
-                hint="Commissions, refunds, and discounts"
+                unit="Rials"
+                hint="Commissions, withdrawals, refunds, and discounts"
               />
             </Col>
-            <Col xs={12} md={6} xl={4}>
+            <Col xs={12} md={6} xl={3}>
+              <Kpi
+                icon={<IoCashOutline size={18} />}
+                label="Pending commissions"
+                value={compact(data.pendingCommissions)}
+                unit="Rials"
+                hint="Commission earned by optometrists or affiliates"
+              />
+            </Col>
+            <Col xs={12} md={6} xl={3}>
               <Kpi
                 icon={<IoTimeOutline size={18} />}
-                label="Pending expenses"
+                label="Pending withdrawals"
                 value={compact(data.pendingExpenses)}
-                hint="To pay for withdrawal"
+                unit="Rials"
+                hint="Withdrawal requests awaiting payout"
               />
             </Col>
           </Row>
